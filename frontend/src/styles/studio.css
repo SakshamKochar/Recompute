@@ -507,7 +507,6 @@ body > .shell > .studio-header {
   height: 114px;
   position: relative;
   transform: rotate(-12deg);
-  filter: drop-shadow(0 15px 11px #20352322);
 }
 .board-art.large {
   width: 220px;
@@ -518,11 +517,13 @@ body > .shell > .studio-header {
   position: absolute;
   inset: 0;
   border-radius: 8px;
-  background: linear-gradient(140deg, #c5ceae, #879b79 65%, #597252);
+  background-color: #8ea07a;
+  background-image: linear-gradient(140deg, #c5ceae, #879b79 65%, #597252);
   border: 1px solid #c7d2b0;
   box-shadow:
     0 5px 0 #5a6e51,
-    0 8px 0 #3e543e;
+    0 8px 0 #3e543e,
+    0 16px 16px #20352322;
   overflow: hidden;
 }
 .board-plate:after {
@@ -558,7 +559,8 @@ body > .shell > .studio-header {
   height: 50%;
   width: 33%;
   border: 6px solid #627758;
-  background: linear-gradient(135deg, #dce4c4, #a9ba92);
+  background-color: #c5d4ae;
+  background-image: linear-gradient(135deg, #dce4c4, #a9ba92);
   box-shadow:
     0 0 0 1px #dbe5bd,
     0 8px 10px #38513544;
@@ -699,8 +701,8 @@ body > .shell > .studio-header {
 .asset-card.clay .asset-visual {
   background: radial-gradient(ellipse at 50% 60%, #eadfce, transparent 65%);
 }
-.asset-card.ink .board-art {
-  filter: grayscale(0.7) drop-shadow(0 15px 11px #20352322);
+.asset-card.ink .board-plate {
+  filter: grayscale(0.7);
 }
 .asset-card-copy {
   padding: 0 17px 17px;

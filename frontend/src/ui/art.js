@@ -30,7 +30,8 @@ export function gpuArt(label = "A100 / Next chapter") {
  * the surrounding control carries the accessible name.
  */
 export function boardArt(asset, large = false) {
-  const code = String(asset.id || "").replace(/^.*?-/, "").slice(-4) || "—";
+  const suffix = String(asset.id || "").split("-").pop() || "";
+  const code = (suffix.length > 5 ? suffix.slice(0, 4) : suffix) || "—";
   const hw = asset.hardware;
   const model = hw ? `${hw.count ? hw.count + "× " : ""}${hw.gpu}` : "Server";
   return `<div class="board-art ${large ? "large" : ""}" aria-hidden="true"><div class="board-pins"></div><div class="board-plate"><span class="board-code">RE / ${esc(code)}</span><div class="board-vents"></div><div class="board-chip">Re<span>↗</span></div><span class="board-model">${esc(model)}</span></div></div>`;
