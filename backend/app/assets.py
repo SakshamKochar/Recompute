@@ -3,7 +3,7 @@ from typing import Annotated, Literal, Optional
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from .batches import SEED_BATCH, new_batch
 from .db import Asset, Batch, Recommendation, Transition, get_session
@@ -42,10 +42,27 @@ class EventIn(BaseModel):
     event: str
     note: Optional[str] = None
     override: bool = False
+    selected_route: Optional[Literal[ROUTES]] = Field(
+        None, description="The route the person intends to follow with this move, kept in the transition's details. "
+                          "Must be eligible under the latest recommendation. Does not change the recommendation.")
 
 
 def latest(asset):
     return asset.recommendations[-1] if asset.recommendations else None
+
+
+def selected_route(asset):
+    """The most recent route a person said they are following, if any. Never inferred from the recommendation."""
+    for t in reversed(asset.transitions):
+        route = (t.details or {}).get("selected_route")
+        if route:
+            return route
+    return None
+
+
+def outcome_out(o):
+    return {"type": "outcome", "id": o.id, "asset_id": o.asset_id, "transition_id": o.transition_id,
+            "realized_value": o.realized_value, "note": o.note, "at": o.created_at}
 
 
 def asset_out(asset, full=True, confidence=False):
@@ -58,9 +75,11 @@ def asset_out(asset, full=True, confidence=False):
         **asset_values(asset),
         "allowed_events": allowed,
         "override_events": override,
+        "selected_route": selected_route(asset),
         "updated_at": asset.updated_at,
     }
     if full:
+        out["outcome"] = outcome_out(asset.outcomes[-1]) if asset.outcomes else None
         out["inputs"] = asset.inputs
         _, out["model_adjustments"], out["repair_pricing"] = effective_inputs(asset.inputs, asset.failed_part, asset.model)
         out["diagnostics"] = asset.diagnostics
@@ -109,7 +128,8 @@ def post_asset(body: AssetCreate, session: Session = Depends(get_session)):
 @router.get("")
 def list_assets(state: StateFilter = Query(None), route: RouteFilter = Query(None),
                 batch_id: Optional[str] = Query(None), session: Session = Depends(get_session)):
-    q = select(Asset).order_by(Asset.asset_id)
+    q = select(Asset).order_by(Asset.asset_id).options(selectinload(Asset.recommendations),
+                                                       selectinload(Asset.transitions))
     if state:
         q = q.where(Asset.state == state)
     if batch_id:
@@ -146,6 +166,12 @@ def post_event(asset_id: AssetId, body: EventIn, session: Session = Depends(get_
         target, details = check(body.event, asset.state, inputs, rec and rec.result, body.override, body.note)
     except TransitionError as e:
         raise HTTPException(e.status, e.message)
+    if body.selected_route:
+        eligible = rec.result["eligible"] if rec else []
+        if body.selected_route not in eligible:
+            raise HTTPException(409, f"{body.selected_route} is not eligible for this asset; eligible routes are "
+                                     f"{', '.join(eligible)}")
+        details = {**details, "selected_route": body.selected_route}
     override = body.override and not _allowed_without_override(body.event, asset.state, inputs, rec)
     t = Transition(event=body.event, from_state=asset.state, to_state=target,
                    route_at_time=rec.route if rec else None, override=override,
@@ -179,7 +205,7 @@ def history(asset_id: AssetId, session: Session = Depends(get_session)):
     items = [transition_out(t) for t in asset.transitions] + [
         {"type": "recommendation", "id": r.id, "route": r.route, "model_version": r.model_version,
          "inputs": r.inputs, "audit": r.result["audit"], "at": r.created_at}
-        for r in asset.recommendations]
+        for r in asset.recommendations] + [outcome_out(o) for o in asset.outcomes]
     items.sort(key=lambda i: (i["at"], 0 if i["type"] == "recommendation" else 1, i["id"]))
     return {"asset_id": asset_id, "state": asset.state, "events": items}
 

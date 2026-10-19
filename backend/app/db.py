@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, TypeDecorator, create_engine
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, TypeDecorator, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./recompute.db")
@@ -69,6 +69,8 @@ class Asset(Base):
         back_populates="asset", order_by="Recommendation.id", cascade="all, delete-orphan")
     transitions: Mapped[list["Transition"]] = relationship(
         back_populates="asset", order_by="Transition.id", cascade="all, delete-orphan")
+    outcomes: Mapped[list["Outcome"]] = relationship(
+        back_populates="asset", order_by="Outcome.id", cascade="all, delete-orphan")
 
 
 class Recommendation(Base):
@@ -100,6 +102,21 @@ class Transition(Base):
     created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=now)
 
     asset: Mapped[Asset] = relationship(back_populates="transitions")
+
+
+class Outcome(Base):
+    """A realized result recorded by a person after an asset reached a final state. Append-only:
+    a correction is a new row, and the latest row is the current figure."""
+    __tablename__ = "outcomes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.asset_id"), index=True)
+    transition_id: Mapped[int] = mapped_column(ForeignKey("transitions.id"))
+    realized_value: Mapped[float] = mapped_column(Float)
+    note: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime, default=now)
+
+    asset: Mapped[Asset] = relationship(back_populates="outcomes")
 
 
 def init_db():
