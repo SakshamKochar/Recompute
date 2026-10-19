@@ -1,11 +1,11 @@
-uploads/
-node_modules/
-.venv/
-__pycache__/
 *.db
+.DS_Store
 .env
 .env.local
 frontend/dist-build/
-frontend/test-results/
 frontend/playwright-report/
-.DS_Store
+frontend/test-results/
+node_modules/
+__pycache__/
+uploads/
+.venv/

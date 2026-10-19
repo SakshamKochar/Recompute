@@ -263,7 +263,7 @@ export default {
     if (err) return head + errorBlock(err.error, { retryKeys: ["assets", "batches"] });
     if (!assets.data || !batches.data) return head + loadingBlock();
     const s = f();
-    if (s.batch !== "all" && !batches.data.batches.some((b) => b.batch_id === s.batch)) setF({ batch: "all", scenario: "base" });
+    if (s.batch !== "all" && batches.status === "ready" && !batches.stale && !batches.data.batches.some((b) => b.batch_id === s.batch)) setF({ batch: "all", scenario: "base" });
     const cur = currentRows();
     const overlayErr = cur.overlay?.status === "error" && !cur.overlay.data;
     return (

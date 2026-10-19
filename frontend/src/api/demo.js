@@ -34,8 +34,13 @@ export function snapshotKey(path, query = {}) {
  * It never computes a financial value; anything not recorded is reported as unavailable in Demo mode.
  */
 export function createDemoTransport({ snapshot } = {}) {
-  const get = async () => snapshot || (snapshot = await loadSnapshot());
-  return {
+  const get = async () => {
+    if (!snapshot) snapshot = await loadSnapshot();
+    transport._snap = snapshot;
+    return snapshot;
+  };
+  const transport = {
+    _snap: snapshot || null,
     mode: "demo",
     base: "demo-snapshot",
     url: () => null,
@@ -61,6 +66,7 @@ export function createDemoTransport({ snapshot } = {}) {
       return structuredClone(snap.responses[key]);
     },
   };
+  return transport;
 }
 
 function demoRecommend(snap, hint) {
@@ -70,7 +76,9 @@ function demoRecommend(snap, hint) {
   };
   if (!lab) unsupported("Recalculation for this asset needs Live mode. The demo snapshot recorded model runs for featured assets only.");
   if (hint.dial) {
-    const hit = lab.grids[hint.dial]?.[String(hint.value)];
+    const grid = lab.grids[hint.dial] || {};
+    const key = Object.keys(grid).find((k) => Math.abs(Number(k) - Number(hint.value)) < 1e-9);
+    const hit = key !== undefined ? grid[key] : null;
     if (!hit) unsupported("That value was not recorded in the demo snapshot. Live mode recalculates any input.");
     return {
       model_version: snap.model_version,
