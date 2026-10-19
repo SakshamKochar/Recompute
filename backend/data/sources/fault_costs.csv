@@ -1,0 +1,15 @@
+part,cost_usd,repair_days,status,basis
+PSU,415,3,DERIVED,"Swayam, 2026-10-03: comparable 3 kW server PSU lists at $691 (Supermicro) x 0.6 used share, same as memory"
+Fan,150,2,HYPOTHESIS,"team estimate: no public DGX fan-module price; generic hot-swap fans are $21 but the DGX module holds several, so 150 is the cautious number (Swayam, 2026-10-03)"
+NVMe drive,429,3,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02"
+NIC,599,4,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02; A100 platform"
+GPU A100 80GB,10829,10,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02"
+GPU A100 40GB,5900,10,DERIVED,midpoint of used A100 40GB 4000-7800 (PC Server and Parts 2026); same value as harvest_build.csv
+GPU H100 80GB,24500,10,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02"
+GPU A100 80GB (market evidence low),7246,10,SOURCED,eBay 116995456958 refurbished SXM4 module asking GBP 5400 (https://www.ebay.com/itm/116995456958)
+GPU A100 80GB (market evidence high),10450,10,SOURCED,eBay rtone-32 used tested grade A SXM4 module asking (https://www.ebay.com/shop/a100-80gb)
+GPU A100 40GB (market evidence low),4000,10,SOURCED,PC Server and Parts 2026 guide used A100 40GB low end
+GPU A100 40GB (market evidence high),7800,10,SOURCED,PC Server and Parts 2026 guide used A100 40GB high end
+NIC (H100 platform),1191,4,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02"
+Memory module,295,2,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02; A100 platform; repair days a hypothesis"
+Memory module (H100 platform),2245,2,SOURCED,"Swayam Price Build (ReCompute_Calculator_Inputs.xlsx), as quoted by Kabir 2026-10-02; repair days a hypothesis"

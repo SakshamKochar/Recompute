@@ -1,0 +1,76 @@
+id,module,value,unit,status,basis,how_to_replace
+insurance_pct,engine.constants,0.005,share,HYPOTHESIS,team assumption,replace with insured freight quote
+transit_days,engine.constants,3,days,HYPOTHESIS,team assumption,replace with carrier SLA
+inspection_days,engine.constants,7,days,HYPOTHESIS,team assumption,replace with marketplace policy
+base_dwell,engine.constants,57,days,TO_VERIFY,team research,fit observed sales
+selling_power_anchor,engine.constants,110,days,HYPOTHESIS,score scale,calibrate observed sales
+selling_power_span,engine.constants,85,days,HYPOTHESIS,score scale,calibrate observed sales
+dwell_low,engine.constants,45,days,TO_VERIFY,team research,fit observed sales
+dwell_high,engine.constants,70,days,TO_VERIFY,team research,fit observed sales
+median_days,analytics.time_to_sale,57,days,TO_VERIFY,team research,fit real samples
+sigma,analytics.time_to_sale,formula,,TO_VERIFY,45th to 70th range transform,fit real samples
+max_days,analytics.time_to_sale,365,days,HYPOTHESIS,tail truncation,use observed horizon
+days_per_month,analytics.forecast,30.4,days,DERIVED,calendar approximation,retain contract value
+z80,analytics.forecast,1.2816,z,DERIVED,80 percent central interval,change confidence level
+fallback_decline,analytics.forecast,0.01,share/month,HYPOTHESIS,model default,add observations
+clip_low,analytics.forecast,-0.03,share/month,HYPOTHESIS,forecast guardrail,calibrate history
+clip_high,analytics.forecast,0.10,share/month,HYPOTHESIS,forecast guardrail,calibrate history
+cents_to_usd,analytics.energy,100,cents/USD,DERIVED,unit conversion,not applicable
+platform_fee,analytics.unit_economics,150,USD/server,HYPOTHESIS,business model,finance input
+performance_fee_pct,analytics.unit_economics,0.10,share,HYPOTHESIS,business model,finance input
+annual_servers,analytics.unit_economics,500;2000;6000,servers,HYPOTHESIS,business plan,finance input
+width,analytics.charts,1600,px,HYPOTHESIS,deck format,change chart spec
+height,analytics.charts,900,px,HYPOTHESIS,deck format,change chart spec
+max_bytes,analytics.charts,150000,bytes,HYPOTHESIS,brief constraint,change contract
+stale_days,pipeline.update,90,days,HYPOTHESIS,brief rule,change contract
+offer_ratio,pipeline.update,0.95,share,HYPOTHESIS,brief rule,replace with verified offer evidence
+dcgm_suites,engine.diagnostics,"L1 software; L2 +memory,pcie; L3 +diagnostic,memory_bandwidth,targeted_stress,targeted_power (+nvbandwidth if available); L4 +memtest,pulse_test",levels,SOURCED,"NVIDIA dcgmi diag reference, DCGM 4.6, updated 2026-09-10",recheck when NVIDIA updates the DCGM or memory-error docs
+clock_events,engine.diagnostics,"HW_SLOWDOWN, SW_THERMAL, HW_THERMAL, HW_POWER_BRAKE",names,SOURCED,"NVIDIA dcgmi diag reference (clocksevent-mask), DCGM 4.6",recheck when NVIDIA updates the DCGM or memory-error docs
+xid_memory_codes,engine.diagnostics,48 uncorrectable; 94 contained; 95 uncontained; 63 remap recorded; 64 remap failed; 160 marked for repair,codes,SOURCED,"NVIDIA A100 GPU memory error management, user-visible statistics",recheck when NVIDIA updates the DCGM or memory-error docs
+remap_failure_rule,engine.diagnostics,GPU with a row-remapping failure must not keep running workloads,rule,SOURCED,Crusoe support guide on nvidia-smi row remap status; NVIDIA memory error management guide,recheck when NVIDIA updates the DCGM or memory-error docs
+warn_result,engine.diagnostics,4,points per warning result,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+warn_cap,engine.diagnostics,16,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+uncorrectable_remap_row,engine.diagnostics,6,points per row,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+uncorrectable_remap_cap,engine.diagnostics,18,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+correctable_remap_row,engine.diagnostics,1,points per row,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+correctable_remap_cap,engine.diagnostics,8,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+correctable_ecc_bucket,engine.diagnostics,50,errors per point,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+correctable_ecc_cap,engine.diagnostics,8,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+uncontained_xid95,engine.diagnostics,10,points per GPU,HYPOTHESIS,per GPU with Xid 95 or 140; NVIDIA action RESET_GPU,validate against refurbisher grading and failure data
+clock_event_points,engine.diagnostics,"HW_SLOWDOWN 3, HW_THERMAL 3, HW_POWER_BRAKE 3, SW_THERMAL 1",points per event,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+clock_event_cap,engine.diagnostics,12,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+nvlink_error_bucket,engine.diagnostics,100,errors per point,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+nvlink_error_cap,engine.diagnostics,6,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+nvlink_xid74,engine.diagnostics,5,points per GPU,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+pcie_replay_bucket,engine.diagnostics,100,replays per point,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+pcie_replay_cap,engine.diagnostics,4,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+hours_rule,engine.diagnostics,"1 point per 2,000 hours above 8,760, cap 15",points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+cosmetic,engine.diagnostics,"like_new 0, good 2, fair 5, worn 10",points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+level_points,engine.diagnostics,"L4 0, L3 2, L2 6, L1 12, none 30",points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+missing_expected_test,engine.diagnostics,2,points per test,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+skipped_result,engine.diagnostics,1,points per GPU result,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+skipped_cap,engine.diagnostics,8,points,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+chassis_fault,engine.diagnostics,12,points per fault,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+grade_caps,engine.diagnostics,"failed GPU, inconsistent report or untested: D; chassis fault or uncontained ECC: C; repaired uncorrectable ECC: B",rule,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+max_gpu_swaps_repairable,engine.diagnostics,2,GPUs,HYPOTHESIS,more failed GPUs than this suggests a baseboard fault,confirm with Kabir
+loose_gpu_discount,engine.diagnostics,0.1,share,HYPOTHESIS,Swayam Price Build team estimate,dealer quotes for loose vs installed GPUs
+teardown_cost,engine.diagnostics,1650,USD,DERIVED,Swayam Price Build: 10 h x $150/h (QuoteColo) + 10 drives x $15 erasure (Reconext),ITAD teardown quote
+repair_projection,engine.diagnostics,"after repair: faulted parts replaced, PSU-caused power-brake events cleared, full level-4 retest; unrelated warnings and wear remain",rule,HYPOTHESIS,team grading rubric,validate against refurbisher grading and failure data
+dcgm_error_catalog,engine.nvidia_reader,"133 codes with severity, category, message, next step",file,SOURCED,"data/sources/nvidia_dcgm_error_catalog.csv, extracted from NVIDIA/DCGM 4.6.1 dcgm_errors.c and dcgm_errors.h with the C preprocessor","recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+xid_catalog,engine.nvidia_reader,"172 Xids with immediate and investigatory action, A100/H100 applicability",file,SOURCED,"data/sources/nvidia_xid_catalog.csv, from NVIDIA Xid-Catalog.xlsx as embedded in NVIDIA/NVSentinel","recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+warn_printed_as_fail,engine.nvidia_reader,in dcgmi diag JSON a WARN result prints as Fail; severity comes from the warning's error_id,rule,SOURCED,NVIDIA/DCGM dcgmi/Diag.cpp HelperDisplayDiagResult default DDR_NO_DISPLAY_WARN; NVIDIA test asserts Fail with MONITOR severity,"recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+memory_skip_reasons,engine.nvidia_reader,"after a pending, uncorrectable or failed row remap or page-retirement condition, NVIDIA skips that GPU in later tests",rule,SOURCED,NVIDIA/DCGM nvvs/src/EntitySet.cpp UpdateSkippedEntities,"recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+cascade_rule,engine.nvidia_reader,after a GPU's first hardware failure NVIDIA marks later tests failed,rule,SOURCED,NVIDIA/DCGM testing/python3/denylist_recommendations.py,"recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+remap_histogram,engine.nvidia_reader,"max 8, high 7, partial 2-6, low 1, none 0 spare rows per bank; A100 has 640 banks",definition,SOURCED,"NVIDIA GPU Memory Error Management, User Visible Statistics (updated 2026-09-09)","recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+rma_row_remap,engine.nvidia_reader,"RMA when the row-remap failure flag is set and validated by NVIDIA's field diagnostic; flag trips on a 9th uncorrectable remap in a bank, a repeat on a remapped row, or 512 total",rule,SOURCED,"NVIDIA GPU Memory Error Management, RMA Policy (updated 2026-09-09)","recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+max_gpus,engine.nvidia_reader,64,GPUs,SOURCED,"real servers carry 8, at most 16; larger ids are treated as corruption (found by fuzzing)","recheck when NVIDIA releases a new DCGM, driver or Xid catalogue"
+hist_low_bank,engine.diagnostics,2,points per bank,HYPOTHESIS,one spare row left,calibrate against refurbisher grading and failure data
+hist_low_cap,engine.diagnostics,8,points,HYPOTHESIS,cap,calibrate against refurbisher grading and failure data
+hist_none_bank,engine.diagnostics,6,points per bank,HYPOTHESIS,no spare rows left; also caps grade at B,calibrate against refurbisher grading and failure data
+hist_none_cap,engine.diagnostics,18,points,HYPOTHESIS,cap,calibrate against refurbisher grading and failure data
+xid48_unremapped,engine.diagnostics,8,points per GPU,HYPOTHESIS,uncorrectable error with no matching remap,calibrate against refurbisher grading and failure data
+xid79,engine.diagnostics,10,points per GPU,HYPOTHESIS,GPU fell off the bus; also caps grade at C,calibrate against refurbisher grading and failure data
+reset_class_xid,engine.diagnostics,3,points per GPU,HYPOTHESIS,an Xid whose NVIDIA action is a reset or support case,calibrate against refurbisher grading and failure data
+reset_class_cap,engine.diagnostics,9,points,HYPOTHESIS,cap,calibrate against refurbisher grading and failure data
+nvlink_outlier,engine.nvidia_reader,10x sibling median and at least 100 errors,rule,HYPOTHESIS,NVIDIA-ecosystem guidance: one link diverging from its siblings indicates a connector problem,calibrate on real dcgmi nvlink captures
+rental_rate_a100_40gb,recompute_fleet,1.26,USD per GPU-hour,HYPOTHESIS,"team estimate for the A100 40GB; the model has no 40GB profile, so it uses the 80GB rate (1.57) unless a rental_rate is given","a sourced 40GB rental index, or a model profile if the team wants one"

@@ -1,0 +1,12 @@
+date,gpu,index_name,usd_per_gpu_hr,source_title,url,retrieved_on,status
+2024-09-15,H100,SDH100RT_pre2025-12,3.06,Silicon Data H100 index before the Dec 5 2025 method revision; reported in 'A correction in compute' (month-level reading),https://medium.com/@cli_87015/a-correction-in-compute-tracing-the-decline-in-h100-rental-prices-af02da399f5a,2026-09-30,SOURCED
+2025-06-15,H100,SDH100RT_pre2025-12,2.36,Silicon Data H100 index before the Dec 5 2025 method revision; reported in 'A correction in compute' (month-level reading),https://medium.com/@cli_87015/a-correction-in-compute-tracing-the-decline-in-h100-rental-prices-af02da399f5a,2026-09-30,SOURCED
+2025-09-15,H100,SDH100RT_pre2025-12,2.13,Silicon Data blog: H100 Rental Market Cools in September (mid-September low; pre-revision method),https://www.silicondata.com/blog/h100-rental-market-update-september-2025,2026-09-30,SOURCED
+2025-09-30,H100,SDH100RT_pre2025-12,2.16,Silicon Data blog: H100 Rental Market Cools in September (month-end; pre-revision method),https://www.silicondata.com/blog/h100-rental-market-update-september-2025,2026-09-30,SOURCED
+2026-05-04,H100,SDH100RT,2.57,Silicon Data blog: H200 vs H100 Rental Prices May to July 2026 (H100 Neo-Cloud),https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026,2026-09-30,SOURCED
+2026-05-31,H100,SDH100RT,2.73,Silicon Data blog: H200 vs H100 Rental Prices May to July 2026 (H100 Neo-Cloud end of May),https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026,2026-09-30,SOURCED
+2026-07-27,H100,SDH100RT,2.75,Silicon Data blog: H200 vs H100 Rental Prices May to July 2026 (H100 Neo-Cloud),https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026,2026-09-30,SOURCED
+2026-09-28,H100,SDH100RT,2.72,Silicon Data H100 index page headline reading (Neo-Cloud; the page FAQ text still says 2.53 and is stale),https://www.silicondata.com/products/silicon-index/h100,2026-09-30,SOURCED
+2026-02-24,A100,SDA100RT,1.40,Silicon Data A100 index as reported in news coverage (primary source not found),,2026-09-30,TO_VERIFY
+2026-09-28,A100,SDA100RT,1.55,Silicon Data related-index tile on the H100 index page (A100 Neo-Cloud),https://www.silicondata.com/products/silicon-index/h100,2026-09-30,SOURCED
+2026-09-29,A100,SDA100RT,1.57,Silicon Data A100 index page headline reading (Neo-Cloud; the page FAQ text says 1.29 and is stale),https://www.silicondata.com/products/silicon-index/a100,2026-09-30,SOURCED

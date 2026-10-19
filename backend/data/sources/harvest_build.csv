@@ -1,0 +1,4 @@
+gpu_model,used_gpu_price,platform_parts_value,status,basis,source_title,url,retrieved_on
+H100 80GB,24500,59700,SOURCED,midpoint of used H100 SXM5 22000-27000 per GPU; platform parts summed from sourced memory drive NIC CPU prices,Swayam Price Build (Compute Exchange used H100 SXM5 Q3 2026),https://compute.exchange/hardware-market/used-gpus/used-h100-sxm5,2026-09-29
+A100 80GB,10828.87,13369.04,DERIVED,used DGX A100 80000-120000 midpoint minus platform parts divided by 8,Swayam Price Build (JarvisLabs used DGX A100 range),https://jarvislabs.ai/blog/a100-price,2026-09-29
+A100 40GB,5900,13369.04,DERIVED,midpoint of used A100 40GB 4000-7800 per GPU; platform parts assumed equal to the DGX A100 80GB platform,PC Server and Parts used GPU buying guide 2026,https://pcserverandparts.com/news/used-gpu-server-buying-guide-2026-l40s-vs-a100-vs-rtx-4090/,2026-09-30

@@ -1,0 +1,6 @@
+grade,min_score,price_factor,dwell_factor,best_offer_ratio,warranty_days,status,basis
+A+,95,1.05,0.55,0.97,90,HYPOTHESIS,team rubric until CXtec data
+A,88,1.00,0.75,0.95,60,HYPOTHESIS,team rubric until CXtec data
+B,78,0.90,1.00,0.92,30,HYPOTHESIS,team rubric until CXtec data
+C,65,0.78,1.40,0.88,0,HYPOTHESIS,team rubric until CXtec data
+D,0,0.50,1.80,0.80,0,HYPOTHESIS,team rubric until CXtec data

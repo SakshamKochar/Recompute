@@ -1,0 +1,11 @@
+{
+  "power_on_hours": 18000,
+  "cosmetic": "good",
+  "faults": [
+    {
+      "part": "PSU",
+      "slot": 2,
+      "detail": "power supply 2 reports no output; the server runs on the remaining supplies without redundancy"
+    }
+  ]
+}

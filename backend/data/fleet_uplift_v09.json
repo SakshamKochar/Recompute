@@ -1,0 +1,154 @@
+{
+  "definition": "uplift = recommended route value minus the default for that server's condition: SELL NOW if it passed diagnostics, the better of HARVEST and RECYCLE if it failed. Averaged over all servers; servers whose route equals the default count as $0.",
+  "failed_share": 0.14,
+  "model_version": "v0.9",
+  "fleet": "100 SIMULATED servers, seed 42",
+  "scenarios": {
+    "bear": {
+      "all": {
+        "servers": 100,
+        "routed": 7335964,
+        "default": 7140136,
+        "uplift": 195828,
+        "avg_uplift_per_server": 1958,
+        "changed": 30
+      },
+      "A100": {
+        "servers": 79,
+        "routed": 4042219,
+        "default": 3958328,
+        "uplift": 83891,
+        "avg_uplift_per_server": 1062,
+        "changed": 21
+      },
+      "H100": {
+        "servers": 21,
+        "routed": 3293745,
+        "default": 3181808,
+        "uplift": 111937,
+        "avg_uplift_per_server": 5330,
+        "changed": 9
+      },
+      "A100_80GB": {
+        "servers": 43,
+        "routed": 2668813,
+        "default": 2612053,
+        "uplift": 56760,
+        "avg_uplift_per_server": 1320,
+        "changed": 11
+      },
+      "A100_40GB": {
+        "servers": 36,
+        "routed": 1373405,
+        "default": 1346275,
+        "uplift": 27130,
+        "avg_uplift_per_server": 754,
+        "changed": 10
+      },
+      "routes": {
+        "HARVEST": 14,
+        "LIST AND WAIT": 30,
+        "SELL NOW": 56
+      }
+    },
+    "base": {
+      "all": {
+        "servers": 100,
+        "routed": 9176757,
+        "default": 8630968,
+        "uplift": 545789,
+        "avg_uplift_per_server": 5458,
+        "changed": 49
+      },
+      "A100": {
+        "servers": 79,
+        "routed": 5130711,
+        "default": 4803320,
+        "uplift": 327391,
+        "avg_uplift_per_server": 4144,
+        "changed": 35
+      },
+      "H100": {
+        "servers": 21,
+        "routed": 4046046,
+        "default": 3827648,
+        "uplift": 218397,
+        "avg_uplift_per_server": 10400,
+        "changed": 14
+      },
+      "A100_80GB": {
+        "servers": 43,
+        "routed": 3465740,
+        "default": 3195858,
+        "uplift": 269882,
+        "avg_uplift_per_server": 6276,
+        "changed": 24
+      },
+      "A100_40GB": {
+        "servers": 36,
+        "routed": 1664971,
+        "default": 1607462,
+        "uplift": 57509,
+        "avg_uplift_per_server": 1597,
+        "changed": 11
+      },
+      "routes": {
+        "HARVEST": 11,
+        "HOST LONGER": 9,
+        "LIST AND WAIT": 34,
+        "REPAIR": 3,
+        "SELL NOW": 40,
+        "YIELD WHILE LISTED": 3
+      }
+    },
+    "bull": {
+      "all": {
+        "servers": 100,
+        "routed": 13410518,
+        "default": 10121800,
+        "uplift": 3288718,
+        "avg_uplift_per_server": 32887,
+        "changed": 91
+      },
+      "A100": {
+        "servers": 79,
+        "routed": 7628598,
+        "default": 5648312,
+        "uplift": 1980286,
+        "avg_uplift_per_server": 25067,
+        "changed": 72
+      },
+      "H100": {
+        "servers": 21,
+        "routed": 5781920,
+        "default": 4473488,
+        "uplift": 1308431,
+        "avg_uplift_per_server": 62306,
+        "changed": 19
+      },
+      "A100_80GB": {
+        "servers": 43,
+        "routed": 5014385,
+        "default": 3779662,
+        "uplift": 1234723,
+        "avg_uplift_per_server": 28714,
+        "changed": 39
+      },
+      "A100_40GB": {
+        "servers": 36,
+        "routed": 2614213,
+        "default": 1868649,
+        "uplift": 745564,
+        "avg_uplift_per_server": 20710,
+        "changed": 33
+      },
+      "routes": {
+        "HARVEST": 4,
+        "HOST LONGER": 66,
+        "LIST AND WAIT": 15,
+        "REPAIR": 10,
+        "SELL NOW": 5
+      }
+    }
+  }
+}

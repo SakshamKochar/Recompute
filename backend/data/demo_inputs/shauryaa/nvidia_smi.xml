@@ -1,0 +1,271 @@
+<?xml version="1.0" ?>
+<nvidia_smi_log>
+	<timestamp>Wed Sep 30 09:00:00 2026</timestamp>
+	<driver_version>570.172.08</driver_version>
+	<cuda_version>12.8</cuda_version>
+	<attached_gpus>8</attached_gpus>
+	<gpu id="00000000:07:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-0</serial>
+		<uuid>GPU-SIM-SHA-0-SIM</uuid>
+		<pci><pci_bus_id>00000000:07:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:0F:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-1</serial>
+		<uuid>GPU-SIM-SHA-1-SIM</uuid>
+		<pci><pci_bus_id>00000000:0F:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:47:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-2</serial>
+		<uuid>GPU-SIM-SHA-2-SIM</uuid>
+		<pci><pci_bus_id>00000000:47:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>40</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>2</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>638 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>2 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:4E:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-3</serial>
+		<uuid>GPU-SIM-SHA-3-SIM</uuid>
+		<pci><pci_bus_id>00000000:4E:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:87:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-4</serial>
+		<uuid>GPU-SIM-SHA-4-SIM</uuid>
+		<pci><pci_bus_id>00000000:87:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:90:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-5</serial>
+		<uuid>GPU-SIM-SHA-5-SIM</uuid>
+		<pci><pci_bus_id>00000000:90:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:B7:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-6</serial>
+		<uuid>GPU-SIM-SHA-6-SIM</uuid>
+		<pci><pci_bus_id>00000000:B7:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>1</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>639 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>1 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+	<gpu id="00000000:BD:00.0">
+		<product_name>NVIDIA A100-SXM4-80GB</product_name>
+		<serial>SIM-SHA-7</serial>
+		<uuid>GPU-SIM-SHA-7-SIM</uuid>
+		<pci><pci_bus_id>00000000:BD:00.0</pci_bus_id></pci>
+		<clocks_event_reasons>
+			<clocks_event_reason_gpu_idle>Not Active</clocks_event_reason_gpu_idle>
+			<clocks_event_reason_sw_power_cap>Not Active</clocks_event_reason_sw_power_cap>
+			<clocks_event_reason_hw_slowdown>Not Active</clocks_event_reason_hw_slowdown>
+			<clocks_event_reason_hw_thermal_slowdown>Not Active</clocks_event_reason_hw_thermal_slowdown>
+			<clocks_event_reason_hw_power_brake_slowdown>Not Active</clocks_event_reason_hw_power_brake_slowdown>
+			<clocks_event_reason_sw_thermal_slowdown>Not Active</clocks_event_reason_sw_thermal_slowdown>
+		</clocks_event_reasons>
+		<ecc_mode><current_ecc>Enabled</current_ecc><pending_ecc>Enabled</pending_ecc></ecc_mode>
+		<ecc_errors>
+			<volatile><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></volatile>
+			<aggregate><sram_correctable>0</sram_correctable><sram_uncorrectable_parity>0</sram_uncorrectable_parity><sram_uncorrectable_secded>0</sram_uncorrectable_secded><dram_correctable>0</dram_correctable><dram_uncorrectable>0</dram_uncorrectable></aggregate>
+		</ecc_errors>
+		<remapped_rows>
+			<remapped_row_corr>0</remapped_row_corr>
+			<remapped_row_unc>0</remapped_row_unc>
+			<remapped_row_pending>No</remapped_row_pending>
+			<remapped_row_failure>No</remapped_row_failure>
+			<row_remapper_histogram>
+				<row_remapper_histogram_max>640 bank(s)</row_remapper_histogram_max>
+				<row_remapper_histogram_high>0 bank(s)</row_remapper_histogram_high>
+				<row_remapper_histogram_partial>0 bank(s)</row_remapper_histogram_partial>
+				<row_remapper_histogram_low>0 bank(s)</row_remapper_histogram_low>
+				<row_remapper_histogram_none>0 bank(s)</row_remapper_histogram_none>
+			</row_remapper_histogram>
+		</remapped_rows>
+		<temperature><gpu_temp>34 C</gpu_temp></temperature>
+	</gpu>
+</nvidia_smi_log>

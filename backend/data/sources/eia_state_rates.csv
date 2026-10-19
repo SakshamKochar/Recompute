@@ -1,0 +1,10 @@
+state,sector,cents_per_kwh,period,source_title,url,retrieved_on,status
+US,industrial,8.58,2026-03,US industrial electricity price (EIA series via ProteinReport),https://www.proteinreport.org/data/series/us-industrial-electricity-price,2026-09-29,SOURCED
+US,industrial,8.71,2026-05,EIA Monthly Energy Review Aug 2026 Table 9.10,https://www.eia.gov/TOTALENERGY/data/monthly/pdf/sec9_10.pdf,2026-09-30,SOURCED
+US,commercial,13.54,2026-05,EIA Monthly Energy Review Aug 2026 Table 9.10,https://www.eia.gov/TOTALENERGY/data/monthly/pdf/sec9_10.pdf,2026-09-30,SOURCED
+US,industrial,8.13,2024,EIA Electric Power Annual 2024 average revenue per kWh by state,https://www.eia.gov/electricity/Annual/secrev-map.php,2026-09-30,SOURCED
+KY,industrial,6.50,2024,EIA Electric Power Annual 2024 average revenue per kWh by state,https://www.eia.gov/electricity/Annual/secrev-map.php,2026-09-30,SOURCED
+AZ,industrial,7.90,2024,EIA Electric Power Annual 2024 average revenue per kWh by state,https://www.eia.gov/electricity/Annual/secrev-map.php,2026-09-30,SOURCED
+GA,industrial,7.21,2024,EIA Electric Power Annual 2024 average revenue per kWh by state,https://www.eia.gov/electricity/Annual/secrev-map.php,2026-09-30,SOURCED
+OH,industrial,7.10,2024,EIA Sales Revenue and Price 2024 Table 4 (EIA-861),https://www.eia.gov/electricity/sales_revenue_price//pdf/table_4.pdf,2026-09-30,SOURCED
+TX,industrial,6.12,2024,EIA-861 2024 average monthly bill industrial (reproduced by Nebraska DEE),https://dee.nebraska.gov/sites/default/files/water/145_Industrial.pdf,2026-09-30,SOURCED

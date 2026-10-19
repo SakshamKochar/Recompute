@@ -1,0 +1,9 @@
+gpu_model,config,condition,price_usd,date,source_title,url,retrieved_on,status
+H100,8x SXM server,used,150000,2026-09,Hashrate Index used H100 server range (low end),,2026-09-29,TO_VERIFY
+H100,8x SXM server,used,180000,2026-09,Hashrate Index used H100 server range (high end),,2026-09-29,TO_VERIFY
+H100,8x SXM server,used,259000,2026-07-20,eBay listing 168103028289 ASKING price or best offer (8x H100 80GB SXM; out of stock),https://www.ebay.com/itm/168103028289,2026-09-30,SOURCED
+A100 80GB SXM4 module,single GPU module,refurbished,7245.72,2026-09,eBay listing 116995456958 ASKING price GBP 5400 (eBay USD conversion),https://www.ebay.com/itm/116995456958,2026-09-30,SOURCED
+A100 80GB SXM4 module,single GPU module,used tested grade A,10449.95,2026-09,eBay listing (seller rtone-32) ASKING price seen on eBay A100 80GB search page,https://www.ebay.com/shop/a100-80gb,2026-09-30,SOURCED
+A100 40GB SXM4 module,single GPU,used,4000,2026-06,PC Server and Parts used GPU buying guide 2026 (mid-2026 range low end),https://pcserverandparts.com/news/used-gpu-server-buying-guide-2026-l40s-vs-a100-vs-rtx-4090/,2026-09-30,SOURCED
+A100 40GB SXM4 module,single GPU,used,7800,2026-06,PC Server and Parts used GPU buying guide 2026 (mid-2026 range high end),https://pcserverandparts.com/news/used-gpu-server-buying-guide-2026-l40s-vs-a100-vs-rtx-4090/,2026-09-30,SOURCED
+HGX A100 8-GPU baseboard,baseboard only,used,6999.99,2025-09-17,eBay SOLD listing 187567382674 (DGX/HGX A100 8-way SXM4 baseboard tested),https://www.ebay.de/itm/187567382674,2026-09-30,SOURCED

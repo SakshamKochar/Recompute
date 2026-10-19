@@ -1,0 +1,51 @@
+input,label,value,unit,status,owner,source,url,note
+asset_profile,Server type,a100_8x,,Team decision,Swayam,"Swayam's A100 or H100 switch, added in v0.5",,"a100_8x or h100_8x. Swaps the default numbers for power, rental price, resale, parts value and part cost. Anything typed in still wins"
+gpus,GPUs per server,8,GPUs,Sourced,Saksham,"NVIDIA DGX H100 user guide: 32 DIMMs, 8 U.2 + 2 M.2 drives, 8+2 ConnectX-7, 2x Xeon 8480C, 10.2 kW max, 287.6 lb",https://docs.nvidia.com/dgx/dgxh100-user-guide/introduction-to-dgxh100.html,Reference server is an 8x A100 system
+server_kw,Server power draw,6.5,kW,Sourced,Saksham,DGX A100 6.5 kW max; DGX H100 10.2 kW max (NVIDIA user guides),,"Maximum, not average. DGX H100 peaks above 10 kW"
+health_pass,Passed diagnostics (1 = yes),1,flag,Model setting,,Case setting; preset D sets 0,,
+ownership,Ownership,owned,,Model setting,,"owned, client_approved or consigned. Consigned servers cannot be rented out",,
+offer_today,Best offer available now,80000,$,Calculated,Swayam,Price Build,,
+market_price,Expected price if listed,100000,$,Calculated,Swayam,Price Build,,
+sell_fee_pct,Selling fees,0.136,% of price,Sourced,Swayam,eBay final value fee 13.6% as the public-marketplace cost of a sale . Higher bound: ITAD consignment keeps 20-40%,https://taxomate.com/blog/ebay-seller-fees https://www.human-i-t.org/what-is-itad/,
+logistics,Outbound logistics per sale,400,$,Sourced,Swayam,LTL pallet freight $350-600 cross-country (2026),https://www.wearewarp.com/how-much-does-ltl-shipping-cost,
+price_drift_pct_mo,Resale price decline while waiting,0.0185,% per month,Calculated,Swayam,"Price Build: H100 value curve, year 3 to 4",https://www.mercatus-ai.com/blog/h100-depreciation,
+dwell_days,Expected days until a buyer appears,57,days,Team research,Shauryaa,Team research: 45-70 days,,Midpoint of range. Stress cases use 45 and 70
+buyer_window_days,Days buyer allows for delivery,9,days,Calculated,Swayam,Price Build: LTL transit,https://www.myfreightworld.com/ltl-transit-times/,
+rental_rate,Rental price per GPU-hour,1.57,$/GPU-hr,Sourced,Saksham,"Silicon Data rental indices: SDA100RT $1.57, SDH100RT $2.72 (Sep 28 2026, locked). Latest Oct 1 2026: H100 $2.77, A100 $1.58. Index moves daily; read the live headline, not the FAQ text",https://www.silicondata.com/products/silicon-index/h100,"Neo-cloud benchmark. Other reads: BofA $1.65 (Aug 2026), AIMultiple median $1.76 (Sep 2026)"
+platform_fee_pct,Marketplace cut,0.2,%,Team estimate,Shauryaa,Cross-check: Vast.ai ~15%,https://miningboard.com/guides/vast-runpod-io-net-comparison,On Vast.ai hosts earn their set price; ask in host interview
+utilization,Steady-state utilization,0.6,%,Team estimate,Saksham,Team model value,,Enterprise cards 60 to 70% at steady state
+first_month_utilization,First-month utilization,0.35,%,Team estimate,Saksham,Team model value,,New providers 30 to 40% in month one
+ramp_util_days,Days at first-month utilization,30,days,Team estimate,Saksham,Team model value,,
+ramp_days,Days from racked to earning,3,days,Team estimate,Kabir,Regional move 1-2 business days + 1 day rack and test,https://www.myfreightworld.com/ltl-transit-times/,
+exit_days,"Days to drain, wipe, ship",3,days,Team estimate,Kabir,1 day drain rental jobs + 1 day wipe and de-rack + 1 day carrier pickup; fits inside the delivery window,,
+elec_per_kwh,Electricity,0.0858,$/kWh,Team research,Saksham,Team model value,,"Commercial rates are higher, around 13 cents"
+pue,Data center overhead (PUE),1.4,x,Team research,Kabir,Team model value,,
+colo_per_kw_mo,Colo fee per kW per month,196,$/kW-mo,Sourced,Kabir,CBRE wholesale colo $196.25/kW-month (H2 2025),https://brightlio.com/colocation-pricing/,Electricity billed on top. GPU colo quotes $130 to $300 all-in (GYGO). Single-server retail may cost more
+maint_per_day,Maintenance reserve,3.29,$/day,Calculated,Kabir,Price Build: incidents x hours x technician rate,,
+activation_cost,"Activation (move, rack, set up)",700,$,Calculated,Kabir,Price Build: freight in + install hours,,
+exit_cost,"Exit (wipe, de-rack, handling)",300,$,Calculated,Kabir,Price Build: erasure + de-rack hours,,"Wipe, de-rack, extra handling"
+horizon_months,Host-longer horizon,12,months,Model setting,Saksham,Team model value,,
+market_decay_pct_mo,Monthly decline in rent and resale,0.01,% per month,Team estimate,Saksham,Consistent with ~10%/yr H100 value decline,https://www.mercatus-ai.com/blog/h100-depreciation,"Low 0% (A100 index rose $1.40 Feb to $1.57 Sep 2026). High 2.7% (H100 index fell 23% Sep 2024 to Jun 2025, its sharpest correction)"
+discount_rate_yr,Annual discount rate,0.0971,%,Sourced,Swayam,"Damodaran cost of capital, Jan 2026: Computers/Peripherals 9.71%",https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/wacc.html,
+harvest_value,Harvest value (net),68444.56,$,Calculated,Swayam,"Price Build: 7 working GPUs + parts, net",,
+repairable,Passed repair check possible (1 = yes),1,flag,Model setting,,Case setting,,
+repair_parts_cost,Replacement part cost,10829,$,Calculated,Kabir,Price Build: one used GPU,,
+repair_labor_cost,Repair labor,600,$,Team estimate,Kabir,Team value (4 hrs at $150/hr sourced rate = $600),,Remote hands run about $75 to $150 per hour
+repair_test_cost,Repair retest,300,$,Team estimate,Kabir,Team model value,,
+repair_days,Days out of market while repairing,10,days,Team estimate,Kabir,Team model value,,
+repair_success,Repair success rate,0.85,%,Team estimate,Kabir,Team model value,,
+recycle_value,Recycle value (net),128.75,$,Calculated,Swayam,Price Build: scrap at board rate minus freight and erasure,,
+margin_abs,"Margin of safety, dollars",1000,$,Model setting,Team,"Team decision rule: larger of $1,000 or 2%",,
+margin_pct,"Margin of safety, share",0.02,%,Model setting,Team,Team decision rule,,
+bear_util_mult,Stress: utilization multiplier,0.75,x,Model setting,,Team decision rule,,
+bear_dwell_short_mult,Stress: early buyer multiplier,0.7894736842105263,x,Model setting,Shauryaa,45 / 57 days,,Used in the stress case for renting while listed
+bear_dwell_long_mult,Stress: slow buyer multiplier,1.2280701754385965,x,Model setting,Shauryaa,70 / 57 days,,Used in the stress case for waiting
+bear_repair_mult,Stress: repair success multiplier,0.8,x,Model setting,Team,Team decision rule,,
+bear_decay_mult,Stress: decay multiplier,1.5,x,Model setting,,Team decision rule,,
+server_kw@h100_8x,Server power draw (H100),10.2,kW,Sourced,Saksham,DGX A100 6.5 kW max; DGX H100 10.2 kW max (NVIDIA user guides),,"Maximum, not average"
+offer_today@h100_8x,Best offer available now (H100),235700,$,Calculated,Swayam,Price Build,,
+market_price@h100_8x,Expected price if listed (H100),255700,$,Calculated,Swayam,Price Build,,
+rental_rate@h100_8x,Rental price per GPU-hour (H100),2.72,$/GPU-hr,Sourced,Saksham,"Silicon Data rental indices: SDA100RT $1.57, SDH100RT $2.72 (Sep 28 2026, locked). Latest Oct 1 2026: H100 $2.77, A100 $1.58. Index moves daily; read the live headline, not the FAQ text",https://www.silicondata.com/products/silicon-index/h100,
+harvest_value@h100_8x,Harvest value (net) (H100),182889.2,$,Calculated,Swayam,"Price Build: 7 working GPUs + parts, net",,
+repair_parts_cost@h100_8x,Replacement part cost (H100),24500,$,Calculated,Kabir,Price Build: one used GPU,,
+recycle_value@h100_8x,Recycle value (net) (H100),169,$,Calculated,,Price Build: scrap at board rate minus freight and erasure,,
