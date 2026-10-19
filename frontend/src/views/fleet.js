@@ -98,7 +98,7 @@ function batchSummary(batchId) {
   const cols = ["bear", "base", "bull"];
   const cur = f().scenario;
   const csv = api.batchCsvUrl(batchId, cur);
-  return `<section class="batch-summary" aria-labelledby="batch-title"><div class="panelhead"><h2 id="batch-title">Batch ${esc(batchId)}</h2><small>${s.base.count} SERVERS · MODEL v${esc(sc.data.model_version)}</small></div><div class="scenario-compare" role="table" aria-label="Batch totals by scenario"><div role="row" class="sc-head"><span role="columnheader"></span>${cols
+  return `<section class="batch-summary" aria-labelledby="batch-title"><div class="panelhead"><h2 id="batch-title">Batch ${esc(batchId)}</h2><small>${s.base.count} servers</small></div><div class="scenario-compare" role="table" aria-label="Batch totals by scenario"><div role="row" class="sc-head"><span role="columnheader"></span>${cols
     .map((c) => `<span role="columnheader" class="${c === cur ? "current" : ""}">${c[0].toUpperCase() + c.slice(1)}</span>`)
     .join("")}</div>${[
     ["Recommended value", (t) => compactMoney(t.recommended_value)],
@@ -109,7 +109,7 @@ function batchSummary(batchId) {
   ]
     .map(([label, fn]) => `<div role="row"><span role="rowheader">${label}</span>${cols.map((c) => `<span role="cell" class="${c === cur ? "current" : ""}">${fn(s[c])}</span>`).join("")}</div>`)
     .join("")}</div><p class="subtle">${esc(sc.data.note)} Totals assume every recommendation is followed.</p>${
-    csv ? `<a class="textlink" href="${esc(csv)}" download>Download ${esc(cur)} results CSV from the API ↓</a>` : ""
+    csv ? `<a class="textlink" href="${esc(csv)}" download>Download ${esc(cur)} results as CSV ↓</a>` : ""
   }</section>`;
 }
 
@@ -146,7 +146,7 @@ function currentRows() {
 }
 
 function caption(rows, overlay) {
-  return `<span>${pad2(rows.length)} ASSETS IN VIEW</span><span>${overlay ? `${esc(f().scenario.toUpperCase())} SCENARIO VALUES` : "MODEL ESTIMATES"} · USD</span>`;
+  return `<span>${pad2(rows.length)} Assets in view</span><span>${overlay ? `${esc(f().scenario[0].toUpperCase() + f().scenario.slice(1))} scenario values` : "Estimates"} · USD</span>`;
 }
 
 function refreshResults() {
@@ -165,7 +165,7 @@ function exportCsv() {
     [a.id, a.model, a.site, a.batchId, a.state, a.grade, a.failed, a.route, a.routeValue?.toFixed(2), a.baselineRoute, a.baselineValue?.toFixed(2), a.gain?.toFixed(2), a.selectedRoute].map(q).join(","),
   );
   download(`recompute-fleet-${f().scenario}.csv`, [cols.join(","), ...lines].join("\n"));
-  toast(`Exported ${cur.rows.length} rows${isDemo() ? " from the demo snapshot" : " from the API"}.`);
+  toast(`Exported ${cur.rows.length} rows${isDemo() ? " from the demo snapshot" : ""}.`);
 }
 
 function download(name, text) {
@@ -180,7 +180,7 @@ function download(name, text) {
 
 function uploadResultHtml(res) {
   const t = res.totals;
-  return `<div class="upload-result" role="status"><span class="micro">${res.dry_run ? "DRY RUN · NOTHING SAVED" : `SAVED AS BATCH ${esc(res.batch_id)}`}</span><h3>${res.dry_run ? `${res.would_add} servers would be added` : `${res.added} servers added`}${res.skipped.length ? `, ${res.skipped.length} skipped (already exist)` : ""}.</h3><div class="mini-totals"><div><span>Recommended value</span><b>${money(t.recommended_value)}</b></div><div><span>Baseline</span><b>${money(t.baseline_value)}</b></div><div><span>Gain vs baseline</span><b class="gain">${signedMoney(t.gain_vs_baseline)}</b></div></div><p class="subtle">Routes: ${Object.entries(res.routes)
+  return `<div class="upload-result" role="status"><span class="micro">${res.dry_run ? "Preview only. Nothing saved yet" : `Saved as batch ${esc(res.batch_id)}`}</span><h3>${res.dry_run ? `${res.would_add} servers would be added` : `${res.added} servers added`}${res.skipped.length ? `, ${res.skipped.length} skipped (already exist)` : ""}.</h3><div class="mini-totals"><div><span>Recommended value</span><b>${money(t.recommended_value)}</b></div><div><span>Baseline</span><b>${money(t.baseline_value)}</b></div><div><span>Gain vs baseline</span><b class="gain">${signedMoney(t.gain_vs_baseline)}</b></div></div><p class="subtle">Routes: ${Object.entries(res.routes)
     .map(([r, n]) => `${esc(routeInfo(r).label)} ${n}`)
     .join(" · ") || "none"}${res.ignored_columns.length ? `. Ignored result columns: ${res.ignored_columns.map(esc).join(", ")}` : ""}.</p>${
     res.assets.length
@@ -198,9 +198,9 @@ async function openUpload() {
   openDialog({
     label: "Upload inventory CSV",
     wide: true,
-    html: `<form class="upload-form" data-upload novalidate><div class="row"><h2>Bring in a batch.</h2><button type="button" class="close" data-close aria-label="Close">×</button></div><p class="subtext">One server per row. <code>asset_id</code> is the only required column; any of the 43 model inputs can be columns. The API checks everything and saves nothing if a single row has a problem.</p>${
+    html: `<form class="upload-form" data-upload novalidate><div class="row"><h2>Bring in a batch.</h2><button type="button" class="close" data-close aria-label="Close">×</button></div><p class="subtext">One server per row. Only <b>asset_id</b> is required; add any of the 43 details you know. We check every row first and save nothing if one has a problem.</p>${
       demo ? `<p class="mode-inline demo">Demo mode is read-only. Switch to Live mode to upload. You can still download the template.</p>` : ""
-    }<p>${templateUrl ? `<a class="textlink" href="${esc(templateUrl)}" download>Download the CSV template from the API ↓</a>` : `<button type="button" class="textlink" id="demo-template">Download the CSV template ↓</button>`}</p><label class="field-label" for="upload-file">CSV file (UTF-8, up to 5 MB and 5,000 rows)</label><input id="upload-file" type="file" accept=".csv,text/csv" ${demo ? "disabled" : ""} required aria-describedby="upload-help"><p class="subtle" id="upload-help">Check the file first: a dry run shows every server’s route without saving.</p><label class="check-row"><input type="checkbox" id="upload-skip" ${demo ? "disabled" : ""}> Skip asset IDs that already exist</label><div id="upload-output" aria-live="polite"></div><div class="modalactions"><button type="button" class="btn secondary" data-close>Close</button><button type="submit" class="btn secondary" id="upload-dry" ${demo ? "disabled" : ""}>Check file</button><button type="button" class="btn" id="upload-commit" ${demo ? "disabled" : ""} disabled>Upload as a new batch</button></div></form>`,
+    }<p>${templateUrl ? `<a class="textlink" href="${esc(templateUrl)}" download>Download the CSV template ↓</a>` : `<button type="button" class="textlink" id="demo-template">Download the CSV template ↓</button>`}</p><label class="field-label" for="upload-file">CSV file (UTF-8, up to 5 MB and 5,000 rows)</label><input id="upload-file" type="file" accept=".csv,text/csv" ${demo ? "disabled" : ""} required aria-describedby="upload-help"><p class="subtle" id="upload-help">Check the file first: a dry run shows every server’s route without saving.</p><label class="check-row"><input type="checkbox" id="upload-skip" ${demo ? "disabled" : ""}> Skip asset IDs that already exist</label><div id="upload-output" aria-live="polite"></div><div class="modalactions"><button type="button" class="btn secondary" data-close>Close</button><button type="submit" class="btn secondary" id="upload-dry" ${demo ? "disabled" : ""}>Check file</button><button type="button" class="btn" id="upload-commit" ${demo ? "disabled" : ""} disabled>Upload as a new batch</button></div></form>`,
     bind(d, close) {
       const out = d.querySelector("#upload-output");
       const fileEl = d.querySelector("#upload-file");
@@ -257,7 +257,7 @@ export default {
     const head = heading(
       "Fleet",
       "Every asset has<br><em>a story worth knowing.</em>",
-      "Open a passport to understand the server—and its next best chapter.",
+      "Open a passport to see the server and its next best chapter.",
       `<div class="head-actions"><button class="btn secondary" data-action="upload">Upload CSV ↑</button><button class="btn secondary" data-action="export">Export view ↓</button></div>`,
     );
     if (err) return head + errorBlock(err.error, { retryKeys: ["assets", "batches"] });
@@ -272,14 +272,14 @@ export default {
       controls(batches.data.batches) +
       (s.batch !== "all" ? batchSummary(s.batch) : "") +
       (cur.overlay
-        ? `<div class="scenario-banner" role="note">${tag(isDemo() ? "demo" : "live", `${s.scenario.toUpperCase()} SCENARIO`)} Routes and values recomputed by the model for each server’s latest inputs under Saksham’s ${esc(s.scenario)} market. Lifecycle actions still follow each asset’s stored (base) recommendation.</div>`
+        ? `<div class="scenario-banner" role="note">${tag(isDemo() ? "demo" : "live", `${s.scenario[0].toUpperCase() + s.scenario.slice(1)} scenario`)} Routes and values below assume a ${esc(s.scenario)} market. Recorded moves still follow each asset’s saved recommendation.</div>`
         : "") +
       (overlayErr
         ? errorBlock(cur.overlay.error, { retryKeys: [`batch:${s.batch}:${s.scenario}`] })
         : !cur.rows
           ? loadingBlock(`Running the ${s.scenario} scenario…`)
           : `<div class="collection-caption" id="fleet-caption">${caption(cur.rows, cur.overlay)}</div><div id="fleet-results">${results(cur.rows)}</div>`) +
-      `<div class="collection-note"><span>↗</span><p>A passport travels with the asset.<br><small>Condition, economics, decision and history—all in one place.</small></p><a href="#command" class="textlink">Think across the whole fleet ↗</a></div>`
+      `<div class="collection-note"><span>↗</span><p>A passport travels with the asset.<br><small>Condition, economics, decision and history, all in one place.</small></p><a href="#command" class="textlink">Think across the whole fleet ↗</a></div>`
     );
   },
   after(root, route, { routeChanged }) {

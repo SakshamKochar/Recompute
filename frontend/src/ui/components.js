@@ -16,13 +16,13 @@ export function heading(section, title, sub, action = "") {
 /** The context strip under the header: what data this screen is showing and where it came from. */
 export function contextStrip(parts) {
   const demo = isDemo();
-  return `<div class="studio-context${demo ? "" : " live"}"><span><i class="${demo ? "demo" : ""}"></i> ${demo ? "DEMO SNAPSHOT" : "YOUR FLEET"}</span>${parts
+  return `<div class="studio-context${demo ? "" : " live"}"><span><i class="${demo ? "demo" : ""}"></i> ${demo ? "Sample fleet" : "Your fleet"}</span>${parts
     .filter(Boolean)
     .map((p) => `<span>${p}</span>`)
-    .join("")}${demo ? `<span>Illustrative · recorded model output · nothing executes</span>` : ""}</div>`;
+    .join("")}${demo ? `<span>For exploring. Nothing here is bought or sold</span>` : ""}</div>`;
 }
 
-export function loadingBlock(label = "Loading from the ReCompute API…") {
+export function loadingBlock(label = "Getting the latest figures…") {
   return `<div class="async-state loading" role="status" aria-live="polite"><span class="spinner" aria-hidden="true"></span><p>${esc(label)}</p></div>`;
 }
 
@@ -30,15 +30,15 @@ export function errorBlock(error, { retryKeys = [], title = "This didn’t load.
   const kind = error?.kind;
   const hint =
     kind === "network"
-      ? "The browser couldn’t reach the API. Check that the backend is running, then retry."
+      ? "We couldn’t connect just now. Check your connection, then try again."
       : kind === "timeout"
-        ? "The API took too long to answer. It may be starting up."
+        ? "This is taking longer than usual. Give it a moment and try again."
         : kind === "demo-unsupported"
-          ? "This part of the product needs Live mode."
+          ? "This part works with your live fleet. Switch to Live data to use it."
           : error?.status === 404
-            ? "The backend has no record with that ID."
-            : "The backend returned an error.";
-  return `<div class="async-state error" role="alert"><span class="micro">${esc(kind === "http" ? `HTTP ${error.status}` : (kind || "error").toUpperCase())}</span><h3>${esc(title)}</h3><p>${esc(error?.message || "Unknown error")}</p><p class="subtle">${esc(hint)}</p>${
+            ? "We couldn’t find a record with that ID."
+            : "Something went wrong on our side. Try again in a moment.";
+  return `<div class="async-state error" role="alert"><h3>${esc(title)}</h3><p>${esc(hint)}</p>${error?.message && kind === "http" && error.status < 500 ? `<p class="subtle">${esc(error.message)}</p>` : ""}${
     retryKeys.length && kind !== "demo-unsupported" && error?.status !== 404
       ? `<button class="btn secondary" data-action="retry" data-keys="${esc(retryKeys.join(","))}">Retry</button>`
       : ""
@@ -61,14 +61,14 @@ export function stateChip(state) {
 }
 
 const TAGS = {
-  live: ["Live model", "Computed by the ReCompute API just now"],
+  live: ["Live estimate", "Worked out just now from this asset’s latest details"],
   stored: ["Stored recommendation", "The latest recommendation saved on this asset"],
-  historical: ["Historical", "Recorded earlier; inputs or model may have changed"],
-  demo: ["Demo snapshot", "Recorded from the real model; illustrative data"],
+  historical: ["Earlier estimate", "Recorded earlier; details may have changed since"],
+  demo: ["Sample", "Illustrative figures for exploring"],
   simulated: ["Simulated diagnostics", "Graded from simulated NVIDIA files"],
-  synthetic: ["Synthetic server", "From Saksham’s synthetic test fleet"],
-  hypothesis: ["Team hypothesis", "Not yet sourced"],
-  draft: ["Draft · this browser", "Saved only on this device; nothing was executed"],
+  synthetic: ["Sample server", "Part of the sample fleet"],
+  hypothesis: ["Working assumption", "Not yet backed by a published source"],
+  draft: ["Draft", "Saved only on this device"],
 };
 
 export function tag(kind, text) {

@@ -1,0 +1,309 @@
+/* Ambient illustrations. Transforms and opacity only; paused off-screen by ui/motion.js. */
+
+[data-motion]:not(.in-view),
+[data-motion]:not(.in-view) * {
+  animation-play-state: paused !important;
+}
+
+/* Entrance: lines draw themselves once, labels settle in after. */
+[data-motion] .draw {
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0s);
+}
+[data-motion] .orbit-label,
+[data-motion] .flow-end,
+[data-motion] .comet {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.9s ease var(--d, 0.8s),
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0.8s);
+}
+[data-motion].revealed .draw {
+  stroke-dashoffset: 0;
+}
+[data-motion].revealed .orbit-label,
+[data-motion].revealed .flow-end,
+[data-motion].revealed .comet {
+  opacity: 1;
+  transform: none;
+}
+[data-motion].no-enter *,
+[data-motion].no-enter .draw {
+  transition: none !important;
+}
+
+/* ------------------------------------------------ hero GPU */
+
+.hardware-scene {
+  perspective: 1400px;
+}
+.hardware-scene::before {
+  content: "";
+  position: absolute;
+  inset: 8% 4% -4%;
+  background: radial-gradient(closest-side at var(--glow-x, 50%) 55%, #dcf58733, transparent 70%);
+  filter: blur(18px);
+  pointer-events: none;
+  animation: hero-breathe 7s ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0ms);
+}
+.hardware-scene .gpu-art {
+  transform: rotate(-6deg) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+}
+@keyframes hero-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+/* ------------------------------------------------ lifecycle orbit (landing manifesto) */
+
+.manifesto-side {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.orbit-art {
+  width: min(100%, 340px);
+  margin-left: -18px;
+}
+.orbit-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.orbit-art .orbits path {
+  stroke: #263d2e;
+  stroke-opacity: 0.38;
+  stroke-width: 1.35;
+}
+.orbit-art .orbit-label text {
+  font: 500 12.5px var(--font-sans);
+  fill: #3d5440;
+}
+.orbit-art .chip-mark {
+  font: 400 21px var(--font-serif);
+  fill: #dcf587;
+}
+.orbit-art .orbit-chip {
+  animation: chip-float 6s ease-in-out infinite;
+  animation-delay: var(--motion-delay, 0ms);
+}
+@keyframes chip-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* ------------------------------------------------ fleet constellation (landing finale) */
+
+.exp-finale {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.exp-finale > :not(.constellation-art) {
+  position: relative;
+}
+.constellation-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 70% 75% at 50% 50%, transparent 22%, #000 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 75% at 50% 50%, transparent 22%, #000 70%);
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.constellation-art.revealed {
+  opacity: 1;
+}
+.constellation-art svg {
+  width: 100%;
+  height: 100%;
+}
+.constellation-art .c-edges {
+  fill: none;
+  stroke: #b9ce91;
+  stroke-opacity: 0.16;
+  stroke-width: 1;
+}
+.constellation-art .c-node {
+  fill: #33503b;
+  stroke: #6f8a61;
+  stroke-opacity: 0.6;
+}
+.constellation-art .c-node.lit {
+  fill: #dcf587;
+  stroke: none;
+}
+
+/* ------------------------------------------------ value flow (about) */
+
+.flow-art {
+  margin: 4px 0 18px;
+  padding: 10px 6px 4px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #eef1e4, #f6f6ef);
+  border: 1px solid #e1e4d6;
+}
+.flow-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.flow-art .flow-line {
+  stroke-width: 1.6;
+  stroke-opacity: 0.55;
+}
+.flow-art .chip-mark {
+  font: 400 24px var(--font-serif);
+  fill: #dcf587;
+}
+.flow-art .flow-label {
+  font: 600 14px var(--font-sans);
+  fill: #263d2e;
+}
+.flow-art .flow-sub {
+  font: 400 12px var(--font-sans);
+  fill: #72776d;
+}
+
+/* ------------------------------------------------ market radar */
+
+.radar-map {
+  border-radius: 50%;
+}
+.radar-sweep {
+  position: absolute;
+  inset: 3%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #dcf58700 0deg, #dcf58700 290deg, #dcf58726 345deg, #dcf58766 360deg);
+  mask-image: radial-gradient(circle, #000 0 69%, transparent 70%);
+  -webkit-mask-image: radial-gradient(circle, #000 0 69%, transparent 70%);
+  animation: radar-turn 5.5s linear infinite;
+  animation-delay: var(--motion-delay, 0ms);
+  pointer-events: none;
+}
+.radar-sweep::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 50%;
+  background: linear-gradient(#dcf587aa, #dcf58700);
+}
+@keyframes radar-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.radar-node:not(.empty)::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  color: #dcf587;
+  animation: radar-ping 2.75s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  animation-delay: calc(var(--motion-delay, 0ms) + var(--ping, 0s));
+  pointer-events: none;
+}
+.radar-node.n2 {
+  --ping: 0.9s;
+}
+.radar-node.n3 {
+  --ping: 1.8s;
+}
+@keyframes radar-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+.radar-node {
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.4s ease;
+}
+a.radar-node:hover,
+a.radar-node:focus-visible {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 10px #dcf5871f;
+}
+
+/* ------------------------------------------------ boards: a quiet sheen on hover */
+
+.board-art .board-plate::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -70%;
+  width: 36%;
+  background: linear-gradient(100deg, transparent, #ffffff66, transparent);
+  transform: skewX(-16deg);
+  transition: left 1.1s cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+a:hover .board-art .board-plate::before,
+.board-art:hover .board-plate::before,
+.feature-decision:hover .board-plate::before {
+  left: 130%;
+}
+
+@media (max-width: 760px) {
+  .orbit-art {
+    width: min(78%, 300px);
+    margin: 4px auto 0;
+  }
+  .constellation-art {
+    mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, transparent 30%, #000 80%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, transparent 30%, #000 80%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] *,
+  .hardware-scene::before,
+  .radar-sweep,
+  .radar-node::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  [data-motion] .draw {
+    stroke-dashoffset: 0;
+  }
+  [data-motion] .orbit-label,
+  [data-motion] .flow-end,
+  [data-motion] .comet,
+  .constellation-art {
+    opacity: 1;
+    transform: none;
+  }
+  .radar-sweep {
+    opacity: 0.5;
+  }
+}

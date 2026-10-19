@@ -75,7 +75,7 @@
   line-height: 1.6;
 }
 code {
-  font: 0.92em var(--font-mono);
+  font: 0.92em var(--font-sans);
   background: #e9eadf;
   padding: 1px 5px;
   border-radius: 4px;
@@ -136,9 +136,8 @@ ul.plain li {
   animation: rc-pulse 1.2s infinite;
 }
 .mode-label {
-  font: 11px var(--font-mono);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
 }
 .mode-toggle {
   border: 1px solid #c4c8b9;
@@ -321,9 +320,8 @@ ul.plain li {
 .src-tag,
 .evidence-status {
   display: inline-block;
-  font: 10px/1.4 var(--font-mono);
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
+  font: 11px/1.4 var(--font-sans);
+  letter-spacing: 0.005em;
   border-radius: 4px;
   padding: 2px 6px;
   vertical-align: middle;
@@ -406,8 +404,8 @@ ul.plain li {
   margin: 0;
 }
 .panelhead small {
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: var(--muted-text);
 }
 .tablewrap {
@@ -523,9 +521,8 @@ ul.plain li {
   margin: 16px 0 6px;
 }
 .req {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: var(--loss);
-  text-transform: uppercase;
   margin-left: 4px;
 }
 .field-error {
@@ -875,7 +872,7 @@ textarea[aria-invalid="true"] {
   line-height: 1.5;
 }
 .sev {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   padding: 2px 6px;
   border-radius: 4px;
   background: #e1ead0;
@@ -1020,9 +1017,8 @@ textarea[aria-invalid="true"] {
 }
 .tl-kind {
   display: block;
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: var(--muted-text);
 }
 .tl b {
@@ -1152,7 +1148,7 @@ textarea[aria-invalid="true"] {
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 11px var(--font-mono);
+  font: 11px var(--font-sans);
   color: var(--muted-text);
   margin-bottom: 10px;
   min-height: 18px;
@@ -1173,7 +1169,7 @@ textarea[aria-invalid="true"] {
 }
 .route-option strong small {
   display: block;
-  font: 11px var(--font-mono);
+  font: 11px var(--font-sans);
   color: var(--muted-text);
   text-align: right;
 }
@@ -1574,20 +1570,18 @@ textarea[aria-invalid="true"] {
   min-width: 132px;
 }
 .tape-status b {
-  font: 500 10px/1.2 var(--font-mono);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font: 500 11px/1.2 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #f6f3ea;
 }
 .tape-status small {
-  font: 10px/1.2 var(--font-mono);
-  letter-spacing: 0.04em;
+  font: 11px/1.2 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #b7c3ac;
 }
 .tape-kicker {
-  font: 10px/1 var(--font-mono);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font: 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #e4ebda;
   white-space: nowrap;
 }
@@ -1661,9 +1655,8 @@ textarea[aria-invalid="true"] {
   color: #dcf587;
 }
 .tape-name {
-  font: 11px/1 var(--font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font: 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #e7ecdf;
 }
 .tape-px {
@@ -1678,7 +1671,7 @@ textarea[aria-invalid="true"] {
   color: #9aa892;
 }
 .tape-chg {
-  font: 10.5px/1 var(--font-mono);
+  font: 10.5px/1 var(--font-sans);
 }
 .tape-chg.up { color: #d6ef86; }
 .tape-chg.down { color: #e7b09a; }
@@ -1700,7 +1693,7 @@ textarea[aria-invalid="true"] {
   100% { background: transparent; }
 }
 .tape-empty .tape-name {
-  letter-spacing: 0.14em;
+  letter-spacing: 0.005em;
   color: #b7c3ac;
 }
 .market-tape a:focus-visible {
@@ -1802,9 +1795,8 @@ body .studio-account .mode-toggle {
   height: 28px;
   padding: 0 11px;
   border-radius: 30px;
-  font: 500 10px/1 var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font: 500 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
 }
 .mode-pill .mode-label {
   font: inherit;
@@ -1881,9 +1873,8 @@ body .studio-account #reset:hover {
   max-width: 260px;
 }
 .hardware-caption .hc-kicker {
-  font: 500 10px/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font: 500 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #7a806d;
 }
 .hardware-scene .hardware-caption > b {
@@ -1899,9 +1890,9 @@ body .studio-account #reset:hover {
 }
 .hardware-scene .hardware-caption i {
   margin: 0;
-  font: 500 11px/1 var(--font-mono);
+  font: 500 11px/1 var(--font-sans);
   font-style: normal;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.005em;
   color: #5c6455;
 }
 .hardware-caption .hc-note {
@@ -1982,8 +1973,8 @@ body .studio-account #reset:hover {
   }
 }
 .tape-thin {
-  font: 10px/1 var(--font-mono);
-  letter-spacing: 0.06em;
+  font: 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   padding: 3px 6px;
   border: 1px solid #ffffff22;
   border-radius: 20px;
@@ -2018,9 +2009,8 @@ body .studio-account #reset:hover {
   }
 }
 .fleet-controls .ctl > span {
-  font: 500 10px/1 var(--font-mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: 500 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #6b7262;
 }
 .fleet-controls .toolbar input,
@@ -2067,9 +2057,8 @@ body .studio-account #reset:hover {
 }
 .count-none span {
   margin-right: 8px;
-  font: 500 10px/1 var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font: 500 11px/1 var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8b907f;
 }
 .all-clear {

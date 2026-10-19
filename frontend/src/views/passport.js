@@ -13,7 +13,7 @@ import { confirmDialog, openDialog, toast } from "../ui/feedback.js";
 
 const lastError = new Map();
 
-const SOURCE_LABEL = { recorded: "on record", backend: "filled by API", default: "profile default" };
+const SOURCE_LABEL = { recorded: "on record", backend: "estimated", default: "profile default" };
 const srcTag = (src) => `<span class="src-tag ${src}">${SOURCE_LABEL[src] || src}</span>`;
 
 const EDITABLE = ["offer_today", "market_price", "dwell_days", "utilization", "rental_rate", "elec_per_kwh"];
@@ -26,7 +26,7 @@ function headline(a) {
 }
 
 function cover(a) {
-  return `<section class="passport-cover"><div class="row"><a class="studio-wordmark" href="#home">ReCompute®</a><span class="micro">ASSET / ${esc(a.id)}</span></div><div class="passport-object">${boardArt(a, true)}</div><span class="micro">THE ASSET PASSPORT</span><h2>${esc(hardwareTitle(a))}</h2><p>${esc(a.model || "Model not recorded")} · ${esc(profileLabel(a.profile))}</p><div class="cover-tags">${a.synthetic ? tag("synthetic", a.diagnostics.simulated ? "Simulated demo seller" : "Synthetic test server") : ""}${a.diagnostics.simulated ? tag("simulated") : ""}${isDemo() ? tag("demo") : ""}</div><div class="passport-cover-bottom"><span>${a.site ? esc(a.site) : "Location not recorded"}</span><span>${a.ageMonths !== null ? `${a.ageMonths} months in service` : "Age not recorded"}</span></div></section>`;
+  return `<section class="passport-cover"><div class="row"><a class="studio-wordmark" href="#home">ReCompute®</a><span class="micro">Asset / ${esc(a.id)}</span></div><div class="passport-object">${boardArt(a, true)}</div><span class="micro">The asset passport</span><h2>${esc(hardwareTitle(a))}</h2><p>${esc(a.model || "Model not recorded")} · ${esc(profileLabel(a.profile))}</p><div class="cover-tags">${a.synthetic ? tag("synthetic", a.diagnostics.simulated ? "Sample seller" : "Sample server") : ""}${a.diagnostics.simulated ? tag("simulated") : ""}${isDemo() ? tag("demo") : ""}</div><div class="passport-cover-bottom"><span>${a.site ? esc(a.site) : "Location not recorded"}</span><span>${a.ageMonths !== null ? `${a.ageMonths} months in service` : "Age not recorded"}</span></div></section>`;
 }
 
 function states(a, ds) {
@@ -35,7 +35,7 @@ function states(a, ds) {
   return `<div class="decision-states" aria-label="Decision status">${cell(
     "Recommended",
     ds.recommended ? esc(routeInfo(ds.recommended.route).label) : "None",
-    ds.recommended ? `${money(ds.recommended.value)} · model v${esc(a.recommendation?.modelVersion)}` : "No model run",
+    ds.recommended ? money(ds.recommended.value) : "No model run",
     "rec",
   )}${cell(
     "Selected",
@@ -58,7 +58,7 @@ function identity(a) {
   const r = a.resolved;
   const s = a.inputSource;
   const fact = (label, value, src) => `<div><span>${label}</span><b>${value}${src ? ` ${srcTag(src)}` : ""}</b></div>`;
-  return `<section class="pp-section" id="pp-identity" aria-labelledby="pp-identity-h"><h3 class="pp-h" id="pp-identity-h"><span class="micro">01 / IDENTITY</span>What this asset is</h3><div class="passport-facts">${[
+  return `<section class="pp-section" id="pp-identity" aria-labelledby="pp-identity-h"><h3 class="pp-h" id="pp-identity-h"><span class="micro">01 / Identity</span>What this asset is</h3><div class="passport-facts">${[
     fact("Asset ID", esc(a.id)),
     fact("Hardware on record", esc(a.model || "Not recorded")),
     fact("Model profile", esc(profileLabel(a.profile))),
@@ -84,9 +84,9 @@ function condition(a) {
     <div class="passport-facts compact"><div><span>Working GPUs</span><b>${esc(d.workingGpus)}${d.totalGpus ? ` of ${d.totalGpus}` : ""}</b></div><div><span>Failed GPUs</span><b>${d.failedGpus.length ? d.failedGpus.map((g) => `GPU ${esc(g.gpu ?? g)}`).join(", ") : "None"}</b></div><div><span>Chassis faults</span><b>${d.chassisFaults.length ? d.chassisFaults.map((c) => esc(c.part)).join(", ") : "None"}</b></div><div><span>Tests not run</span><b>${d.testsMissing.length ? d.testsMissing.map(esc).join(", ") : "None"}</b></div></div>
     <h4 class="pp-sub">Findings</h4><ul class="findings">${d.findings.map((f) => `<li>${sev(f.severity)}<p>${esc(f.text)}</p></li>`).join("")}</ul>
     ${d.chassisFaults.length ? `<ul class="findings">${d.chassisFaults.map((c) => `<li>${sev("CRITICAL")}<p>${esc(c.part)}${c.slot !== undefined ? ` (slot ${esc(c.slot)})` : ""}: ${esc(c.detail)}</p></li>`).join("")}</ul>` : ""}
-    ${d.deductions.length ? `<details class="model-details"><summary>How the score was reached (${d.deductions.length} deductions)</summary><ul class="plain">${d.deductions.map((x) => `<li>−${esc(x.points)} · ${esc(x.category)}: ${esc(x.name)}${x.count > 1 ? ` ×${esc(x.count)}` : ""}${x.evidence ? ` (${esc(x.evidence)})` : ""}</li>`).join("")}</ul>${d.caps.length ? `<p>Grade caps: ${d.caps.map((c) => `${esc(c.max_grade)} — ${esc(c.reason)}${c.binding ? " (binding)" : ""}`).join("; ")}</p>` : ""}<p>Sources: ${d.sources.map(esc).join(" · ") || "not recorded"}. Grade price factors are a team hypothesis until resale data arrives.</p></details>` : ""}`;
+    ${d.deductions.length ? `<details class="model-details"><summary>How the score was reached (${d.deductions.length} deductions)</summary><ul class="plain">${d.deductions.map((x) => `<li>−${esc(x.points)} · ${esc(x.category)}: ${esc(x.name)}${x.count > 1 ? ` ×${esc(x.count)}` : ""}${x.evidence ? ` (${esc(x.evidence)})` : ""}</li>`).join("")}</ul>${d.caps.length ? `<p>Grade caps: ${d.caps.map((c) => `${esc(c.max_grade)}: ${esc(c.reason)}${c.binding ? " (binding)" : ""}`).join("; ")}</p>` : ""}<p>Sources: ${d.sources.map(esc).join(" · ") || "not recorded"}. Grade price factors are a team hypothesis until resale data arrives.</p></details>` : ""}`;
   } else {
-    body = `<div class="not-assessed"><span class="micro">NOT YET ASSESSED</span><p>No NVIDIA diagnostic capture is on file for this asset, so there is no score, findings or evidence confidence. The health flag below comes from the inventory record, not from test output.</p></div><div class="passport-facts compact"><div><span>Passed diagnostics</span><b>${r.health_pass ? "Yes" : "No"} ${srcTag(a.inputSource.health_pass)}</b></div><div><span>Failed part</span><b>${esc(a.failedPart || (r.health_pass ? "None" : "Not recorded"))}</b></div><div><span>Repairable</span><b>${r.health_pass ? "Not applicable" : r.repairable ? "Yes" : "No"}${r.health_pass ? "" : ` ${srcTag(a.inputSource.repairable)}`}</b></div><div><span>Grade on record</span><b>${esc(a.grade || "Not recorded")}</b></div></div>`;
+    body = `<div class="not-assessed"><span class="micro">Not yet assessed</span><p>No NVIDIA diagnostic capture is on file for this asset, so there is no score, findings or evidence confidence. The health flag below comes from the inventory record, not from test output.</p></div><div class="passport-facts compact"><div><span>Passed diagnostics</span><b>${r.health_pass ? "Yes" : "No"} ${srcTag(a.inputSource.health_pass)}</b></div><div><span>Failed part</span><b>${esc(a.failedPart || (r.health_pass ? "None" : "Not recorded"))}</b></div><div><span>Repairable</span><b>${r.health_pass ? "Not applicable" : r.repairable ? "Yes" : "No"}${r.health_pass ? "" : ` ${srcTag(a.inputSource.repairable)}`}</b></div><div><span>Grade on record</span><b>${esc(a.grade || "Not recorded")}</b></div></div>`;
   }
   const failed = r.health_pass === false;
   const rp = a.repairPricing;
@@ -100,7 +100,7 @@ function condition(a) {
   const warn = a.warnings.length
     ? `<div class="warnings" role="note">${a.warnings.map((w) => `<p><b>Check:</b> ${esc(w.message)}</p>`).join("")}</div>`
     : "";
-  return `<section class="pp-section" id="pp-condition" aria-labelledby="pp-condition-h"><h3 class="pp-h" id="pp-condition-h"><span class="micro">02 / CONDITION</span>What the evidence says</h3>${body}${repair}${warn}</section>`;
+  return `<section class="pp-section" id="pp-condition" aria-labelledby="pp-condition-h"><h3 class="pp-h" id="pp-condition-h"><span class="micro">02 / Condition</span>What the evidence says</h3>${body}${repair}${warn}</section>`;
 }
 
 function economics(a) {
@@ -120,7 +120,7 @@ function economics(a) {
     .join("");
   const assumption = (k) => `<div><span>${esc(INPUT_SPECS[k]?.label || k)}</span><b>${formatInput(k, r[k])} ${srcTag(a.inputSource[k])}</b></div>`;
   const plain = (label, v, src) => `<div><span>${label}</span><b>${v}${src ? ` ${srcTag(src)}` : ""}</b></div>`;
-  return `<section class="pp-section" id="pp-economics" aria-labelledby="pp-economics-h"><h3 class="pp-h" id="pp-economics-h"><span class="micro">03 / ECONOMICS</span>What each future is worth</h3><div class="passport-recommendation"><span class="micro">THE MODEL RECOMMENDS</span><div class="row"><h3>${esc(a.routeInfo.label)}</h3><span aria-hidden="true">${a.routeInfo.symbol}</span></div><p>${esc(a.routeInfo.model)}</p><div class="recommendation-value"><span>Modeled net route value</span><strong>${money(a.routeValue)}</strong></div><div class="baseline-line"><span>Baseline: ${esc(routeInfo(a.baselineRoute).label)} ${money(a.baselineValue)}</span><b class="${a.gain > 0 ? "gain" : ""}">${signedMoney(a.gain)} uplift</b></div></div>
+  return `<section class="pp-section" id="pp-economics" aria-labelledby="pp-economics-h"><h3 class="pp-h" id="pp-economics-h"><span class="micro">03 / Economics</span>What each future is worth</h3><div class="passport-recommendation"><span class="micro">The model recommends</span><div class="row"><h3>${esc(a.routeInfo.label)}</h3><span aria-hidden="true">${a.routeInfo.symbol}</span></div><p>${esc(a.routeInfo.model)}</p><div class="recommendation-value"><span>Modeled net route value</span><strong>${money(a.routeValue)}</strong></div><div class="baseline-line"><span>Baseline: ${esc(routeInfo(a.baselineRoute).label)} ${money(a.baselineValue)}</span><b class="${a.gain > 0 ? "gain" : ""}">${signedMoney(a.gain)} uplift</b></div></div>
   <div class="tablewrap compact"><table class="route-table"><caption class="sr-only">All seven routes for ${esc(a.id)}</caption><thead><tr><th scope="col">Route</th><th scope="col" class="num">Base case</th><th scope="col" class="num">Stress case</th><th scope="col">Status</th></tr></thead><tbody>${rows}</tbody></table></div>
   <p class="pp-note">Base case is the model’s expected value; the stress case is each riskier route’s own worst plausible case (slower buyers, weaker demand, faster decline). A riskier route only wins if it beats the safer ones by the margin of safety in the base case and still wins in its stress case.</p>
   <details class="model-details"><summary>Assumptions behind these numbers</summary><div class="passport-facts compact">${[
@@ -153,19 +153,19 @@ function decision(a, ds) {
   const confHtml = !conf
     ? ""
     : conf.level
-      ? `<div class="confidence ${esc(conf.level.toLowerCase())}"><span class="micro">DECISION CONFIDENCE</span><b>${esc(conf.level)}</b><p>${conf.smallest_move === null ? "No single input change flips this route anywhere in its range." : `The smallest single-input change that flips the route is ${pct(conf.smallest_move)} of its current value.`}</p><ul class="plain">${conf.drivers
+      ? `<div class="confidence ${esc(conf.level.toLowerCase())}"><span class="micro">Decision confidence</span><b>${esc(conf.level ? conf.level[0].toUpperCase() + conf.level.slice(1).toLowerCase() : "")}</b><p>${conf.smallest_move === null ? "No single change, within the allowed range, changes this route." : `The smallest change to one detail that would change the route is ${pct(conf.smallest_move)} of its current value.`}</p><ul class="plain">${conf.drivers
           .filter((d) => d.move !== null)
           .slice(0, 3)
           .map((d) => {
             const flip = d.down && d.up ? (Math.abs(d.down.at - d.now) < Math.abs(d.up.at - d.now) ? d.down : d.up) : d.down || d.up;
             return `<li>${esc(d.label)}: now ${formatInput(d.input, d.now)}; at ${formatInput(d.input, flip.at)} it becomes ${esc(routeInfo(flip.route).label)}</li>`;
           })
-          .join("")}</ul><small>${esc(conf.basis)}</small></div>`
-      : `<div class="confidence"><span class="micro">DECISION CONFIDENCE</span><b>Not computed</b><p>${esc(conf.note)}</p></div>`;
+          .join("")}</ul><small>Confidence is how far one detail has to move before the recommended route changes.</small></div>`
+      : `<div class="confidence"><span class="micro">Decision confidence</span><b>Not computed</b><p>${esc(conf.note)}</p></div>`;
 
   let actions;
   if (a.terminal) {
-    actions = `<div class="locked"><span class="micro">INPUTS LOCKED</span><p>This asset is ${esc(a.stateInfo.label.toLowerCase())}. Its model inputs and lifecycle are final.</p></div>`;
+    actions = `<div class="locked"><span class="micro">Inputs locked</span><p>This asset is ${esc(a.stateInfo.label.toLowerCase())}. Its model inputs and lifecycle are final.</p></div>`;
   } else if (!a.allowedEvents.length && !a.overrideEvents.length) {
     actions = `<p class="pp-note">No lifecycle step is available from ${esc(a.state)}.</p>`;
   } else {
@@ -173,9 +173,9 @@ function decision(a, ds) {
       .map((e) => `<button class="btn" data-action="event" data-event="${esc(e)}" ${demo ? "disabled" : ""}>${esc(eventInfo(e).label)}</button>`)
       .join("")}${a.overrideEvents
       .map((e) => `<button class="btn secondary override" data-action="event" data-event="${esc(e)}" data-override="1" ${demo ? "disabled" : ""}>${esc(eventInfo(e).label)} <span class="prov-tag hypothesis">override</span></button>`)
-      .join("")}</div><p class="pp-note">Normal buttons are the steps the backend allows right now. Override steps go against the recommendation and need a note. Steps that are not possible for this asset are not shown.</p>`;
+      .join("")}</div><p class="pp-note">Normal buttons are the steps available right now. Override steps go against the recommendation and need a note. Steps that are not possible for this asset are not shown.</p>`;
   }
-  return `<section class="pp-section" id="pp-decision" aria-labelledby="pp-decision-h"><h3 class="pp-h" id="pp-decision-h"><span class="micro">04 / DECISION</span>Why, and what you can do</h3>
+  return `<section class="pp-section" id="pp-decision" aria-labelledby="pp-decision-h"><h3 class="pp-h" id="pp-decision-h"><span class="micro">04 / Decision</span>Why, and what you can do</h3>
   <h4 class="pp-sub">Why the model chose ${esc(a.routeInfo.label.toLowerCase())}</h4><ol class="audit">${(res?.audit || []).map((l) => `<li>${esc(l)}</li>`).join("")}</ol>${confHtml}
   ${
     a.terminal
@@ -189,7 +189,7 @@ function decision(a, ds) {
         }<p class="pp-note">Only routes the model found eligible are offered. Your choice is recorded with the next lifecycle step.</p>`
   }
   ${err ? `<div class="inline-error" role="alert"><b>${esc(err.title)}</b><p>${esc(err.message)}</p></div>` : ""}
-  ${demo && !a.terminal ? `<p class="mode-inline demo">Demo mode is read-only: lifecycle steps are shown but disabled. Switch to Live mode to execute them against the backend.</p>` : ""}
+  ${demo && !a.terminal ? `<p class="mode-inline demo">Demo mode is read-only: lifecycle steps are shown but disabled. Switch to Live data to use them.</p>` : ""}
   ${actions}
   <div class="modalactions"><a class="btn secondary" href="#lab?asset=${encodeURIComponent(a.id)}">Explore what-if ↗</a><a class="btn secondary" href="#replay?asset=${encodeURIComponent(a.id)}">Replay this decision ↗</a></div>
   ${a.terminal ? outcomeBlock(a) : editInputs(a)}</section>`;
@@ -197,7 +197,7 @@ function decision(a, ds) {
 
 function outcomeBlock(a) {
   const o = a.outcome;
-  return `<div class="outcome-block"><span class="micro">REALIZED OUTCOME</span>${
+  return `<div class="outcome-block"><span class="micro">Realized outcome</span>${
     o
       ? `<p><b>${money(o.realized_value)}</b> recorded ${dateTime(o.at)}${o.note ? ` · “${esc(o.note)}”` : ""}</p>`
       : `<p>No realized value recorded yet. Model values are estimates; only a recorded outcome is realized.</p>`
@@ -217,10 +217,10 @@ function editInputs(a) {
 
 function historyBlock(h) {
   const items = adaptHistory(h).slice().reverse();
-  return `<section class="pp-section" id="pp-history" aria-labelledby="pp-history-h"><h3 class="pp-h" id="pp-history-h"><span class="micro">05 / HISTORY</span>Everything that happened</h3><ol class="timeline">${items
+  return `<section class="pp-section" id="pp-history" aria-labelledby="pp-history-h"><h3 class="pp-h" id="pp-history-h"><span class="micro">05 / History</span>Everything that happened</h3><ol class="timeline">${items
     .map((e) => {
       if (e.type === "recommendation")
-        return `<li class="tl rec"><span class="tl-kind">Recommendation #${esc(e.id)}</span><b>${routeChip(e.route)}${e.routeChanged ? ` <span class="prov-tag historical">changed from ${esc(routeInfo(e.previousRoute).label)}</span>` : ""}</b><small>Model v${esc(e.model_version)} · ${dateTime(e.at)}${e.changedInputs.length ? ` · inputs changed: ${e.changedInputs.map((k) => esc(INPUT_SPECS[k]?.label || k)).join(", ")}` : ""}</small>${e.audit?.length ? `<details><summary>Model reasoning</summary><ul class="plain">${e.audit.map((l) => `<li>${esc(l)}</li>`).join("")}</ul></details>` : ""}</li>`;
+        return `<li class="tl rec"><span class="tl-kind">Recommendation #${esc(e.id)}</span><b>${routeChip(e.route)}${e.routeChanged ? ` <span class="prov-tag historical">changed from ${esc(routeInfo(e.previousRoute).label)}</span>` : ""}</b><small>${dateTime(e.at)}${e.changedInputs.length ? ` · inputs changed: ${e.changedInputs.map((k) => esc(INPUT_SPECS[k]?.label || k)).join(", ")}` : ""}</small>${e.audit?.length ? `<details><summary>Model reasoning</summary><ul class="plain">${e.audit.map((l) => `<li>${esc(l)}</li>`).join("")}</ul></details>` : ""}</li>`;
       if (e.type === "outcome")
         return `<li class="tl outcome"><span class="tl-kind">Outcome recorded</span><b>${money(e.realized_value)} realized</b><small>${dateTime(e.at)}${e.note ? ` · ${esc(e.note)}` : ""}</small></li>`;
       const d = e.details || {};
@@ -238,7 +238,7 @@ function page(detail, hist, meta) {
   const a = adaptAssetDetail(detail, { meta, history: hist });
   const ds = decisionStates(a, hist, store.ws.selections[a.id]);
   const [h1, h2] = headline(a);
-  return `<div class="passport-page"><a class="textlink back" href="#fleet">← Back to the fleet</a><div class="passport-layout">${cover(a)}<section class="passport-reading"><div class="row"><span class="micro">UNDERSTAND → DECIDE → ACT</span><button class="textlink" data-action="share">Copy passport link</button></div><p class="passport-mobile-identity">${esc(a.model || "")} · ${esc(a.id)}</p><h2>${esc(h1)}<br><em>${esc(h2)}</em></h2>${states(a, ds)}<nav class="pp-nav" aria-label="Passport sections"><a href="#pp-identity" data-action="jump">Identity</a><a href="#pp-condition" data-action="jump">Condition</a><a href="#pp-economics" data-action="jump">Economics</a><a href="#pp-decision" data-action="jump">Decision</a><a href="#pp-history" data-action="jump">History</a></nav>${identity(a)}${condition(a)}${economics(a)}${decision(a, ds)}${historyBlock(hist)}</section></div></div>`;
+  return `<div class="passport-page"><a class="textlink back" href="#fleet">← Back to the fleet</a><div class="passport-layout">${cover(a)}<section class="passport-reading"><div class="row"><span class="micro">Understand, then decide</span><button class="textlink" data-action="share">Copy passport link</button></div><p class="passport-mobile-identity">${esc(a.model || "")} · ${esc(a.id)}</p><h2>${esc(h1)}<br><em>${esc(h2)}</em></h2>${states(a, ds)}<nav class="pp-nav" aria-label="Passport sections"><a href="#pp-identity" data-action="jump">Identity</a><a href="#pp-condition" data-action="jump">Condition</a><a href="#pp-economics" data-action="jump">Economics</a><a href="#pp-decision" data-action="jump">Decision</a><a href="#pp-history" data-action="jump">History</a></nav>${identity(a)}${condition(a)}${economics(a)}${decision(a, ds)}${historyBlock(hist)}</section></div></div>`;
 }
 
 async function runEvent(a, event, override) {
@@ -250,7 +250,7 @@ async function runEvent(a, event, override) {
     title: override ? `Override: ${info.label}?` : `${info.label}?`,
     body: `<p class="subtext">${esc(a.id)} moves from <b>${esc(stateInfo(a.state).label)}</b> in the ReCompute lifecycle. This records the move; it doesn’t list, sell, host or ship anything by itself.</p>${
       override
-        ? `<p class="choice-note">The model recommends <b>${esc(a.routeInfo.label)}</b>. This step goes against it, so the backend requires a note. The override and note are kept in the asset’s history.</p>`
+        ? `<p class="choice-note">The model recommends <b>${esc(a.routeInfo.label)}</b>. This step goes against it, so it needs a note. The override and note are kept in the asset’s history.</p>`
         : ""
     }${selected ? `<p class="subtext">Recorded as your selected route: <b>${esc(routeInfo(selected).label)}</b>${selected !== a.route ? " (differs from the recommendation)" : ""}.</p>` : ""}`,
     confirmLabel: override ? "Override and continue" : info.label,
@@ -266,7 +266,7 @@ async function runEvent(a, event, override) {
     toast(`${a.id}: ${info.verb}. Now ${stateInfo(out.asset.state).label.toLowerCase()}.`);
   } catch (e) {
     lastError.set(a.id, {
-      title: e.status === 409 ? "The backend didn’t allow that move." : e.status === 422 ? "The backend rejected the request." : "The move didn’t go through.",
+      title: e.status === 409 ? "That move isn’t possible right now." : e.status === 422 ? "Some details need another look." : "The move didn’t go through.",
       message: e.message,
     });
     if (e.status === 409) invalidateAsset(a.id);
@@ -311,7 +311,7 @@ export default {
     share: async () => {
       try {
         await navigator.clipboard.writeText(location.href);
-        toast("Passport link copied. It opens this asset for anyone who can reach this app and API; there is no sign-in.");
+        toast("Passport link copied. Anyone with the link can open this asset.");
       } catch {
         toast(location.href);
       }
@@ -352,7 +352,7 @@ export default {
         const res = await patchInputs(id, changes);
         toast(`New recommendation #${res.recommendation.id}: ${routeInfo(res.route).label} at ${money(res.route_value)}.`);
       } catch (err) {
-        out.innerHTML = errorBlock(err, { title: "The backend rejected these inputs." }) + fieldErrorsTable(err.fieldErrors);
+        out.innerHTML = errorBlock(err, { title: "Some of these details need another look." }) + fieldErrorsTable(err.fieldErrors);
       }
     },
   },

@@ -12,7 +12,7 @@ import { confirmDialog, toast } from "../ui/feedback.js";
 
 export const PRESETS = {
   base: ["Base case", "The asset’s own inputs."],
-  bear: ["Bear market", "Saksham’s bear scenario: low utilization, slow buyers, expensive power, fast decline, low resale."],
+  bear: ["Bear market", "A tough market: low utilization, slow buyers, expensive power, fast decline, low resale."],
   bull: ["Bull market", "The mirror image: busy GPUs, quick buyers, cheap power, steady prices."],
 };
 const DEBOUNCE_MS = 250;
@@ -122,7 +122,7 @@ function verdict(a, out, stored) {
   const base = baselineOf(res, resolved);
   const value = res.base[res.route];
   const flipped = stored && stored.route !== res.route;
-  return `<div class="lab-verdict"><div><span class="micro">THE MODEL WOULD CHOOSE ${tag(isDemo() ? "demo" : "live")}</span><h2>${esc(routeInfo(res.route).label)}<span aria-hidden="true">${routeInfo(res.route).symbol}</span></h2><p>${
+  return `<div class="lab-verdict"><div><span class="micro">The model would choose ${tag(isDemo() ? "demo" : "live")}</span><h2>${esc(routeInfo(res.route).label)}<span aria-hidden="true">${routeInfo(res.route).symbol}</span></h2><p>${
     res.route === base.route ? `This is the baseline route.` : `${signedMoney(value - base.value)} vs ${esc(routeInfo(base.route).label.toLowerCase())} at ${money(base.value)}.`
   } ${flipped ? `<b>Different from the stored recommendation (${esc(routeInfo(stored.route).label)}).</b>` : stored ? "Same route as the stored recommendation." : ""}</p></div><div><strong>${money(value)}</strong><small>modeled net value</small></div></div>`;
 }
@@ -141,9 +141,10 @@ function comparison(a, out) {
 function flips(out) {
   const c = out.decision_confidence;
   if (!c) return "";
-  if (!c.level) return `<div class="confidence"><span class="micro">WHAT WOULD CHANGE THE ANSWER</span><p>${esc(c.note)}</p></div>`;
+  if (!c.level) return `<div class="confidence"><span class="micro">What would change the answer</span><p>${esc(c.note)}</p></div>`;
   const drivers = c.drivers.filter((d) => d.move !== null);
-  return `<div class="confidence ${esc(c.level.toLowerCase())}"><span class="micro">WHAT WOULD CHANGE THE ANSWER · CONFIDENCE ${esc(c.level.toUpperCase())}</span>${
+  const level = c.level ? c.level[0].toUpperCase() + c.level.slice(1).toLowerCase() : "";
+  return `<div class="confidence ${esc(c.level.toLowerCase())}"><span class="micro">What would change the answer · ${esc(level)} confidence</span>${
     drivers.length
       ? `<ul class="plain flips">${drivers
           .map((d) => {
@@ -151,8 +152,8 @@ function flips(out) {
             return `<li><b>${esc(d.label)}</b> now ${formatInput(d.input, d.now)}: ${esc(parts.join("; "))}</li>`;
           })
           .join("")}</ul>`
-      : "<p>No single input change flips this route within its range.</p>"
-  }<small>${esc(c.basis)}</small></div>`;
+      : "<p>No single change, within the allowed range, changes this route.</p>"
+  }<small>Confidence is how far one detail has to move before the recommended route changes.</small></div>`;
 }
 
 function results(a, stored) {
@@ -162,7 +163,7 @@ function results(a, stored) {
   const out = calc.out;
   const warn = (out.warnings || []).length ? `<div class="warnings" role="note">${out.warnings.map((w) => `<p><b>Check:</b> ${esc(w.message)}</p>`).join("")}</div>` : "";
   const res = out.result;
-  return `<div class="lab-status" aria-live="polite">${calc.status === "loading" ? `<span class="spinner" aria-hidden="true"></span> Recalculating…` : calc.status === "error" ? `<span class="field-error">${esc(calc.error?.message)}</span> Showing the last answer.` : `Model v${esc(out.model_version)} · ${dateTime(out.at)}${out.scenario ? ` · ${esc(PRESETS[out.scenario][0])}` : ""}`}</div><div class="${calc.status === "loading" ? "is-stale" : ""}">${verdict(a, out, stored)}${warn}${comparison(a, out)}<div class="economic-equation"><span><b>${money(res.daily_compute_margin, { cents: true })}</b>daily compute margin</span><span><b>${res.breakeven_utilization === null ? "None ≤ 100%" : pct(res.breakeven_utilization, 1)}</b>break-even utilization</span><span><b>${res.breakeven_dwell_days === null ? "None ≤ 365 d" : `${res.breakeven_dwell_days} days`}</b>break-even wait for yield</span></div>${flips(out)}<details class="model-details"><summary>Why the model chose this</summary><ol class="audit">${res.audit.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></details></div>`;
+  return `<div class="lab-status" aria-live="polite">${calc.status === "loading" ? `<span class="spinner" aria-hidden="true"></span> Recalculating…` : calc.status === "error" ? `<span class="field-error">${esc(calc.error?.message)}</span> Showing the last answer.` : `Updated ${dateTime(out.at)}${out.scenario ? ` · ${esc(PRESETS[out.scenario][0])}` : ""}`}</div><div class="${calc.status === "loading" ? "is-stale" : ""}">${verdict(a, out, stored)}${warn}${comparison(a, out)}<div class="economic-equation"><span><b>${money(res.daily_compute_margin, { cents: true })}</b>daily compute margin</span><span><b>${res.breakeven_utilization === null ? "None ≤ 100%" : pct(res.breakeven_utilization, 1)}</b>break-even utilization</span><span><b>${res.breakeven_dwell_days === null ? "None ≤ 365 d" : `${res.breakeven_dwell_days} days`}</b>break-even wait for yield</span></div>${flips(out)}<details class="model-details"><summary>Why the model chose this</summary><ol class="audit">${res.audit.map((l) => `<li>${esc(l)}</li>`).join("")}</ol></details></div>`;
 }
 
 function savedList(assetsById) {
@@ -174,7 +175,7 @@ function savedList(assetsById) {
     .map((s) => {
       const cur = assetsById.get(s.assetId);
       const stale = s.modelVersion !== (R.meta().data?.model_version || s.modelVersion);
-      return `<li><div><b>${esc(s.name)}</b><small>${esc(s.assetId)} · ${esc(s.preset === "custom" ? `Custom (${(s.edited || []).map((k) => INPUT_SPECS[k]?.label || k).join(", ") || "edited"})` : PRESETS[s.preset]?.[0] || s.preset)} · model v${esc(s.modelVersion)} · ${dateTime(s.savedAt)}</small></div><div class="saved-result">${routeChip(s.result.route)} <b>${money(s.result.base[s.result.route])}</b>${stale ? tag("historical", "Older model") : ""}${cur && cur.route && cur.route !== s.storedRoute ? tag("historical", "Asset changed since") : ""}</div><div class="saved-actions"><button class="textlink" data-action="reopen" data-id="${esc(s.id)}">Reopen</button><button class="textlink" data-action="delete-scenario" data-id="${esc(s.id)}" aria-label="Delete saved scenario ${esc(s.name)}">Delete</button></div></li>`;
+      return `<li><div><b>${esc(s.name)}</b><small>${esc(s.assetId)} · ${esc(s.preset === "custom" ? `Custom (${(s.edited || []).map((k) => INPUT_SPECS[k]?.label || k).join(", ") || "edited"})` : PRESETS[s.preset]?.[0] || s.preset)} · ${dateTime(s.savedAt)}</small></div><div class="saved-result">${routeChip(s.result.route)} <b>${money(s.result.base[s.result.route])}</b>${stale ? tag("historical", "Saved earlier") : ""}${cur && cur.route && cur.route !== s.storedRoute ? tag("historical", "Asset changed since") : ""}</div><div class="saved-actions"><button class="textlink" data-action="reopen" data-id="${esc(s.id)}">Reopen</button><button class="textlink" data-action="delete-scenario" data-id="${esc(s.id)}" aria-label="Delete saved scenario ${esc(s.name)}">Delete</button></div></li>`;
     })
     .join("")}</ul>`;
 }
@@ -191,7 +192,7 @@ function page(route) {
   const detail = R.asset(id);
   const hist = R.history(id);
   const failed = [detail, hist].find((e) => e.status === "error" && !e.data);
-  const head = heading("What-if Lab", "A little curiosity.<br><em>A clearer decision.</em>", "Play out the possibilities before you commit. Every answer comes from the ReCompute model.");
+  const head = heading("What-if Lab", "A little curiosity.<br><em>A clearer decision.</em>", "Play out the possibilities before you commit. Every answer is calculated for the server in front of you.");
   const demo = isDemo();
   const featured = demo ? Object.keys(getTransport()._snap?.lab || {}) : null;
   const options = rows
@@ -217,18 +218,18 @@ function page(route) {
   return (
     contextStrip([`${esc(id)}`, a.recommendation ? `Stored recommendation #${a.recommendation.id}: ${esc(a.routeInfo.label)}` : "No stored recommendation"]) +
     head +
-    `<div class="lab-presets" role="group" aria-label="Scenario preset"><span class="micro">START WITH A POSSIBILITY</span>${Object.entries(PRESETS)
+    `<div class="lab-presets" role="group" aria-label="Scenario preset"><span class="micro">Start with a possibility</span>${Object.entries(PRESETS)
       .map(([k, [label, help]]) => `<button data-action="preset" data-preset="${k}" aria-pressed="${draft.preset === k}" title="${esc(help)}">${label}</button>`)
       .join("")}<button aria-pressed="${draft.preset === "custom"}" disabled class="custom-indicator">${draft.preset === "custom" ? "Custom" : "Custom (edit any input)"}</button></div>
-    <p class="preset-help">${esc(draft.preset === "custom" ? `Custom: ${changed.length ? changed.map((k) => INPUT_SPECS[k]?.label || k).join(", ") + " changed from the asset’s inputs." : "no inputs changed yet."}` : PRESETS[draft.preset][1])}${demo ? " Demo mode answers from recorded model runs, one changed input at a time." : ""}</p>
-    <div class="labgrid studio-lab"><section class="lab-controls"><span class="micro">THE INPUTS / YOUR CALL</span>${assetSelect}<p class="lab-asset-note">${esc(a.model || "")} · ${esc(a.stateInfo.label)}${a.terminal ? " · final state: what-if only" : ""}</p>
+    <p class="preset-help">${esc(draft.preset === "custom" ? `Custom: ${changed.length ? changed.map((k) => INPUT_SPECS[k]?.label || k).join(", ") + " changed from the asset’s inputs." : "no inputs changed yet."}` : PRESETS[draft.preset][1])}${demo ? " In the demo, try one change at a time." : ""}</p>
+    <div class="labgrid studio-lab"><section class="lab-controls"><span class="micro">The inputs / Your call</span>${assetSelect}<p class="lab-asset-note">${esc(a.model || "")} · ${esc(a.stateInfo.label)}${a.terminal ? " · final state: what-if only" : ""}</p>
     ${SLIDER_KEYS.map((k) => control(k, resolved[k], { demoGridValues: grid?.[k] ? Object.keys(grid[k]).map(Number) : null }))
       .join("")}
     <details class="model-details"><summary>More inputs</summary><div class="input-grid">${[...ADVANCED_KEYS, ...(failedServer ? REPAIR_KEYS : [])].map((k) => numberField(k, resolved[k])).join("")}</div><p id="lab-field-error" class="field-error" role="alert"></p></details>
     <div class="lab-buttons"><button class="btn" data-action="save-scenario" ${calc.out?.assetId === id && calc.status === "ready" ? "" : "disabled"}>Keep this comparison +</button><button class="btn secondary" data-action="reset-draft" ${draft.preset === "base" && !changed.length ? "disabled" : ""}>Back to the asset’s inputs</button></div>
     ${!a.terminal && draft.preset !== "base" ? `<button class="textlink" data-action="apply" ${demo ? "disabled" : ""}>Apply these inputs to ${esc(id)} ↗</button>${demo ? `<small class="subtle">Applying inputs needs Live mode.</small>` : ""}` : ""}
-    <p class="subtle">Sliders change one input in the model and ask the backend again. Nothing is saved to the asset unless you apply it.</p></section>
-    <section class="lab-output"><div id="labresults">${results(a, stored)}</div><section class="saved-comparisons" aria-labelledby="saved-h"><div class="panelhead"><h2 id="saved-h">Your saved possibilities</h2><small>ON THIS DEVICE</small></div>${savedList(assetsById)}</section></section></div>`
+    <p class="subtle">Move a slider and the answer updates. Nothing is saved to the asset unless you apply it.</p></section>
+    <section class="lab-output"><div id="labresults">${results(a, stored)}</div><section class="saved-comparisons" aria-labelledby="saved-h"><div class="panelhead"><h2 id="saved-h">Your saved possibilities</h2><small>On this device</small></div>${savedList(assetsById)}</section></section></div>`
   );
 }
 

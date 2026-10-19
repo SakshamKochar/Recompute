@@ -12,7 +12,7 @@ import { contextStrip, emptyBlock, heading, isDemo, tag, withData } from "../ui/
 import { openDialog, toast } from "../ui/feedback.js";
 
 export const STRATEGIES = {
-  model: ["Follow the model", "Each asset takes the route the model recommends."],
+  model: ["Follow the recommendation", "Each asset takes the route ReCompute recommends."],
   capital: ["Free up capital", "Each asset takes its baseline: sell now if it passed diagnostics, otherwise the better of harvest and recycle."],
   earn: ["Keep earning", "Each asset takes its best eligible compute route (yield while listed or host longer). Assets with no eligible compute route keep the model’s route."],
 };
@@ -62,8 +62,8 @@ function card(it, selected) {
   const r = it.route ? routeInfo(it.route) : null;
   const differs = it.route && it.route !== a.route;
   return `<label class="command-asset ${selected ? "selected" : ""}"><div class="row"><span class="micro">${esc(a.id)}</span><input type="checkbox" data-select="${esc(a.id)}" aria-label="Include ${esc(a.id)} in the plan" ${selected ? "checked" : ""} ${it.route ? "" : "disabled"}></div><h3>${esc(hardwareTitle(a))}</h3><p>${esc(a.model || "")}${a.site ? ` · ${esc(a.site)}` : ""}</p><div class="row"><span>${r ? `${r.symbol} ${esc(r.label)}` : it.error ? "Couldn’t check" : "Checking…"}</span><b>${it.value === null ? "—" : money(it.value)}</b></div>${
-    differs ? `<small class="cmd-note">Model recommends ${esc(a.routeInfo.label.toLowerCase())}${it.move?.kind === "override" ? " · needs an override" : ""}</small>` : ""
-  }${it.fallback ? `<small class="cmd-note">No compute route is eligible; keeps the model’s route</small>` : ""}${it.move?.kind === "blocked" ? `<small class="cmd-note warn">The backend won’t allow ${esc(eventInfo(it.move.event).label.toLowerCase())} from here</small>` : ""}</label>`;
+    differs ? `<small class="cmd-note">ReCompute recommends ${esc(a.routeInfo.label.toLowerCase())}${it.move?.kind === "override" ? " · needs an override" : ""}</small>` : ""
+  }${it.fallback ? `<small class="cmd-note">No compute route is eligible; keeps the model’s route</small>` : ""}${it.move?.kind === "blocked" ? `<small class="cmd-note warn">This asset can’t move to ${esc(eventInfo(it.move.event).label.toLowerCase())} from here</small>` : ""}</label>`;
 }
 
 function body(assetsResp) {
@@ -92,28 +92,28 @@ function body(assetsResp) {
   return (
     contextStrip([`${pad2(open.length)} awaiting a first move`, `${pad2(motion)} in motion`, `${pad2(done)} complete`]) +
     heading("Fleet Command", "Many assets.<br><em>One considered plan.</em>", "Choose your priority. Review each route. Then put the decisions in motion.") +
-    `<div class="strategy-bar"><div><span class="micro">WHAT MATTERS MOST RIGHT NOW?</span><div class="strategy-options" role="group" aria-label="Strategy">${Object.entries(STRATEGIES)
+    `<div class="strategy-bar"><div><span class="micro">What matters most right now?</span><div class="strategy-options" role="group" aria-label="Strategy">${Object.entries(STRATEGIES)
       .map(([k, [label]]) => `<button data-action="strategy" data-strategy="${k}" aria-pressed="${p.strategy === k}">${label}</button>`)
       .join("")}</div><p class="strategy-help">${esc(STRATEGIES[p.strategy][1])}</p></div><div class="strategy-tools"><button class="textlink" data-action="select-all">${sel.size && sel.size === list.filter((x) => x.route).length ? "Deselect all" : "Select all"}</button>${sel.size ? `<button class="textlink" data-action="select-none">Clear selection</button>` : ""}</div></div>
     ${pending ? `<p class="async-inline" role="status"><span class="spinner" aria-hidden="true"></span> Checking which compute routes each asset is eligible for… ${list.length - pending} of ${list.length}</p>` : ""}
     ${
       open.length
-        ? `<div class="command-workspace"><div class="command-board">${lanes}</div><aside class="plan-summary" aria-labelledby="plan-h"><span class="micro">YOUR PROPOSED NEXT CHAPTER ${tag("draft")}</span><h2 id="plan-h">${chosen.length}<em> ${chosen.length === 1 ? "asset" : "assets"}.</em><br>One clear direction.</h2><div class="plan-value"><span>Combined modeled route value</span><strong>${money(total)}</strong><small>Sum of each asset’s modeled value on its own timeline. Not a same-date valuation or a quote.</small></div>${
+        ? `<div class="command-workspace"><div class="command-board">${lanes}</div><aside class="plan-summary" aria-labelledby="plan-h"><span class="micro">Your proposed next chapter ${tag("draft")}</span><h2 id="plan-h">${chosen.length}<em> ${chosen.length === 1 ? "asset" : "assets"}.</em><br>One clear direction.</h2><div class="plan-value"><span>Combined modeled route value</span><strong>${money(total)}</strong><small>Sum of each asset’s modeled value on its own timeline. Not a same-date valuation or a quote.</small></div>${
             overrides ? `<p class="choice-note">${overrides} ${overrides === 1 ? "move goes" : "moves go"} against the model and will need an override note.</p>` : ""
-          }${blocked ? `<p class="choice-note warn">${blocked} selected ${blocked === 1 ? "asset" : "assets"} can’t take this route’s first step and will be skipped.</p>` : ""}<p>Committing records each asset’s first lifecycle step in the backend, with your selected route. It does not list, sell, host or ship anything on its own.</p><button class="btn" data-action="review" ${chosen.length && !demo ? "" : "disabled"}>Review ${chosen.length} ${chosen.length === 1 ? "move" : "moves"} <span>↗</span></button>${
+          }${blocked ? `<p class="choice-note warn">${blocked} selected ${blocked === 1 ? "asset" : "assets"} can’t take this route’s first step and will be skipped.</p>` : ""}<p>Committing records each asset’s first step on your selected route. It does not list, sell, host or ship anything on its own.</p><button class="btn" data-action="review" ${chosen.length && !demo ? "" : "disabled"}>Review ${chosen.length} ${chosen.length === 1 ? "move" : "moves"} <span>↗</span></button>${
             demo ? `<small>Demo mode is read-only. Switch to Live to commit a plan.</small>` : `<small>Nothing is sent until you confirm.</small>`
           }</aside></div>`
-        : emptyBlock("↗", "Every asset already has its first move.", "Fleet Command plans the first step for servers still in RECEIVED. Assets in motion are managed from their passports.", `<a class="textlink" href="#fleet">Meet your fleet ↗</a>`)
+        : emptyBlock("↗", "Every asset already has its first move.", "Fleet Command plans the first step for servers still in Received. Assets in motion are managed from their passports.", `<a class="textlink" href="#fleet">Meet your fleet ↗</a>`)
     }
     ${lastRun ? runReport(lastRun) : ""}
-    <details class="model-details"><summary>How this plan works</summary><p>Strategies are policy switches over the model’s own per-route results, not a fleet optimizer. “Follow the model” uses each recommendation. “Free up capital” uses the backend’s baseline route. “Keep earning” picks the higher-value eligible compute route from each asset’s latest model result. Only servers still in RECEIVED are planned. The first step for each route is: list (sell now, list and wait, yield while listed, host longer), repair, harvest or recycle. Activation and later steps happen from the passport as the work actually progresses.</p></details>`
+    <details class="model-details"><summary>How this plan works</summary><p>Each strategy uses the values already calculated for every route. Follow the recommendation keeps the suggested route. Free up capital uses the baseline route. Keep earning picks the higher-value rental route when the server qualifies. Only servers still waiting for a first move are included. The first step is a listing, a repair, a harvest or a recycle. Later steps happen on the passport as the work progresses.</p></details>`
   );
 }
 
 function runReport(run) {
   const ok = run.results.filter((r) => r.ok);
   const bad = run.results.filter((r) => !r.ok);
-  return `<section class="panel-card run-report" aria-labelledby="run-h" tabindex="-1" id="run-report"><div class="panelhead"><h2 id="run-h">${run.running ? "Committing your plan…" : `${ok.length} of ${run.results.length} moves recorded.`}</h2><small>${run.running ? `${run.results.length} of ${run.total}` : "BACKEND RESPONSES"}</small></div><ul class="run-list">${run.results
+  return `<section class="panel-card run-report" aria-labelledby="run-h" tabindex="-1" id="run-report"><div class="panelhead"><h2 id="run-h">${run.running ? "Committing your plan…" : `${ok.length} of ${run.results.length} moves recorded.`}</h2><small>${run.running ? `${run.results.length} of ${run.total}` : "What came back"}</small></div><ul class="run-list">${run.results
     .map(
       (r) =>
         `<li class="${r.ok ? "ok" : "fail"}"><span aria-hidden="true">${r.ok ? "✓" : "✕"}</span><a href="#passport/${encodeURIComponent(r.id)}">${esc(r.id)}</a> <span>${esc(eventInfo(r.event).label)} · ${esc(routeInfo(r.route).label)}${r.override ? " · override" : ""}</span><small>${r.ok ? `Now ${esc(stateInfo(r.state).label.toLowerCase())}` : esc(r.message)}</small></li>`,
@@ -138,13 +138,13 @@ function review() {
     html: `<form id="commitForm" novalidate><div class="row"><h2>Review ${runnable.length} ${runnable.length === 1 ? "move" : "moves"}.</h2><button type="button" class="close" data-close aria-label="Close">×</button></div><p class="subtext">Strategy: <b>${esc(STRATEGIES[plan().strategy][0])}</b>. Moves are recorded one at a time, and each is checked against the asset’s current state and recommendation.</p><div class="tablewrap compact"><table><thead><tr><th scope="col">Asset</th><th scope="col">Route</th><th scope="col">First step</th><th scope="col" class="num">Modeled value</th></tr></thead><tbody>${chosen
       .map(
         (x) =>
-          `<tr class="${x.move.kind === "blocked" ? "muted" : ""}"><th scope="row">${esc(x.a.id)}</th><td>${esc(routeInfo(x.route).label)}${x.route !== x.a.route ? ` <small>model: ${esc(x.a.routeInfo.label)}</small>` : ""}</td><td>${x.move.kind === "blocked" ? "Skipped · not allowed" : esc(eventInfo(x.move.event).label)}${x.move.kind === "override" ? ` <span class="prov-tag hypothesis">override</span>` : ""}</td><td class="num">${money(x.value)}</td></tr>`,
+          `<tr class="${x.move.kind === "blocked" ? "muted" : ""}"><th scope="row">${esc(x.a.id)}</th><td>${esc(routeInfo(x.route).label)}${x.route !== x.a.route ? ` <small>recommended: ${esc(x.a.routeInfo.label)}</small>` : ""}</td><td>${x.move.kind === "blocked" ? "Skipped · not allowed" : esc(eventInfo(x.move.event).label)}${x.move.kind === "override" ? ` <span class="prov-tag hypothesis">override</span>` : ""}</td><td class="num">${money(x.value)}</td></tr>`,
       )
-      .join("")}</tbody></table></div>${skipped ? `<p class="choice-note warn">${skipped} ${skipped === 1 ? "asset is" : "assets are"} skipped: the backend doesn’t allow that route’s first step from its current state.</p>` : ""}${
+      .join("")}</tbody></table></div>${skipped ? `<p class="choice-note warn">${skipped} ${skipped === 1 ? "asset is" : "assets are"} skipped: that route’s first step isn’t possible from where they are today.</p>` : ""}${
       overrides.length
         ? `<label for="commit-note" class="field-label">Why go against the model for ${overrides.length} ${overrides.length === 1 ? "asset" : "assets"}? <span class="req">required</span></label><textarea id="commit-note" rows="3" maxlength="2000" placeholder="e.g. treasury needs cash this quarter" aria-describedby="commit-error"></textarea>`
         : ""
-    }<label class="check"><input type="checkbox" id="commit-ack"> I understand this records lifecycle moves in the ReCompute backend. It does not list, sell or ship anything by itself.</label><p class="field-error" id="commit-error" role="alert"></p><div class="modalactions"><button type="button" class="btn secondary" data-close>Keep editing</button><button class="btn" type="submit" ${runnable.length ? "" : "disabled"}>Commit ${runnable.length} ${runnable.length === 1 ? "move" : "moves"}</button></div></form>`,
+    }<label class="check"><input type="checkbox" id="commit-ack"> I understand this records these moves in ReCompute. It does not list, sell or ship anything by itself.</label><p class="field-error" id="commit-error" role="alert"></p><div class="modalactions"><button type="button" class="btn secondary" data-close>Keep editing</button><button class="btn" type="submit" ${runnable.length ? "" : "disabled"}>Commit ${runnable.length} ${runnable.length === 1 ? "move" : "moves"}</button></div></form>`,
     bind(d, close) {
       d.querySelector("form").onsubmit = (ev) => {
         ev.preventDefault();
@@ -152,7 +152,7 @@ function review() {
         const noteEl = d.querySelector("#commit-note");
         const note = noteEl?.value.trim() || null;
         if (overrides.length && !note) {
-          err.textContent = "Add a note. The backend stores it with every override.";
+          err.textContent = "Add a note. It’s kept with every override.";
           noteEl.focus();
           return;
         }

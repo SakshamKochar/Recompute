@@ -50,11 +50,11 @@ function activityRow(g) {
 function featured(a, total) {
   const r = a.routeInfo;
   const next = a.allowedEvents[0];
-  return `<section class="feature-decision" aria-labelledby="feature-title"><div class="feature-top"><span class="micro">THE NEXT WORTHWHILE MOVE</span><span class="pill">01 / ${pad2(total)} above baseline</span></div><div class="feature-content"><div><span class="route-eyebrow">${r.symbol} ${esc(a.route)} / ${esc(r.lane === "recover" ? "RECOVER VALUE" : r.lane === "earn" ? "KEEP EARNING" : "EXIT WELL")}</span><h2 id="feature-title">${esc(r.headline[0])}<br><em>${esc(r.headline[1])}</em></h2><p>${esc(a.id)} is a ${esc(a.model || "server")}${a.site ? ` in ${esc(a.site)}` : ""}. The model recommends <b>${esc(r.label.toLowerCase())}</b> at ${money(a.routeValue)}, ${money(a.gain)} more than the ${esc(routeInfo(a.baselineRoute).label.toLowerCase())} baseline of ${money(a.baselineValue)}.${a.route === "REPAIR" && a.afterRepair ? ` Once repaired it would ${esc(routeInfo(a.afterRepair).label.toLowerCase())}.` : ""}</p><a class="btn" href="#passport/${encodeURIComponent(a.id)}">See the thinking <span>↗</span></a></div><div class="asset-stage">${boardArt(a, true)}<div class="asset-stage-caption"><span>${esc(a.id)} / ${esc(a.model || "")}</span><b>${esc(a.stateInfo.long)}</b></div></div></div><div class="decision-bottom"><span><i></i> ${next ? `Next step allowed now: ${esc(eventInfo(next).label)}` : "No step available without an override"}</span><span>Model estimate, not a quote</span></div></section>`;
+  return `<section class="feature-decision" aria-labelledby="feature-title"><div class="feature-top"><span class="micro">The next worthwhile move</span><span class="pill">01 / ${pad2(total)} above baseline</span></div><div class="feature-content"><div><span class="route-eyebrow">${r.symbol} ${esc(r.label)} · ${esc(r.lane === "recover" ? "Recover value" : r.lane === "earn" ? "Keep earning" : "Exit well")}</span><h2 id="feature-title">${esc(r.headline[0])}<br><em>${esc(r.headline[1])}</em></h2><p>${esc(a.id)} is a ${esc(a.model || "server")}${a.site ? ` in ${esc(a.site)}` : ""}. The model recommends <b>${esc(r.label.toLowerCase())}</b> at ${money(a.routeValue)}, ${money(a.gain)} more than the ${esc(routeInfo(a.baselineRoute).label.toLowerCase())} baseline of ${money(a.baselineValue)}.${a.route === "REPAIR" && a.afterRepair ? ` Once repaired it would ${esc(routeInfo(a.afterRepair).label.toLowerCase())}.` : ""}</p><a class="btn" href="#passport/${encodeURIComponent(a.id)}">Open the passport <span>↗</span></a></div><div class="asset-stage">${boardArt(a, true)}<div class="asset-stage-caption"><span>${esc(a.id)} / ${esc(a.model || "")}</span><b>${esc(a.stateInfo.long)}</b></div></div></div><div class="decision-bottom"><span><i></i> ${next ? `Next step allowed now: ${esc(eventInfo(next).label)}` : "No step available without an override"}</span><span>Model estimate, not a quote</span></div></section>`;
 }
 
 function noFeatured() {
-  return `<section class="feature-decision" aria-labelledby="feature-title"><div class="feature-top"><span class="micro">THE NEXT WORTHWHILE MOVE</span><span class="pill">00 above baseline</span></div><div class="feature-content"><div><span class="route-eyebrow">↗ NOTHING TO REDIRECT</span><h2 id="feature-title">Every open asset<br><em>is on its simplest route.</em></h2><p>No open server has a recommended route worth more than its baseline (sell now, or harvest or recycle if it failed). Upload inventory or change model inputs to find the next move.</p><a class="btn" href="#fleet">Meet your fleet <span>↗</span></a></div></div><div class="decision-bottom"><span><i></i> From the ReCompute API</span><span>Model estimate, not a quote</span></div></section>`;
+  return `<section class="feature-decision" aria-labelledby="feature-title"><div class="feature-top"><span class="micro">The next worthwhile move</span><span class="pill">00 above baseline</span></div><div class="feature-content"><div><span class="route-eyebrow">↗ Nothing to redirect</span><h2 id="feature-title">Every open asset<br><em>is on its simplest route.</em></h2><p>No open server has a recommended route worth more than its baseline (sell now, or harvest or recycle if it failed). Upload inventory, or adjust a server in the What-if Lab, to find the next move.</p><a class="btn" href="#fleet">Meet your fleet <span>↗</span></a></div></div><div class="decision-bottom"><span><i></i> From this fleet’s latest figures</span><span>Model estimate, not a quote</span></div></section>`;
 }
 
 function bars(entries, total, { labelOf, hrefOf }) {
@@ -96,7 +96,7 @@ function body(dash, assetsResp, batchesResp) {
       `${pad2(dash.total_assets)} assets`,
       `${pad2(dash.open_assets)} open`,
       `${pad2(batchesResp.batches.length)} batches`,
-      synthetic ? `${synthetic} synthetic or simulated` : null,
+      synthetic ? `${synthetic} sample servers` : null,
     ]) +
     heading(
       "Overview",
@@ -104,18 +104,18 @@ function body(dash, assetsResp, batchesResp) {
       "Start with one decision. See the whole fleet differently.",
       `<a href="#fleet" class="btn secondary">Meet your fleet <span>↗</span></a>`,
     ) +
-    `<div class="studio-overview">${opp.length ? featured(opp[0], opp.length) : noFeatured()}<section class="fleet-snapshot" aria-label="Fleet summary"><span class="micro">THE BIG PICTURE · OPEN ASSETS</span><div class="snapshot-total"><small>Recommended routes, combined</small><strong>${compactMoney(ov.recommended)}</strong><span>Baseline ${compactMoney(ov.baseline)} · <b class="gain">${signedMoney(ov.gain_vs_baseline)}</b> vs baseline</span></div><div class="fleet-health-art"><div class="health-circle" style="--share:${open.length ? (passing / open.length) * 100 : 0}%"><span>${passing}<small>/ ${open.length}</small></span></div><div><b>${failed ? "Plenty of life left." : "Every open server passed."}</b><p>${passing} passed diagnostics.<br>${failed} failed${failed ? ` · ${repairRoute} worth repairing` : ""}.</p></div></div><div class="snapshot-bottom"><a href="#outcomes"><strong>${pad2(inMotion)}</strong><span>decisions in motion ↗</span></a><a href="#attention"><strong>${pad2(attention)}</strong><span>need attention ↗</span></a></div></section></div>
+    `<div class="studio-overview">${opp.length ? featured(opp[0], opp.length) : noFeatured()}<section class="fleet-snapshot" aria-label="Fleet summary"><span class="micro">The big picture · Open assets</span><div class="snapshot-total"><small>Recommended routes, combined</small><strong>${compactMoney(ov.recommended)}</strong><span>Baseline ${compactMoney(ov.baseline)} · <b class="gain">${signedMoney(ov.gain_vs_baseline)}</b> vs baseline</span></div><div class="fleet-health-art"><div class="health-circle" style="--share:${open.length ? (passing / open.length) * 100 : 0}%"><span>${passing}<small>/ ${open.length}</small></span></div><div><b>${failed ? "Plenty of life left." : "Every open server passed."}</b><p>${passing} passed diagnostics.<br>${failed} failed${failed ? ` · ${repairRoute} worth repairing` : ""}.</p></div></div><div class="snapshot-bottom"><a href="#outcomes"><strong>${pad2(inMotion)}</strong><span>decisions in motion ↗</span></a><a href="#attention"><strong>${pad2(attention)}</strong><span>need attention ↗</span></a></div></section></div>
     <p class="figure-note">Sums of each open server’s modeled route value on its own timeline. Not a same-date portfolio valuation or a quote.</p>
-    <div class="overview-grid"><section class="panel-card" aria-labelledby="by-state"><div class="panelhead"><h2 id="by-state">Where every asset is</h2><small>LIFECYCLE STATE</small></div>${bars(
+    <div class="overview-grid"><section class="panel-card" aria-labelledby="by-state"><div class="panelhead"><h2 id="by-state">Where every asset is</h2><small>Lifecycle state</small></div>${bars(
       STATE_ORDER.filter((s) => dash.by_state[s]).map((s) => [s, dash.by_state[s]]),
       dash.total_assets,
       { labelOf: (s) => esc(stateInfo(s).label), hrefOf: (s) => `#fleet?state=${s}` },
-    )}${emptyStates(dash)}</section><section class="panel-card" aria-labelledby="by-route"><div class="panelhead"><h2 id="by-route">What the model recommends</h2><small>RECOMMENDED ROUTE</small></div>${bars(
+    )}${emptyStates(dash)}</section><section class="panel-card" aria-labelledby="by-route"><div class="panelhead"><h2 id="by-route">What the model recommends</h2><small>Recommended route</small></div>${bars(
       ROUTE_ORDER.map((r) => [r, dash.by_route[r] || 0]),
       dash.total_assets,
       { labelOf: (r) => `<span aria-hidden="true">${routeInfo(r).symbol}</span> ${esc(routeInfo(r).label)}`, hrefOf: (r) => `#fleet?route=${encodeURIComponent(r)}` },
     )}</section></div>
-    <div class="sectiontitle" id="attention"><div><span class="micro">NEEDS A PERSON</span><h2>Assets needing attention.</h2></div><span class="subtle">${awaiting ? `${awaiting} more are awaiting a first decision.` : ""}</span></div>
+    <div class="sectiontitle" id="attention"><div><span class="micro">Needs a person</span><h2>Assets needing attention.</h2></div><span class="subtle">${awaiting ? `${awaiting} more are awaiting a first decision.` : ""}</span></div>
     ${
       attention
         ? `<div class="attention-list">${dash.action_items
@@ -127,7 +127,7 @@ function body(dash, assetsResp, batchesResp) {
             .join("")}</div>`
         : `<div class="all-clear" role="status"><span class="all-clear-mark" aria-hidden="true">◎</span><div><b>Nothing urgent.</b><p>No sale at risk, no compute asset whose recommendation changed, no open override.</p></div></div>`
     }
-    <div class="sectiontitle"><div><span class="micro">WHERE POSSIBILITY BECOMES A PLAN</span><h2>Your next chapter, in four moves.</h2></div><a href="#home" class="textlink">Revisit the guided story ↗</a></div>${journey()}
+    <div class="sectiontitle"><div><span class="micro">Where possibility becomes a plan</span><h2>Your next chapter, in four moves.</h2></div><a href="#home" class="textlink">Revisit the guided story ↗</a></div>${journey()}
     <div class="sectiontitle"><h2>${pair.length ? "More possibilities worth a look." : "Recent activity."}</h2><a href="#market" class="textlink">Open Market Intelligence ↗</a></div>
     ${
       pair.length
@@ -139,7 +139,7 @@ function body(dash, assetsResp, batchesResp) {
             .join("")}</div>`
         : ""
     }
-    <section class="panel-card activity" aria-labelledby="recent"><div class="panelhead"><h2 id="recent">Recent activity</h2><small>LATEST STATE CHANGES</small></div>${
+    <section class="panel-card activity" aria-labelledby="recent"><div class="panelhead"><h2 id="recent">Recent activity</h2><small>Latest state changes</small></div>${
       dash.recent_activity.length
         ? `<ol class="activity-list">${activityGroups(dash.recent_activity).map(activityRow).join("")}</ol>`
         : `<p class="subtle">No lifecycle activity yet.</p>`
@@ -152,7 +152,7 @@ export default {
   render() {
     return withData([R.dashboard(), R.assets(), R.batches()], body, {
       retryKeys: ["dashboard", "assets", "batches"],
-      loadingLabel: isDemo() ? "Opening the demo snapshot…" : "Loading the fleet from the ReCompute API…",
+      loadingLabel: isDemo() ? "Opening the sample fleet…" : "Getting your fleet…",
     });
   },
 };

@@ -202,7 +202,7 @@ async function load() {
       kicker: "Rental asks",
       kickerShort: "Asks",
       status: "Offline",
-      sub: "API unreachable",
+      sub: "Reconnecting",
       showModel: false,
       quotes: [],
       ttl: 20,

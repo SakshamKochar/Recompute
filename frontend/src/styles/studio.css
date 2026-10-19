@@ -47,8 +47,8 @@ body > .shell > .studio-header {
 }
 .studio-label {
   font:
-    10px var(--font-mono);
-  letter-spacing: 2px;
+    11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #818675;
 }
 .studio-account {
@@ -106,8 +106,8 @@ body > .shell > .studio-header {
   display: none;
 }
 #crumb {
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8b907f;
   white-space: nowrap;
   margin-left: 20px;
@@ -122,8 +122,8 @@ body > .shell > .studio-header {
   margin: auto;
   padding: 22px 5%;
   border-top: 1px solid var(--line);
-  font: 10px var(--font-mono);
-  letter-spacing: 0.5px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
 }
 .studio-context {
   display: flex;
@@ -134,8 +134,8 @@ body > .shell > .studio-header {
   margin-bottom: 31px;
 }
 .studio-context > span:first-child {
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #576b4c;
 }
 .studio-context > span:last-child {
@@ -155,9 +155,8 @@ body > .shell > .studio-header {
   align-items: end;
 }
 .scene-label {
-  font: 10px var(--font-mono);
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   margin-bottom: 18px;
   color: #8a8f7d;
 }
@@ -222,15 +221,14 @@ body > .shell > .studio-header {
 }
 .micro {
   font:
-    10px/1.6 var(--font-mono);
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
+    11px/1.6 var(--font-sans);
+  letter-spacing: 0.005em;
 }
 .pill {
   border: 1px solid #ffffff35;
   border-radius: 20px;
   padding: 5px 9px;
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   white-space: nowrap;
 }
 .studio-overview {
@@ -263,9 +261,9 @@ body > .shell > .studio-header {
   min-height: 285px;
 }
 .route-eyebrow {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #d6dfb5;
-  letter-spacing: 1px;
+  letter-spacing: 0.005em;
 }
 .feature-content h2 {
   font-size: 37px;
@@ -300,9 +298,9 @@ body > .shell > .studio-header {
   background: radial-gradient(ellipse, #b1c38c17, transparent 70%);
 }
 .asset-stage-caption {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 0.005em;
   color: #c4cfb1;
   margin-top: 26px;
 }
@@ -450,7 +448,7 @@ body > .shell > .studio-header {
   background: #eceee1;
 }
 .journey-strip > a > span {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #ad6a4b;
   margin-top: 3px;
 }
@@ -488,8 +486,8 @@ body > .shell > .studio-header {
   margin-left: auto;
 }
 .opportunity-tile small {
-  font: 10px var(--font-mono);
-  letter-spacing: 0.7px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8f9681;
 }
 .opportunity-tile h3 {
@@ -582,16 +580,16 @@ body > .shell > .studio-header {
   position: absolute;
   top: 10px;
   left: 10px;
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #42573b;
 }
 .board-model {
   position: absolute;
   bottom: 9px;
   right: 10px;
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #d7e3c3;
 }
 .board-vents {
@@ -643,8 +641,8 @@ body > .shell > .studio-header {
 .collection-caption {
   display: flex;
   justify-content: space-between;
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8a937b;
   margin: 22px 0;
 }
@@ -671,8 +669,8 @@ body > .shell > .studio-header {
   justify-content: space-between;
   align-items: center;
   padding: 16px 17px 0;
-  font: 10px var(--font-mono);
-  letter-spacing: 0.4px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #869074;
 }
 .asset-card-top > span:last-child {
@@ -708,8 +706,8 @@ body > .shell > .studio-header {
   padding: 0 17px 17px;
 }
 .asset-card-copy > small {
-  font: 10px var(--font-mono);
-  letter-spacing: 0.4px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8c957c;
 }
 .asset-card h2 {
@@ -722,8 +720,8 @@ body > .shell > .studio-header {
   margin: 9px 0 3px;
 }
 .asset-card h2 > span {
-  font: 10px var(--font-mono);
-  letter-spacing: 1px;
+  font: 11px var(--font-sans);
+  letter-spacing: 0.005em;
   color: #8d967d;
 }
 .asset-card-copy > p {
@@ -862,7 +860,7 @@ body > .shell > .studio-header {
   margin: 0;
 }
 .lane-title > span {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #7e8b6d;
 }
 .command-asset {
@@ -1167,7 +1165,7 @@ body > .shell > .studio-header {
   background: #e9efd9;
 }
 .route-option > span {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #9ba48a;
 }
 .route-option h3 {
@@ -1280,7 +1278,7 @@ body > .shell > .studio-header {
   border-radius: 50%;
   background: #b9ce91;
   color: #2c422c;
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   box-shadow: 0 0 0 7px #b6cc8e10;
 }
 .radar-node > span {
@@ -1335,7 +1333,7 @@ body > .shell > .studio-header {
   border-top: 0;
 }
 .signal-number {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #b2734e;
   padding-top: 2px;
 }
@@ -2735,7 +2733,7 @@ body > .shell > .studio-header {
   margin: 0 0 12px;
 }
 .mini-passport h4 small {
-  font: 10px var(--font-mono);
+  font: 11px var(--font-sans);
   color: #94a27f;
   margin-left: 10px;
 }

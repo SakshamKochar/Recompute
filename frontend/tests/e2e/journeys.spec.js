@@ -92,7 +92,7 @@ test("C: Upload CSV → Review batch → Inspect asset → Recommendation", asyn
   const csv = "asset_id,model,asset_profile,offer_today,market_price\nE2E-001,8x H100 80GB,h100_8x,230000,250000\nE2E-002,8x A100 80GB,a100_8x,70000,90000\n";
   await page.locator("#upload-file").setInputFiles({ name: "batch.csv", mimeType: "text/csv", buffer: Buffer.from(csv) });
   await page.locator("#upload-dry").click();
-  await expect(page.locator("#upload-output")).toContainText("DRY RUN");
+  await expect(page.locator("#upload-output")).toContainText("Nothing saved yet");
   await expect(page.locator("#upload-output")).toContainText("2 servers would be added");
   await page.locator("#upload-commit").click();
   await expect(page.locator("#toast")).toContainText("saved: 2 servers");
@@ -102,7 +102,7 @@ test("C: Upload CSV → Review batch → Inspect asset → Recommendation", asyn
   await expect(page).toHaveURL(/#passport\/E2E-001/);
   const d = await (await request.get(`${API}/assets/E2E-001`)).json();
   await expect(page.locator(".passport-recommendation")).toContainText(usd(d.route_value));
-  await expect(page.locator(".not-assessed")).toContainText("NOT YET ASSESSED");
+  await expect(page.locator(".not-assessed")).toContainText("Not yet assessed");
 
   // Malformed file: field errors come back from the API and nothing is saved.
   await page.goto("/#fleet");
@@ -120,7 +120,7 @@ test("D: Lab → Modify inputs → Save scenario → Reopen scenario", async ({ 
   await expect(page.locator(".lab-status")).toContainText("Bear market");
   await page.locator("#lab-elec_per_kwh").fill("0.2");
   await expect(page.locator(".lab-presets button[aria-pressed=true]")).toHaveText("Custom");
-  await expect(page.locator(".lab-status")).toContainText("Model v");
+  await expect(page.locator(".lab-status")).toContainText("Updated");
   const route = (await page.locator(".lab-verdict h2").innerText()).trim();
   await page.getByRole("button", { name: /Keep this comparison/ }).click();
   await expect(page.locator(".saved-list li")).toHaveCount(1);
@@ -185,7 +185,7 @@ test("Fleet Command: strategy, review, explicit commit, per-asset results", asyn
 test("Demo mode is labelled, read-only, and never mixes with Live @responsive", async ({ page }) => {
   await page.goto("/#overview");
   await page.getByRole("button", { name: "Explore Demo" }).click();
-  await expect(page.locator(".mode-banner.demo")).toContainText("DEMO MODE");
+  await expect(page.locator(".mode-banner.demo")).toContainText("exploring the demo");
   await page.goto("/#passport/DEMO-SHAURYAA");
   await expect(page.locator(".passport-recommendation")).toBeVisible();
   for (const b of await page.locator('[data-action="event"]').all()) await expect(b).toBeDisabled();
@@ -209,7 +209,7 @@ test("Every page renders without horizontal overflow @responsive", async ({ page
 test("API unreachable: Live mode says so and shows no figures", async ({ page }) => {
   await page.route(/^http:\/\/127\.0\.0\.1:\d+\/api\//, (route) => route.abort("connectionrefused"));
   await page.goto("/#overview");
-  await expect(page.locator(".mode-banner.offline")).toContainText("NOT CONNECTED");
+  await expect(page.locator(".mode-banner.offline")).toContainText("reach your workspace");
   await expect(page.locator("#main")).not.toContainText("$");
   consoleErrors = [];
 });

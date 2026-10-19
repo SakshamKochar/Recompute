@@ -1,11 +1,10 @@
 import "@fontsource-variable/inter/opsz.css";
 import "@fontsource/instrument-serif/latin-400.css";
 import "@fontsource/instrument-serif/latin-400-italic.css";
-import "@fontsource/ibm-plex-mono/latin-400.css";
-import "@fontsource/ibm-plex-mono/latin-500.css";
 import "./styles/base.css";
 import "./styles/studio.css";
 import "./styles/integration.css";
+import "./styles/motion.css";
 
 import { app } from "./app.js";
 import { config } from "./config.js";
@@ -17,6 +16,7 @@ import { clearResources, invalidate, setResourceListener } from "./state/resourc
 import { esc } from "./lib/html.js";
 import { confirmDialog, toast } from "./ui/feedback.js";
 import { startTicker } from "./ui/ticker.js";
+import { mountMotion } from "./ui/motion.js";
 
 import home from "./views/home.js";
 import overview from "./views/overview.js";
@@ -93,7 +93,7 @@ function renderChrome() {
     const label = demo ? "Demo" : h.state === "ok" ? "" : h.state === "checking" ? "Connecting" : "Offline";
     const pill = label
       ? `<span class="mode-pill ${status}"><span class="sandbox-dot ${status}" aria-hidden="true"></span><span class="mode-label">${label}</span></span>`
-      : `<span class="sr-only">Live mode, model v${esc(h.version || "")}</span>`;
+      : `<span class="sr-only">Live data connected</span>`;
     sw.innerHTML = `<span class="mode-status" aria-live="polite">${pill}</span>
       <button type="button" class="mode-toggle" data-action="switch-mode" data-mode="${demo ? "live" : "demo"}">${demo ? "Use Live data" : "Explore Demo"}</button>
       <button type="button" id="reset" data-action="clear-drafts" aria-label="Clear drafts saved on this device" title="Clear drafts saved on this device"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 6.4A5 5 0 1 1 3 9.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.6 2.8v3.8h3.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
@@ -101,13 +101,13 @@ function renderChrome() {
   const banner = document.querySelector("#mode-banner");
   if (banner) {
     if (demo) {
-      banner.innerHTML = `<div class="mode-banner demo" role="note"><span class="micro">DEMO MODE</span><p>Illustrative snapshot recorded from the ReCompute v${esc(h.version || "0.9")} backend on synthetic servers and simulated NVIDIA diagnostics. Lifecycle actions are disabled and nothing executes.</p><button type="button" class="textlink" data-action="switch-mode" data-mode="live">Switch to Live ↗</button></div>`;
+      banner.innerHTML = `<div class="mode-banner demo" role="note"><span class="micro">You’re exploring the demo</span><p>A sample fleet with simulated NVIDIA diagnostics, so you can watch a decision get made. Nothing here is bought, sold or moved.</p><button type="button" class="textlink" data-action="switch-mode" data-mode="live">Switch to Live ↗</button></div>`;
     } else if (h.state === "down") {
-      banner.innerHTML = `<div class="mode-banner offline" role="alert"><span class="micro">LIVE MODE · NOT CONNECTED</span><p>Can’t reach the ReCompute API at <code>${esc(getTransport()?.base)}</code>. ${esc(h.error?.message || "")}. No figures are shown until it answers; nothing falls back to demo data.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button><button type="button" class="textlink" data-action="switch-mode" data-mode="demo">Explore the demo instead ↗</button></div>`;
+      banner.innerHTML = `<div class="mode-banner offline" role="alert"><span class="micro">We can’t reach your workspace right now</span><p>Your fleet figures will appear as soon as the connection is back. We never fill the gap with sample numbers.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button><button type="button" class="textlink" data-action="switch-mode" data-mode="demo">Explore the demo instead ↗</button></div>`;
     } else banner.innerHTML = "";
   }
   const fm = document.querySelector("#footer-model");
-  if (fm) fm.innerHTML = demo ? "Demo snapshot · illustrative · no transactions" : h.version ? `Decision model v${esc(h.version)}` : "Every asset has a next chapter.";
+  if (fm) fm.innerHTML = demo ? "You’re exploring a sample fleet." : "Every asset has a next chapter.";
 }
 
 /* ---------------------------------------------------------------- rendering */
@@ -165,6 +165,7 @@ function render() {
     const f = captureFocus(root);
     root.innerHTML = view.render(route);
     view.after?.(root, route, { routeChanged });
+    mountMotion(root);
     restoreFocus(root, f);
   } else {
     document.querySelector("#experience").innerHTML = "";
@@ -177,8 +178,9 @@ function render() {
     const f = captureFocus(root);
     root.innerHTML = view.render(route);
     view.after?.(root, route, { routeChanged });
+    mountMotion(root);
     restoreFocus(root, f);
-    if (routeChanged) document.title = `${view.title} — ReCompute`;
+    if (routeChanged) document.title = `${view.title} · ReCompute`;
   }
   if (routeChanged) {
     window.scrollTo(0, 0);
@@ -192,19 +194,19 @@ function render() {
 const globalActions = {
   "switch-mode": async (el) => {
     await setMode(el.dataset.mode);
-    toast(el.dataset.mode === "demo" ? "Demo mode: illustrative snapshot, nothing executes." : "Live mode: data comes from the ReCompute API.");
+    toast(el.dataset.mode === "demo" ? "You’re exploring the demo. Nothing here is real money." : "You’re looking at your live fleet.");
   },
   "retry-health": async () => {
     if (await checkHealth()) {
       clearResources();
       scheduleRender(true);
-      toast("Connected to the ReCompute API.");
+      toast("You’re back online.");
     }
   },
   "clear-drafts": async () => {
     const { confirmed } = await confirmDialog({
       title: "Clear drafts on this device?",
-      body: `<p class="subtext">This removes saved scenarios, the draft Fleet Command plan and unsaved What-if inputs for ${getTransport()?.mode === "demo" ? "Demo" : "Live"} mode in this browser. Backend records, lifecycle history and outcomes are not touched.</p>`,
+      body: `<p class="subtext">This removes saved scenarios, the draft Fleet Command plan and unsaved What-if inputs for ${getTransport()?.mode === "demo" ? "Demo" : "Live"} mode in this browser. Your fleet records, history and outcomes stay exactly as they are.</p>`,
       confirmLabel: "Clear drafts",
       cancelLabel: "Keep my work",
     });

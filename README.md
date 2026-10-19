@@ -7,7 +7,7 @@ This repository joins two pieces into one working application:
 | Folder | What it is |
 |---|---|
 | `backend/` | Saksham Kochar's ReCompute API and decision model (FastAPI, SQLAlchemy, SQLite), from [SakshamKochar/Recompute](https://github.com/SakshamKochar/Recompute). The model is unchanged; four small endpoints were added for the integration |
-| `frontend/` | The ReCompute Decision Studio: the original design prototype rebuilt on the API (Vite, plain ES modules, no framework). Type is Inter, Instrument Serif and IBM Plex Mono, bundled from `@fontsource` (SIL Open Font License), so no font CDN is called) |
+| `frontend/` | The ReCompute Decision Studio: the original design prototype rebuilt on the API (Vite, plain ES modules, no framework). Type is Inter and Instrument Serif, bundled from `@fontsource` (SIL Open Font License), so no font CDN is called |
 | `scripts/` | `dev.sh` starts both; `build_demo_snapshot.py` records Demo-mode data from the real API |
 
 ## Quick start
