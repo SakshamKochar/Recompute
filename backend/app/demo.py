@@ -29,6 +29,8 @@ def seed_if_empty():
 def demo_reset(x_demo_token: str | None = Header(None)):
     """Delete every asset, batch and history, then reload the 100 test servers (SYN-FLEET) and the four demo
     sellers (DEMO-SELLERS). If the server has DEMO_RESET_TOKEN set, send it in the X-Demo-Token header."""
+    if os.getenv("DISABLE_DEMO_RESET", "").lower() in ("1", "true", "yes"):
+        raise HTTPException(403, "demo reset is disabled")
     token = os.getenv("DEMO_RESET_TOKEN")
     if token and x_demo_token != token:
         raise HTTPException(403, "wrong demo token")

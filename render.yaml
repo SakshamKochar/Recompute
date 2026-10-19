@@ -13,7 +13,9 @@ services:
         value: "3.11.15"
       - key: SEED_ON_START
         value: "true"
-      - key: DEMO_RESET_TOKEN
-        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DISABLE_DEMO_RESET
+        value: "true"
       - key: CORS_ORIGINS
         sync: false

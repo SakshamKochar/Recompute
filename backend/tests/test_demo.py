@@ -38,3 +38,8 @@ def test_seed_on_start(monkeypatch):
         assert c.get("/assets").json()["count"] == 104
     monkeypatch.delenv("SEED_ON_START")
     assert main.seed_if_empty() is None
+
+
+def test_public_deployment_can_disable_reset(monkeypatch):
+    monkeypatch.setenv("DISABLE_DEMO_RESET", "true")
+    assert client.post("/demo/reset").status_code == 403
