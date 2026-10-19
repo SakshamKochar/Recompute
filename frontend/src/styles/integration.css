@@ -75,7 +75,7 @@
   line-height: 1.6;
 }
 code {
-  font: 0.92em ui-monospace, monospace;
+  font: 0.92em var(--font-mono);
   background: #e9eadf;
   padding: 1px 5px;
   border-radius: 4px;
@@ -136,7 +136,7 @@ ul.plain li {
   animation: rc-pulse 1.2s infinite;
 }
 .mode-label {
-  font: 11px ui-monospace, monospace;
+  font: 11px var(--font-mono);
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
@@ -321,7 +321,7 @@ ul.plain li {
 .src-tag,
 .evidence-status {
   display: inline-block;
-  font: 10px/1.4 ui-monospace, monospace;
+  font: 10px/1.4 var(--font-mono);
   letter-spacing: 0.4px;
   text-transform: uppercase;
   border-radius: 4px;
@@ -406,7 +406,7 @@ ul.plain li {
   margin: 0;
 }
 .panelhead small {
-  font: 10px ui-monospace, monospace;
+  font: 10px var(--font-mono);
   letter-spacing: 1px;
   color: var(--muted-text);
 }
@@ -523,7 +523,7 @@ ul.plain li {
   margin: 16px 0 6px;
 }
 .req {
-  font: 10px ui-monospace, monospace;
+  font: 10px var(--font-mono);
   color: var(--loss);
   text-transform: uppercase;
   margin-left: 4px;
@@ -875,7 +875,7 @@ textarea[aria-invalid="true"] {
   line-height: 1.5;
 }
 .sev {
-  font: 10px ui-monospace, monospace;
+  font: 10px var(--font-mono);
   padding: 2px 6px;
   border-radius: 4px;
   background: #e1ead0;
@@ -1020,7 +1020,7 @@ textarea[aria-invalid="true"] {
 }
 .tl-kind {
   display: block;
-  font: 10px ui-monospace, monospace;
+  font: 10px var(--font-mono);
   letter-spacing: 1px;
   text-transform: uppercase;
   color: var(--muted-text);
@@ -1036,7 +1036,7 @@ textarea[aria-invalid="true"] {
   font-size: 12px;
 }
 .tl-note {
-  font: italic 13px Georgia, serif;
+  font: italic 13px var(--font-serif);
   margin: 6px 0 0;
 }
 
@@ -1152,7 +1152,7 @@ textarea[aria-invalid="true"] {
   display: flex;
   align-items: center;
   gap: 8px;
-  font: 11px ui-monospace, monospace;
+  font: 11px var(--font-mono);
   color: var(--muted-text);
   margin-bottom: 10px;
   min-height: 18px;
@@ -1173,7 +1173,7 @@ textarea[aria-invalid="true"] {
 }
 .route-option strong small {
   display: block;
-  font: 11px ui-monospace, monospace;
+  font: 11px var(--font-mono);
   color: var(--muted-text);
   text-align: right;
 }
@@ -1574,18 +1574,18 @@ textarea[aria-invalid="true"] {
   min-width: 132px;
 }
 .tape-status b {
-  font: 500 10px/1.2 ui-monospace, monospace;
+  font: 500 10px/1.2 var(--font-mono);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #f6f3ea;
 }
 .tape-status small {
-  font: 10px/1.2 ui-monospace, monospace;
+  font: 10px/1.2 var(--font-mono);
   letter-spacing: 0.04em;
   color: #b7c3ac;
 }
 .tape-kicker {
-  font: 10px/1 ui-monospace, monospace;
+  font: 10px/1 var(--font-mono);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: #e4ebda;
@@ -1661,7 +1661,7 @@ textarea[aria-invalid="true"] {
   color: #dcf587;
 }
 .tape-name {
-  font: 11px/1 ui-monospace, monospace;
+  font: 11px/1 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #e7ecdf;
@@ -1678,7 +1678,7 @@ textarea[aria-invalid="true"] {
   color: #9aa892;
 }
 .tape-chg {
-  font: 10.5px/1 ui-monospace, monospace;
+  font: 10.5px/1 var(--font-mono);
 }
 .tape-chg.up { color: #d6ef86; }
 .tape-chg.down { color: #e7b09a; }
@@ -1688,7 +1688,7 @@ textarea[aria-invalid="true"] {
   flex: none;
 }
 .tape-model {
-  font: italic 11px/1 Georgia, "Iowan Old Style", serif;
+  font: italic 11px/1 var(--font-serif);
   letter-spacing: 0;
   color: #c9d4bc;
 }
@@ -1802,7 +1802,7 @@ body .studio-account .mode-toggle {
   height: 28px;
   padding: 0 11px;
   border-radius: 30px;
-  font: 500 10px/1 ui-monospace, monospace;
+  font: 500 10px/1 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -1881,7 +1881,7 @@ body .studio-account #reset:hover {
   max-width: 260px;
 }
 .hardware-caption .hc-kicker {
-  font: 500 10px/1 ui-monospace, monospace;
+  font: 500 10px/1 var(--font-mono);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #7a806d;
@@ -1899,13 +1899,13 @@ body .studio-account #reset:hover {
 }
 .hardware-scene .hardware-caption i {
   margin: 0;
-  font: 500 11px/1 ui-monospace, monospace;
+  font: 500 11px/1 var(--font-mono);
   font-style: normal;
   letter-spacing: 0.04em;
   color: #5c6455;
 }
 .hardware-caption .hc-note {
-  font: 12.5px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font: 12.5px/1.4 var(--font-sans);
   letter-spacing: 0;
   color: #6b7262;
 }
@@ -1982,7 +1982,7 @@ body .studio-account #reset:hover {
   }
 }
 .tape-thin {
-  font: 9.5px/1 ui-monospace, monospace;
+  font: 10px/1 var(--font-mono);
   letter-spacing: 0.06em;
   padding: 3px 6px;
   border: 1px solid #ffffff22;
@@ -2018,7 +2018,7 @@ body .studio-account #reset:hover {
   }
 }
 .fleet-controls .ctl > span {
-  font: 500 10px/1 ui-monospace, monospace;
+  font: 500 10px/1 var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #6b7262;
@@ -2067,7 +2067,7 @@ body .studio-account #reset:hover {
 }
 .count-none span {
   margin-right: 8px;
-  font: 500 10px/1 ui-monospace, monospace;
+  font: 500 10px/1 var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #8b907f;
@@ -2094,7 +2094,7 @@ body .studio-account #reset:hover {
   font-size: 18px;
 }
 .all-clear b {
-  font: italic 17px/1.2 Georgia, "Iowan Old Style", serif;
+  font: italic 17px/1.2 var(--font-serif);
   font-weight: 400;
   color: var(--ink);
 }
@@ -2138,4 +2138,100 @@ body .studio-account #reset:hover {
   margin-left: 6px;
   font-size: 11.5px;
   letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------ type system */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+body {
+  font-optical-sizing: auto;
+  font-feature-settings: "cv11", "ss03";
+}
+:is(h1, h2, h3, strong, b) {
+  font-feature-settings: "cv11", "ss03", "tnum" 0;
+}
+:is(h1, h2, h3, h4) :is(em, i),
+.exp-hero h1 i,
+.exp-finale em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em !important;
+}
+.pagehead h1 em,
+.feature-content h2 em,
+.passport-reading > h2 em,
+.about-statement h2 em,
+.radar-visual em,
+.plan-summary h2 em {
+  font-size: 1.06em;
+}
+:is(strong, b, td, .num, time, .tape-px, .count-bars b, .snapshot-total strong) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ one column, one gutter */
+:root {
+  --page-max: 1408px;
+}
+body > .shell > .studio-header,
+.shell main,
+.shell footer {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: max(5%, calc((100% - var(--page-max)) / 2));
+  padding-right: max(5%, calc((100% - var(--page-max)) / 2));
+}
+#mode-banner:not(:empty) {
+  padding: 0 max(5%, calc((100% - var(--page-max)) / 2));
+}
+#mode-banner .mode-banner {
+  margin-left: 0;
+  margin-right: 0;
+}
+.market-tape {
+  --tape-gutter: max(16px, 5vw, calc((100vw - var(--page-max)) / 2));
+}
+.tape-mark {
+  padding-left: var(--tape-gutter);
+}
+.tape-status {
+  padding-right: var(--tape-gutter);
+}
+.experience-mode .market-tape {
+  --tape-gutter: max(16px, 5vw);
+}
+@media (max-width: 720px) {
+  .tape-mark { padding-left: 14px; }
+  .tape-status { padding-right: 14px; }
+}
+@media (max-width: 720px) {
+  .tape-mark { padding-left: 5vw; }
+  .tape-status { padding-right: 5vw; }
+}
+
+/* landing: same gutter as the studio, full-bleed bands */
+.exp-main {
+  padding-left: 0;
+  padding-right: 0;
+}
+.exp-nav,
+.exp-footer,
+.exp-main > .exp-hero,
+.exp-main > .manifesto,
+.exp-main > .story-section,
+.exp-main > .studio-bridge,
+.exp-main > .possibilities {
+  padding-left: max(5%, calc((100% - var(--page-max)) / 2));
+  padding-right: max(5%, calc((100% - var(--page-max)) / 2));
+}
+.exp-main > section {
+  border-radius: 0;
+}
+.experience-mode .market-tape {
+  --tape-gutter: max(16px, 5vw, calc((100vw - var(--page-max)) / 2));
 }
