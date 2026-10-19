@@ -1560,10 +1560,10 @@ textarea[aria-invalid="true"] {
   margin: 0;
   font-size: 12px;
 }
-.studio-account .mode-toggle,
-.studio-account #reset {
-  font: 12px/1.2 inherit;
+body .studio-account .mode-toggle {
   font-family: inherit;
+  font-size: 12px;
+  line-height: 1.2;
   min-height: 0;
 }
 

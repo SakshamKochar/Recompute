@@ -30,6 +30,7 @@ For demo data, call `POST /demo/reset`: it clears everything and loads the 100 t
 | `SEED_ON_START=true` | Loads the demo data when the database is empty. Free hosts wipe the disk on every restart, so the demo data comes back on its own |
 | `DEMO_RESET_TOKEN` | Render generates one. `POST /demo/reset` then needs it in the `X-Demo-Token` header, so strangers can't wipe the demo. Find it under the service's Environment tab |
 | `DATABASE_URL` | Optional. Point it at Postgres to keep uploads across restarts (see Database) |
+| `CORS_ORIGINS` | Comma-separated browser origins allowed to call the API. Defaults to the local web app (`http://127.0.0.1:5274,http://localhost:5274`). Set it to the deployed web app's origin; never `*` |
 
 On the free plan the server sleeps when idle and the first request after that is slow. Uploaded batches are lost when it restarts unless `DATABASE_URL` points at a real database.
 
@@ -39,7 +40,7 @@ On the free plan the server sleeps when idle and the first request after that is
 pytest -q
 ```
 
-152 tests. They check every route on finance's Presets tab (defaults and presets A to E, A100 and H100), check sale, harvest, recycle and repair values by hand, pin the full A100 default result to the cent, reject bad input, confirm all 100 fleet servers match `recompute_synthetic_fleet.csv` and the bear/base/bull totals match Saksham's, price repairs by failed part, grade the four demo sellers from their NVIDIA files, walk assets through the lifecycle, check CSV uploads, batches and the dashboard, confirm broken model output is caught, and cover every finding from the pre-push review (unsafe or oversized captures, huge numbers, repaired servers, error codes).
+172 tests: Saksham's original 152, plus 20 in `tests/test_integration_extensions.py` for the endpoints added during the frontend integration (scenario recommend, selected route, outcomes, market evidence, CORS). The original 152 check every route on finance's Presets tab (defaults and presets A to E, A100 and H100), check sale, harvest, recycle and repair values by hand, pin the full A100 default result to the cent, reject bad input, confirm all 100 fleet servers match `recompute_synthetic_fleet.csv` and the bear/base/bull totals match Saksham's, price repairs by failed part, grade the four demo sellers from their NVIDIA files, walk assets through the lifecycle, check CSV uploads, batches and the dashboard, confirm broken model output is caught, and cover every finding from the pre-push review (unsafe or oversized captures, huge numbers, repaired servers, error codes).
 
 ## Database
 
@@ -58,7 +59,8 @@ Three tables:
 |---|---|
 | `assets` | One row per server: descriptive fields, model inputs, current state |
 | `recommendations` | Every model run for an asset: version, inputs, route and full result |
-| `transitions` | Every state change: event, from and to state, the route at that moment, override flag, note, details |
+| `transitions` | Every state change: event, from and to state, the route at that moment, override flag, note, details (including the `selected_route`, when one was sent) |
+| `outcomes` | Realized values recorded after an asset reached a final state, linked to that final transition. Append-only: a correction is a new row |
 
 Nothing is ever overwritten. Changing inputs adds a new recommendation, and every state change adds a transition, so `/assets/{id}/history` is the full audit trail.
 
@@ -93,8 +95,8 @@ Once an asset is SOLD, HARVESTED or RECYCLED, its inputs are locked.
 | Method | Path | Returns |
 |---|---|---|
 | GET | `/health` | `ok` and the model version |
-| GET | `/meta` | Defaults for each profile, and the assumptions sheet with sources |
-| POST | `/recommend` | `{model_version, inputs, result, warnings}`. `result` is the spec's nine output fields, unchanged. `?flip_points=true` adds `decision_confidence`. Stateless |
+| GET | `/meta` | Defaults for each profile, the assumptions sheet with sources, and the scenario dials (`scenarios`) |
+| POST | `/recommend` | `{model_version, inputs, result, warnings}`. `result` is the spec's nine output fields, unchanged. `?flip_points=true` adds `decision_confidence`. `?scenario=bear`, `base` or `bull` applies Saksham's scenario to the inputs first and returns the adjusted inputs plus `scenario`. Stateless |
 | GET | `/fleet` | All 100 synthetic servers with route, value, baseline and gain, plus route counts. Stateless |
 | GET | `/fleet/{asset_id}` | One synthetic server's inputs and full result. Stateless |
 | POST | `/fleet/seed` | Loads the synthetic fleet into the database. Safe to call twice |
@@ -102,7 +104,10 @@ Once an asset is SOLD, HARVESTED or RECYCLED, its inputs are locked.
 | GET | `/assets` | All assets with route and values. Optional `?state=`, `?route=` and `?batch_id=` filters |
 | GET | `/assets/{id}` | The passport: asset, inputs, latest recommendation, warnings, diagnostics, repair pricing, decision confidence and the events allowed next. `?confidence=false` skips the confidence (about 0.2 s) |
 | PATCH | `/assets/{id}/inputs` | Merges new inputs, reruns the model |
-| POST | `/assets/{id}/events` | `{event, note, override}`. Moves the asset to its next state |
+| POST | `/assets/{id}/events` | `{event, note, override, selected_route}`. Moves the asset to its next state. `selected_route` is optional and must be in the latest recommendation's eligible list (409 otherwise); it is stored on the transition and returned as the asset's `selected_route` |
+| POST | `/assets/{id}/outcomes` | `{realized_value, note}`. Records what actually happened, after every cost; may be negative. Only in SOLD, HARVESTED or RECYCLED (409 otherwise). Returns 201 |
+| GET | `/outcomes` | Every asset with a decision: decision-time recommendation and selected route, events, current recommendation, latest outcome and its variance against the modeled value. `?state=open` or `completed` |
+| GET | `/market/evidence` | The dated source files in `data/sources` (rental index, resale, electricity, grades, repair costs) as JSON. Not a live feed: `live` is always false |
 | GET | `/assets/{id}/history` | Every recommendation and transition, in order |
 | POST | `/assets/upload` | Uploads a CSV of servers as a new batch. Returns every server's route and values, plus totals. Options: `?dry_run=true`, `?skip_existing=true` |
 | GET | `/assets/upload/template` | A starter CSV with the most common columns and two example rows |
