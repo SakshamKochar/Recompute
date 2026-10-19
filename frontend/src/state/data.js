@@ -13,6 +13,7 @@ export const R = {
   batchScenarios: (id) => resource(`scenarios:${id}`, () => api.batchScenarios(id)),
   outcomes: () => resource("outcomes", api.outcomes),
   evidence: () => resource("evidence", api.marketEvidence),
+  liveMarket: () => resource("market-live", api.marketLive),
 };
 
 export const loadAsset = (id) => load(`asset:${id}`, () => api.asset(id));

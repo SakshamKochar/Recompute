@@ -1,7 +1,7 @@
 import { rerender } from "../app.js";
 import { R } from "../state/data.js";
 import { adaptAssetRow, hardwareTitle } from "../lib/adapters.js";
-import { compactMoney, money, pad2, signedMoney } from "../lib/format.js";
+import { compactMoney, isNum, money, pad2, signedMoney } from "../lib/format.js";
 import { esc } from "../lib/html.js";
 import { LANES, routeInfo } from "../lib/routes.js";
 import { contextStrip, emptyBlock, errorBlock, heading, isDemo, loadingBlock, routeChip, tag } from "../ui/components.js";
@@ -115,16 +115,52 @@ function sources(ev) {
     .join("")}</section>`;
 }
 
-function body(assetsResp, meta, ev, batches) {
+function signedCents(n) {
+  if (!isNum(n)) return "—";
+  const body = Math.abs(n).toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (Math.abs(n) < 0.005) return body;
+  return `${n > 0 ? "+" : "−"}${body}`;
+}
+
+function asksPanel(entry) {
+  if (!entry) return "";
+  if (!entry.data && entry.status === "error") {
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">${esc(entry.error?.message || "Live asks didn’t load.")} The dated evidence below is unchanged.</p></section>`;
+  }
+  if (!entry.data) {
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">Reading the public listings…</p></section>`;
+  }
+  const live = entry.data;
+  if (!live.live || !live.quotes?.length) {
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">${esc(live.error || live.note || "No live asks right now.")} The dated evidence below is unchanged.</p></section>`;
+  }
+  const when = new Date(live.fetched_at);
+  const stamp = Number.isNaN(when.getTime()) ? "" : when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const rows = live.quotes
+    .map((q) => {
+      const gap = q.in_model && isNum(q.median) && isNum(q.model_rental_rate) ? q.median - q.model_rental_rate : null;
+      const profile = q.model_profile === "h100_8x" ? "H100 8×" : q.model_profile === "a100_8x" ? "A100 8×" : q.model_profile;
+      return `<tr><th scope="row">${esc(q.label)}${profile ? `<small>${esc(profile)} assumption</small>` : ""}</th><td>${money(q.median, { cents: true })}</td><td>${money(q.low, { cents: true })} – ${money(q.high, { cents: true })}</td><td>${esc(q.offers)}${q.capped ? " · capped" : ""}</td><td>${q.in_model ? money(q.model_rental_rate, { cents: true }) : "—"}</td><td>${signedCents(gap)}</td></tr>`;
+    })
+    .join("");
+  return `<section class="panel-card tape-panel" aria-labelledby="asks-h"><div class="panelhead"><h2 id="asks-h">Live rental asks vs the model’s assumption</h2><small>${live.stale ? "LAST READING" : "VAST.AI"} · ${esc(stamp)}</small></div><div class="tablewrap compact"><table><thead><tr><th scope="col">GPU</th><th scope="col">Median ask</th><th scope="col">Low – high</th><th scope="col">Offers</th><th scope="col">Model rate</th><th scope="col">Ask − model</th></tr></thead><tbody>${rows}</tbody></table></div><p class="pp-note">${esc(live.note)}${live.source?.url ? ` <a href="${esc(live.source.url)}" target="_blank" rel="noopener noreferrer">${esc(live.source.name)} ↗</a>` : ""}</p></section>`;
+}
+
+function body(assetsResp, meta, ev, batches, liveEntry) {
   const rows = assetsResp.assets.map(adaptAssetRow);
   if (!rows.length) return emptyBlock("◌", "No assets to match against.", "Upload inventory to see signals for your own hardware.");
   const signals = laneSignals(rows);
+  const demo = isDemo();
+  const honesty = demo
+    ? `${tag("historical", "Not live")} Demo mode replays a recorded snapshot. The tape shows the dated rental index shipped with the model, not live asks. Every other figure on this page is the model’s output or a dated observation.`
+    : `<span class="prov-tag asks">On-demand asks</span> The tape is live: median on-demand asks from Vast.ai, per GPU-hour, refreshed about once a minute. Hosts list those prices; they are not completed rentals, and the sample stops at 64 offers per GPU. The model’s rental rates stay the dated Silicon Data readings. Nothing else on this page is a live feed.`;
   return (
-    contextStrip([`Model v${esc(meta.model_version)}`, "Dated evidence, not a live feed"]) +
+    contextStrip([`Model v${esc(meta.model_version)}`, demo ? "Tape shows the dated index" : "Tape: live asks · this page: dated evidence"]) +
     heading("Market Intelligence", "A moving market.<br><em>A moment to act.</em>", "Signals become useful when they connect to hardware you actually own.") +
-    `<div class="honesty-note" role="note">${tag("historical", "Not live")} Every figure on this page is either the model’s output for your assets or a dated observation shipped with the model. There is no live pricing feed and no alerts.</div>
+    `<div class="honesty-note" role="note">${honesty}</div>
+    ${asksPanel(liveEntry)}
     <div class="radar-layout">${radar(signals)}${stories(signals, ev)}</div>${scenarioBlock(batches)}${assumptions(meta)}${sources(ev)}
-    <p class="studio-footnote">Evidence statuses come from the source files: SOURCED (cited), DERIVED (calculated from sourced figures), HYPOTHESIS (team rubric), TO_VERIFY (not yet confirmed).${isDemo() ? " Demo mode shows the same files as recorded." : ""}</p>`
+    <p class="studio-footnote">Evidence statuses come from the source files: SOURCED (cited), DERIVED (calculated from sourced figures), HYPOTHESIS (team rubric), TO_VERIFY (not yet confirmed).${demo ? " Demo mode shows the same files as recorded." : ""}</p>`
   );
 }
 
@@ -135,7 +171,8 @@ export default {
     const failed = entries.find((e) => e.status === "error" && !e.data);
     if (failed) return errorBlock(failed.error, { retryKeys: ["assets", "meta", "evidence", "batches"] });
     if (entries.some((e) => !e.data)) return loadingBlock();
-    return body(...entries.map((e) => e.data));
+    const live = isDemo() ? null : R.liveMarket();
+    return body(...entries.map((e) => e.data), live);
   },
   actions: {
     status: (el) => {

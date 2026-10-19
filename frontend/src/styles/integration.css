@@ -348,6 +348,10 @@ ul.plain li {
   background: #ece6dc;
   color: #5d4b33;
 }
+.prov-tag.asks {
+  background: #dcf587;
+  color: #24382c;
+}
 .prov-tag.hypothesis {
   background: #f3dfd4;
   color: #7a3a22;
@@ -1533,10 +1537,208 @@ textarea[aria-invalid="true"] {
     grid-column: 2;
   }
 }
+/* ------------------------------------------------------------------ rental tape */
+.market-tape {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: stretch;
+  height: 46px;
+  background: #24382c;
+  color: #f6f3ea;
+  border-bottom: 1px solid #dcf58766;
+  font-variant-numeric: tabular-nums;
+}
+.tape-mark,
+.tape-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  background: #24382c;
+}
+.tape-mark {
+  padding: 0 16px 0 max(16px, 5vw);
+  border-right: 1px solid #ffffff14;
+}
+.tape-status {
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+  padding: 0 max(16px, 5vw) 0 16px;
+  border-left: 1px solid #ffffff14;
+  min-width: 132px;
+}
+.tape-status b {
+  font: 500 10px/1.2 ui-monospace, monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f6f3ea;
+}
+.tape-status small {
+  font: 10px/1.2 ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  color: #b7c3ac;
+}
+.tape-kicker {
+  font: 10px/1 ui-monospace, monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e4ebda;
+  white-space: nowrap;
+}
+.tape-kicker-short {
+  display: none;
+}
+.tape-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #dcf587;
+  box-shadow: 0 0 0 0 rgba(220, 245, 135, 0.55);
+  animation: tape-pulse 2.6s ease-out infinite;
+  flex: none;
+}
+.market-tape.dated .tape-dot,
+.market-tape.offline .tape-dot,
+.market-tape.stale .tape-dot,
+.market-tape.waiting .tape-dot {
+  background: #c9b89a;
+  box-shadow: none;
+  animation: none;
+}
+.market-tape.live .tape-status b {
+  color: #dcf587;
+}
+.tape-viewport {
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 28px), transparent);
+}
+.tape-track {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: tape-marquee var(--tape-dur, 72s) linear infinite;
+  will-change: transform;
+}
+.tape-group {
+  display: flex;
+  height: 100%;
+}
+.market-tape:hover .tape-track,
+.market-tape:focus-within .tape-track {
+  animation-play-state: paused;
+}
+@keyframes tape-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes tape-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 245, 135, 0.5); }
+  70% { box-shadow: 0 0 0 7px rgba(220, 245, 135, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 245, 135, 0); }
+}
+.tape-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 22px;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  border-right: 1px solid #ffffff12;
+}
+.tape-item:hover .tape-name,
+.tape-item:focus-visible .tape-name {
+  color: #dcf587;
+}
+.tape-name {
+  font: 11px/1 ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e7ecdf;
+}
+.tape-px {
+  font-size: 14px;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  color: #fbf8f0;
+}
+.tape-unit {
+  margin-left: -4px;
+  font-size: 10px;
+  color: #9aa892;
+}
+.tape-chg {
+  font: 10.5px/1 ui-monospace, monospace;
+}
+.tape-chg.up { color: #d6ef86; }
+.tape-chg.down { color: #e7b09a; }
+.tape-chg.flat { color: #9aa892; }
+.tape-spark {
+  display: block;
+  flex: none;
+}
+.tape-model {
+  font: italic 11px/1 Georgia, "Iowan Old Style", serif;
+  letter-spacing: 0;
+  color: #c9d4bc;
+}
+.tape-item.flash {
+  animation: tape-flash 0.9s ease;
+}
+@keyframes tape-flash {
+  0% { background: rgba(220, 245, 135, 0.16); }
+  100% { background: transparent; }
+}
+.tape-empty .tape-name {
+  letter-spacing: 0.14em;
+  color: #b7c3ac;
+}
+.market-tape a:focus-visible {
+  outline-offset: -2px;
+}
+.tape-panel th small {
+  display: block;
+  font-weight: 400;
+  color: var(--muted-text);
+  letter-spacing: 0;
+  text-transform: none;
+}
+@media (max-width: 720px) {
+  .tape-kicker-long { display: none; }
+  .tape-kicker-short { display: inline; }
+  .tape-status { min-width: 0; padding-right: 14px; }
+  .tape-status small { display: none; }
+  .tape-mark { padding-left: 14px; }
+  .tape-model { display: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .spinner,
   .sandbox-dot.checking {
     animation: none;
+  }
+  .market-tape .tape-clone { display: none; }
+  .market-tape .tape-viewport {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .market-tape .tape-track {
+    animation: none !important;
+    transform: none !important;
+  }
+  .market-tape .tape-dot,
+  .tape-item.flash {
+    animation: none !important;
   }
   .is-stale,
   .skip-link {

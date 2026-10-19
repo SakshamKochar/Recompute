@@ -11,6 +11,7 @@ import { store } from "./state/store.js";
 import { clearResources, invalidate, setResourceListener } from "./state/resources.js";
 import { esc } from "./lib/html.js";
 import { confirmDialog, toast } from "./ui/feedback.js";
+import { startTicker } from "./ui/ticker.js";
 
 import home from "./views/home.js";
 import overview from "./views/overview.js";
@@ -66,6 +67,7 @@ export async function setMode(mode, { persist = true } = {}) {
   }
   renderChrome();
   scheduleRender(true);
+  startTicker();
 }
 
 async function boot() {

@@ -73,6 +73,7 @@ npm run test:e2e
 | `DATABASE_URL` | API env | `sqlite:///./recompute.db` | Any SQLAlchemy URL |
 | `CORS_ORIGINS` | API env | `http://127.0.0.1:5274,http://localhost:5274` | Browser origins allowed to call the API directly |
 | `DEMO_RESET_TOKEN` | API env | unset | Protects `POST /demo/reset`. Never put it in frontend config |
+| `MARKET_LIVE_FEED` | API env | `vast` | `off` disables `GET /market/live`. The tape then shows the dated rental index and says so. The browser never calls Vast.ai itself |
 
 ## Production build of the web app
 

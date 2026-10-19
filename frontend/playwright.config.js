@@ -23,7 +23,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: `rm -f /tmp/recompute-e2e.db && SEED_ON_START=true DATABASE_URL=sqlite:////tmp/recompute-e2e.db CORS_ORIGINS=http://127.0.0.1:${WEB_PORT} .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port ${API_PORT}`,
+      command: `rm -f /tmp/recompute-e2e.db && SEED_ON_START=true MARKET_LIVE_FEED=off DATABASE_URL=sqlite:////tmp/recompute-e2e.db CORS_ORIGINS=http://127.0.0.1:${WEB_PORT} .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port ${API_PORT}`,
       cwd: "../backend",
       url: `http://127.0.0.1:${API_PORT}/health`,
       reuseExistingServer: false,

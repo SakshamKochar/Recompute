@@ -108,6 +108,7 @@ Once an asset is SOLD, HARVESTED or RECYCLED, its inputs are locked.
 | POST | `/assets/{id}/outcomes` | `{realized_value, note}`. Records what actually happened, after every cost; may be negative. Only in SOLD, HARVESTED or RECYCLED (409 otherwise). Returns 201 |
 | GET | `/outcomes` | Every asset with a decision: decision-time recommendation and selected route, events, current recommendation, latest outcome and its variance against the modeled value. `?state=open` or `completed` |
 | GET | `/market/evidence` | The dated source files in `data/sources` (rental index, resale, electricity, grades, repair costs) as JSON. Not a live feed: `live` is always false |
+| GET | `/market/live` | On-demand GPU rental asks from Vast.ai's public bundles API (no key). Median, low, high and a short in-memory history per GPU, cached about 60 seconds. `live` is false when `MARKET_LIVE_FEED=off` or Vast.ai did not answer and nothing is cached. These are hosts' listed prices, not completed rentals, and the model's rental rates are not changed |
 | GET | `/assets/{id}/history` | Every recommendation and transition, in order |
 | POST | `/assets/upload` | Uploads a CSV of servers as a new batch. Returns every server's route and values, plus totals. Options: `?dry_run=true`, `?skip_existing=true` |
 | GET | `/assets/upload/template` | A starter CSV with the most common columns and two example rows |

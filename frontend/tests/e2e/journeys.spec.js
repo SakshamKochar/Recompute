@@ -32,6 +32,8 @@ test("A: Overview → Fleet → Passport → Lab → Recommendation", async ({ p
   const dash = await (await request.get(`${API}/dashboard`)).json();
   await page.goto("/#overview");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Good hardware.");
+  await expect(page.locator("#ticker")).toContainText("H100");
+  await expect(page.locator("#ticker")).toContainText(/not live/i);
   await expect(page.locator(".studio-context")).toContainText(`${dash.total_assets} assets`);
 
   await page.getByRole("navigation").getByRole("link", { name: "Fleet", exact: true }).click();

@@ -22,7 +22,7 @@ export default {
         <li><b>Demo mode</b> replays responses recorded from the same backend on synthetic servers and simulated NVIDIA diagnostics. It is read-only.</li>
         <li><b>No sign-in and no multi-tenancy.</b> Anyone who can reach the app and API can read every asset and record lifecycle moves. Passport links are not private. Run it on a trusted network only.</li>
         <li><b>Lifecycle moves are records, not transactions.</b> Nothing is listed, sold, hosted or shipped by this software.</li>
-        <li><b>Market figures are dated observations</b> shipped with the model, not a live feed.</li>
+        <li><b>The tape at the top</b> shows live on-demand rental asks from the public Vast.ai marketplace (a median per GPU-hour, refreshed about once a minute). Hosts list those prices; they are not completed rentals. The model’s rental rates stay the dated Silicon Data readings. Demo mode shows that dated index instead, and says so. If the live feed is off or unreachable, the tape falls back to the dated index and labels it.</li>
         <li><b>Drafts, saved scenarios and plans</b> live in this browser only, separately for Live and Demo.</li>
       </ul></section>
       <p class="studio-footnote">Every asset has a next chapter. Not done. Just next.</p>`

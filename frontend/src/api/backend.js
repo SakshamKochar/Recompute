@@ -53,4 +53,5 @@ export const api = {
     });
   },
   marketEvidence: () => req("GET", "/market/evidence"),
+  marketLive: () => req("GET", "/market/live", { retries: 0, timeout: 20000 }),
 };
