@@ -55,7 +55,7 @@ All of these ran in this environment (Ubuntu 24.04, Python 3.12.3, Node 22.23.3,
 |---|---|---|
 | Backend, before any change (Saksham's code as uploaded) | `pytest -q` | 152 passed, 0 failed |
 | Backend, after the changes | `pytest -q` | 181 passed, 0 failed (152 original + 29 new) |
-| Frontend unit tests (Vitest, jsdom) | `npm test` | 49 passed, 0 failed, in 5 files |
+| Frontend unit tests (Vitest, jsdom) | `npm test` | 50 passed, 0 failed, in 5 files |
 | End-to-end (Playwright, Chrome, own API on a fresh seeded database, `MARKET_LIVE_FEED=off`) | `npm run test:e2e` | 13 passed, 0 failed |
 | Production build | `npm run build` | Succeeds: 168 kB JS, 94 kB CSS before gzip |
 | Page check in Live and Demo at 1440×900, 820×1180 and 390×844 | `node scripts/smoke.mjs` | Every route loads with no console errors and no horizontal overflow |

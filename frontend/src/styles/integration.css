@@ -2055,3 +2055,87 @@ body .studio-account #reset:hover {
     height: 44px;
   }
 }
+
+/* overview refinements */
+.count-none {
+  margin: 14px 4px 0;
+  padding-top: 14px;
+  border-top: 1px solid #e6e7dc;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--muted-text);
+}
+.count-none span {
+  margin-right: 8px;
+  font: 500 10px/1 ui-monospace, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8b907f;
+}
+.all-clear {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  margin-bottom: 8px;
+  border: 1px solid #dfe3d2;
+  border-radius: 14px;
+  background: var(--card);
+}
+.all-clear-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #e5e9d9;
+  color: #56653f;
+  font-size: 18px;
+}
+.all-clear b {
+  font: italic 17px/1.2 Georgia, "Iowan Old Style", serif;
+  font-weight: 400;
+  color: var(--ink);
+}
+.all-clear p {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--muted-text);
+}
+.activity-list li {
+  align-items: baseline;
+  padding: 12px 0;
+}
+.activity-list li:last-child {
+  border-bottom: 0;
+}
+.activity-list li > a,
+.activity-list li > span {
+  min-width: 0;
+}
+.activity-list li > a > span,
+.activity-list li > span > span {
+  color: #4a5443;
+}
+.activity-list .more {
+  margin: 0 2px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #e9eadf;
+  font-size: 11.5px;
+  color: #3d4a36;
+}
+.activity-list .more:hover {
+  background: #dfe3d2;
+}
+.activity-list time {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.activity-list small {
+  margin-left: 6px;
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+}

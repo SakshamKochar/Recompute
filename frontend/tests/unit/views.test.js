@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { store } from "../../src/state/store.js";
 import { adaptAssetDetail, adaptAssetRow } from "../../src/lib/adapters.js";
 import { fleetRows } from "../../src/views/fleet.js";
-import { opportunities } from "../../src/views/overview.js";
+import { activityGroups, opportunities } from "../../src/views/overview.js";
 import { moveFor, strategyRoute } from "../../src/views/command.js";
 import { applyEdit, baseInputsFor, draftFor } from "../../src/views/lab.js";
 import { flipTarget } from "../../src/views/replay.js";
@@ -124,5 +124,20 @@ describe("market signals", () => {
     const sig = laneSignals(rows);
     expect(sig.map((s) => s.lane.key)).toEqual(["earn", "exit", "recover"]);
     for (const s of sig) if (s.asset) expect(s.lane.routes).toContain(s.asset.route);
+  });
+});
+
+describe("overview activity", () => {
+  it("groups consecutive identical moves in the same minute, keeps different ones apart", () => {
+    const at = "2026-10-19T12:55:01";
+    const rows = [
+      { asset_id: "A", event: "receive", from_state: null, to_state: "RECEIVED", at },
+      { asset_id: "B", event: "receive", from_state: null, to_state: "RECEIVED", at: "2026-10-19T12:55:40" },
+      { asset_id: "C", event: "list", from_state: "RECEIVED", to_state: "LISTED", at },
+      { asset_id: "D", event: "receive", from_state: null, to_state: "RECEIVED", at },
+    ];
+    const g = activityGroups(rows);
+    expect(g.map((x) => x.items.map((i) => i.asset_id))).toEqual([["A", "B"], ["C"], ["D"]]);
+    expect(activityGroups([])).toEqual([]);
   });
 });

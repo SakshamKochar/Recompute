@@ -5,7 +5,7 @@ import { esc } from "../lib/html.js";
 import { eventInfo, STATE_ORDER, stateInfo } from "../lib/lifecycle.js";
 import { ROUTE_ORDER, routeInfo } from "../lib/routes.js";
 import { boardArt } from "../ui/art.js";
-import { contextStrip, emptyBlock, heading, isDemo, journey, routeChip, withData } from "../ui/components.js";
+import { contextStrip, heading, isDemo, journey, routeChip, withData } from "../ui/components.js";
 
 const ACTION_KIND = {
   sale_at_risk: ["Sale at risk", "Draining takes longer than the buyer allows."],
@@ -19,6 +19,32 @@ export function opportunities(rows) {
   return rows
     .filter((a) => !a.terminal && a.route && a.route !== a.baselineRoute && a.gain > 0)
     .sort((a, b) => (b.state === "RECEIVED") - (a.state === "RECEIVED") || b.gain - a.gain);
+}
+
+/** Consecutive activity entries with the same move in the same minute, shown as one line. */
+export function activityGroups(list) {
+  const groups = [];
+  for (const t of list || []) {
+    const key = [t.event, t.from_state, t.to_state, !!t.override, String(t.at || "").slice(0, 16)].join("|");
+    const last = groups.at(-1);
+    if (last && last.key === key) last.items.push(t);
+    else groups.push({ key, items: [t] });
+  }
+  return groups;
+}
+
+function activityRow(g) {
+  const t = g.items[0];
+  const verb = `<span>${esc(eventInfo(t.event).verb)}</span>`;
+  const move = t.from_state ? ` <small>${esc(stateInfo(t.from_state).label)} → ${esc(stateInfo(t.to_state).label)}</small>` : "";
+  const flag = t.override ? ` <span class="prov-tag hypothesis">override</span>` : "";
+  const time = `<time datetime="${esc(t.at)}">${dateTime(t.at)}</time>`;
+  if (g.items.length === 1) {
+    return `<li><a href="#passport/${encodeURIComponent(t.asset_id)}"><b>${esc(t.asset_id)}</b> ${verb}${move}${flag}</a>${time}</li>`;
+  }
+  const shown = g.items.slice(0, 2).map((x) => `<a href="#passport/${encodeURIComponent(x.asset_id)}"><b>${esc(x.asset_id)}</b></a>`).join(", ");
+  const rest = g.items.length - 2;
+  return `<li class="grouped"><span>${shown}${rest > 0 ? ` <a class="more" href="#fleet?state=${encodeURIComponent(t.to_state || "")}">+${rest} more</a>` : ""} ${verb}${move}${flag}</span>${time}</li>`;
 }
 
 function featured(a, total) {
@@ -39,6 +65,11 @@ function bars(entries, total, { labelOf, hrefOf }) {
         `<li class="${n ? "" : "zero"}"><a href="${hrefOf(k)}"><span class="count-label">${labelOf(k)}</span><span class="count-track" aria-hidden="true"><i style="width:${(n / max) * 100}%"></i></span><b>${n}</b><span class="sr-only"> of ${total}</span></a></li>`,
     )
     .join("")}</ul>`;
+}
+
+function emptyStates(dash) {
+  const none = STATE_ORDER.filter((s) => !dash.by_state[s]).map((s) => stateInfo(s).label);
+  return none.length ? `<p class="count-none"><span>None yet</span> ${esc(none.join(" · "))}</p>` : "";
 }
 
 function body(dash, assetsResp, batchesResp) {
@@ -76,10 +107,10 @@ function body(dash, assetsResp, batchesResp) {
     `<div class="studio-overview">${opp.length ? featured(opp[0], opp.length) : noFeatured()}<section class="fleet-snapshot" aria-label="Fleet summary"><span class="micro">THE BIG PICTURE · OPEN ASSETS</span><div class="snapshot-total"><small>Recommended routes, combined</small><strong>${compactMoney(ov.recommended)}</strong><span>Baseline ${compactMoney(ov.baseline)} · <b class="gain">${signedMoney(ov.gain_vs_baseline)}</b> vs baseline</span></div><div class="fleet-health-art"><div class="health-circle" style="--share:${open.length ? (passing / open.length) * 100 : 0}%"><span>${passing}<small>/ ${open.length}</small></span></div><div><b>${failed ? "Plenty of life left." : "Every open server passed."}</b><p>${passing} passed diagnostics.<br>${failed} failed${failed ? ` · ${repairRoute} worth repairing` : ""}.</p></div></div><div class="snapshot-bottom"><a href="#outcomes"><strong>${pad2(inMotion)}</strong><span>decisions in motion ↗</span></a><a href="#attention"><strong>${pad2(attention)}</strong><span>need attention ↗</span></a></div></section></div>
     <p class="figure-note">Sums of each open server’s modeled route value on its own timeline. Not a same-date portfolio valuation or a quote.</p>
     <div class="overview-grid"><section class="panel-card" aria-labelledby="by-state"><div class="panelhead"><h2 id="by-state">Where every asset is</h2><small>LIFECYCLE STATE</small></div>${bars(
-      STATE_ORDER.map((s) => [s, dash.by_state[s] || 0]),
+      STATE_ORDER.filter((s) => dash.by_state[s]).map((s) => [s, dash.by_state[s]]),
       dash.total_assets,
       { labelOf: (s) => esc(stateInfo(s).label), hrefOf: (s) => `#fleet?state=${s}` },
-    )}</section><section class="panel-card" aria-labelledby="by-route"><div class="panelhead"><h2 id="by-route">What the model recommends</h2><small>RECOMMENDED ROUTE</small></div>${bars(
+    )}${emptyStates(dash)}</section><section class="panel-card" aria-labelledby="by-route"><div class="panelhead"><h2 id="by-route">What the model recommends</h2><small>RECOMMENDED ROUTE</small></div>${bars(
       ROUTE_ORDER.map((r) => [r, dash.by_route[r] || 0]),
       dash.total_assets,
       { labelOf: (r) => `<span aria-hidden="true">${routeInfo(r).symbol}</span> ${esc(routeInfo(r).label)}`, hrefOf: (r) => `#fleet?route=${encodeURIComponent(r)}` },
@@ -94,7 +125,7 @@ function body(dash, assetsResp, batchesResp) {
               return `<a class="attention-item ${esc(i.kind)}" href="#passport/${encodeURIComponent(i.asset_id)}"><span class="micro">${esc(label)}</span><b>${esc(i.asset_id)}</b><p>${esc(i.reason)}</p><small>${esc(stateInfo(i.state).label)} · ${esc(routeInfo(i.route).label)} recommended · ${esc(sub)}</small></a>`;
             })
             .join("")}</div>`
-        : emptyBlock("◎", "Nothing urgent.", "No sale at risk, no compute asset whose recommendation changed, no open override.")
+        : `<div class="all-clear" role="status"><span class="all-clear-mark" aria-hidden="true">◎</span><div><b>Nothing urgent.</b><p>No sale at risk, no compute asset whose recommendation changed, no open override.</p></div></div>`
     }
     <div class="sectiontitle"><div><span class="micro">WHERE POSSIBILITY BECOMES A PLAN</span><h2>Your next chapter, in four moves.</h2></div><a href="#home" class="textlink">Revisit the guided story ↗</a></div>${journey()}
     <div class="sectiontitle"><h2>${pair.length ? "More possibilities worth a look." : "Recent activity."}</h2><a href="#market" class="textlink">Open Market Intelligence ↗</a></div>
@@ -110,12 +141,7 @@ function body(dash, assetsResp, batchesResp) {
     }
     <section class="panel-card activity" aria-labelledby="recent"><div class="panelhead"><h2 id="recent">Recent activity</h2><small>LATEST STATE CHANGES</small></div>${
       dash.recent_activity.length
-        ? `<ol class="activity-list">${dash.recent_activity
-            .map(
-              (t) =>
-                `<li><a href="#passport/${encodeURIComponent(t.asset_id)}"><b>${esc(t.asset_id)}</b> <span>${esc(eventInfo(t.event).verb)}</span>${t.from_state ? ` <small>${esc(stateInfo(t.from_state).label)} → ${esc(stateInfo(t.to_state).label)}</small>` : ""}${t.override ? ` <span class="prov-tag hypothesis">override</span>` : ""}</a><time datetime="${esc(t.at)}">${dateTime(t.at)}</time></li>`,
-            )
-            .join("")}</ol>`
+        ? `<ol class="activity-list">${activityGroups(dash.recent_activity).map(activityRow).join("")}</ol>`
         : `<p class="subtle">No lifecycle activity yet.</p>`
     }</section>`
   );
