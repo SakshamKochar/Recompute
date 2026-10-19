@@ -16,10 +16,10 @@ export function heading(section, title, sub, action = "") {
 /** The context strip under the header: what data this screen is showing and where it came from. */
 export function contextStrip(parts) {
   const demo = isDemo();
-  return `<div class="studio-context"><span><i class="${demo ? "demo" : ""}"></i> ${demo ? "DEMO SNAPSHOT" : "LIVE FLEET"}</span>${parts
+  return `<div class="studio-context${demo ? "" : " live"}"><span><i class="${demo ? "demo" : ""}"></i> ${demo ? "DEMO SNAPSHOT" : "YOUR FLEET"}</span>${parts
     .filter(Boolean)
     .map((p) => `<span>${p}</span>`)
-    .join("")}<span>${demo ? "Illustrative · recorded model output · nothing executes" : "Backend model results · ReCompute API"}</span></div>`;
+    .join("")}${demo ? `<span>Illustrative · recorded model output · nothing executes</span>` : ""}</div>`;
 }
 
 export function loadingBlock(label = "Loading from the ReCompute API…") {

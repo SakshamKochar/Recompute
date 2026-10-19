@@ -94,7 +94,7 @@ function assumptions(meta) {
   const all = meta.assumptions || [];
   const statuses = [...new Set(all.map((a) => a.status).filter(Boolean))];
   const rows = statusFilter === "all" ? all : all.filter((a) => a.status === statusFilter);
-  return `<section class="panel-card" aria-labelledby="as-h"><div class="panelhead"><h2 id="as-h">Every default, and where it came from</h2><small>${all.length} MODEL INPUTS · GET /meta</small></div><div class="filter-chips" role="group" aria-label="Filter by status"><button data-action="status" data-status="all" aria-pressed="${statusFilter === "all"}">All ${all.length}</button>${statuses
+  return `<section class="panel-card" aria-labelledby="as-h"><div class="panelhead"><h2 id="as-h">Every default, and where it came from</h2><small>${all.length} MODEL INPUTS</small></div><div class="filter-chips" role="group" aria-label="Filter by status"><button data-action="status" data-status="all" aria-pressed="${statusFilter === "all"}">All ${all.length}</button>${statuses
     .map((s) => `<button data-action="status" data-status="${esc(s)}" aria-pressed="${statusFilter === s}">${esc(s)} ${all.filter((a) => a.status === s).length}</button>`)
     .join("")}</div><div class="tablewrap compact"><table><thead><tr><th scope="col">Input</th><th scope="col">Default</th><th scope="col">Status</th><th scope="col">Owner</th><th scope="col">Source and note</th></tr></thead><tbody>${rows
     .map(
@@ -105,7 +105,7 @@ function assumptions(meta) {
 }
 
 function sources(ev) {
-  return `<section class="panel-card" aria-labelledby="src-h"><div class="panelhead"><h2 id="src-h">The dated evidence</h2><small>GET /market/evidence · NOT LIVE</small></div><p class="pp-note">${esc(ev.note)}</p>${Object.entries(ev.sources)
+  return `<section class="panel-card" aria-labelledby="src-h"><div class="panelhead"><h2 id="src-h">The dated evidence</h2><small>DATED · NOT LIVE</small></div><p class="pp-note">${esc(ev.note)}</p>${Object.entries(ev.sources)
     .map(([k, s]) => {
       const cols = Object.keys(s.rows[0] || {}).filter((c) => !["url"].includes(c));
       return `<details class="model-details evidence" ${openSource === k ? "open" : ""} data-source="${esc(k)}"><summary>${esc(s.title)} <small>${s.rows.length} rows · <code>${esc(s.file)}</code></small></summary><div class="tablewrap compact"><table><thead><tr>${cols.map((c) => `<th scope="col">${esc(c.replace(/_/g, " "))}</th>`).join("")}</tr></thead><tbody>${s.rows
@@ -125,14 +125,14 @@ function signedCents(n) {
 function asksPanel(entry) {
   if (!entry) return "";
   if (!entry.data && entry.status === "error") {
-    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">${esc(entry.error?.message || "Live asks didn’t load.")} The dated evidence below is unchanged.</p></section>`;
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>VAST.AI</small></div><p class="pp-note">${esc(entry.error?.message || "Live asks didn’t load.")} The dated evidence below is unchanged.</p></section>`;
   }
   if (!entry.data) {
-    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">Reading the public listings…</p></section>`;
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>VAST.AI</small></div><p class="pp-note">Reading the public listings…</p></section>`;
   }
   const live = entry.data;
   if (!live.live || !live.quotes?.length) {
-    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>GET /market/live</small></div><p class="pp-note">${esc(live.error || live.note || "No live asks right now.")} The dated evidence below is unchanged.</p></section>`;
+    return `<section class="panel-card tape-panel"><div class="panelhead"><h2>Live rental asks</h2><small>VAST.AI</small></div><p class="pp-note">${esc(live.error || live.note || "No live asks right now.")} The dated evidence below is unchanged.</p></section>`;
   }
   const when = new Date(live.fetched_at);
   const stamp = Number.isNaN(when.getTime()) ? "" : when.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -155,7 +155,7 @@ function body(assetsResp, meta, ev, batches, liveEntry) {
     ? `${tag("historical", "Not live")} Demo mode replays a recorded snapshot. The tape shows the dated rental index shipped with the model, not live asks. Every other figure on this page is the model’s output or a dated observation.`
     : `<span class="prov-tag asks">On-demand asks</span> The tape is live: median on-demand asks from Vast.ai, per GPU-hour, refreshed about once a minute. Hosts list those prices; they are not completed rentals, and the sample stops at 64 offers per GPU. The model’s rental rates stay the dated Silicon Data readings. Nothing else on this page is a live feed.`;
   return (
-    contextStrip([`Model v${esc(meta.model_version)}`, demo ? "Tape shows the dated index" : "Tape: live asks · this page: dated evidence"]) +
+    contextStrip([`Model v${esc(meta.model_version)}`, demo ? "Tape shows the dated index" : "Tape shows live asks"]) +
     heading("Market Intelligence", "A moving market.<br><em>A moment to act.</em>", "Signals become useful when they connect to hardware you actually own.") +
     `<div class="honesty-note" role="note">${honesty}</div>
     ${asksPanel(liveEntry)}

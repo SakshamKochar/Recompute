@@ -85,16 +85,13 @@ function renderChrome() {
   const sw = document.querySelector("#mode-switch");
   if (sw) {
     const status = demo ? "demo" : h.state === "ok" ? "live" : h.state === "checking" ? "checking" : "offline";
-    const label = demo
-      ? "Demo · illustrative"
-      : h.state === "ok"
-        ? `Live · model v${esc(h.version)}`
-        : h.state === "checking"
-          ? "Live · connecting…"
-          : "Live · API unreachable";
-    sw.innerHTML = `<span class="sandbox-dot ${status}" aria-hidden="true"></span><span class="mode-label" aria-live="polite">${label}</span>
+    const label = demo ? "Demo" : h.state === "ok" ? "" : h.state === "checking" ? "Connecting" : "Offline";
+    const pill = label
+      ? `<span class="mode-pill ${status}"><span class="sandbox-dot ${status}" aria-hidden="true"></span><span class="mode-label">${label}</span></span>`
+      : `<span class="sr-only">Live mode, model v${esc(h.version || "")}</span>`;
+    sw.innerHTML = `<span class="mode-status" aria-live="polite">${pill}</span>
       <button type="button" class="mode-toggle" data-action="switch-mode" data-mode="${demo ? "live" : "demo"}">${demo ? "Use Live data" : "Explore Demo"}</button>
-      <button type="button" id="reset" data-action="clear-drafts" aria-label="Clear drafts saved on this device" title="Clear drafts saved on this device">↺</button>`;
+      <button type="button" id="reset" data-action="clear-drafts" aria-label="Clear drafts saved on this device" title="Clear drafts saved on this device"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.2 6.4A5 5 0 1 1 3 9.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2.6 2.8v3.8h3.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
   }
   const banner = document.querySelector("#mode-banner");
   if (banner) {
@@ -105,7 +102,7 @@ function renderChrome() {
     } else banner.innerHTML = "";
   }
   const fm = document.querySelector("#footer-model");
-  if (fm) fm.innerHTML = demo ? "Demo snapshot · illustrative · no transactions" : h.version ? `Decision model v${esc(h.version)} · ReCompute API` : "Every asset has a next chapter. &nbsp; ↗";
+  if (fm) fm.innerHTML = demo ? "Demo snapshot · illustrative · no transactions" : h.version ? `Decision model v${esc(h.version)}` : "Every asset has a next chapter.";
 }
 
 /* ---------------------------------------------------------------- rendering */
@@ -171,8 +168,6 @@ function render() {
       const v = VIEWS[k];
       return `<a href="#${k}" class="${navKey === k ? "active" : ""}" ${navKey === k ? 'aria-current="page"' : ""}>${esc(v.title)}</a>`;
     }).join("");
-    document.querySelector("#crumb").textContent =
-      "Workspace / " + (route.page === "passport" ? `Fleet / Passport ${route.param || ""}` : view.title);
     const root = document.querySelector("#main");
     const f = captureFocus(root);
     root.innerHTML = view.render(route);

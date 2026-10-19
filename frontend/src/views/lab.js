@@ -327,7 +327,7 @@ const view = {
       if (!Object.keys(changes).length) return toast("These inputs match the asset already.");
       const { confirmed } = await confirmDialog({
         title: `Save these inputs to ${c.id}?`,
-        body: `<p class="subtext">This calls <code>PATCH /assets/${esc(c.id)}/inputs</code> and the backend reruns the model. The current recommendation stays in history.</p><ul class="plain">${Object.entries(changes)
+        body: `<p class="subtext">${esc(c.id)}’s saved inputs change and the model runs again. The current recommendation stays in history.</p><ul class="plain">${Object.entries(changes)
           .map(([k, v]) => `<li>${esc(INPUT_SPECS[k]?.label || k)}: ${formatInput(k, c.base[k] ?? c.a.resolved[k])} → <b>${formatInput(k, v)}</b></li>`)
           .join("")}</ul>${calc.out.scenario ? `<p class="choice-note">These are the ${esc(calc.out.scenario)}-scenario values. Saving them makes them the asset’s own inputs.</p>` : ""}`,
         confirmLabel: "Save and rerun",

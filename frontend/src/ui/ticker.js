@@ -8,6 +8,7 @@ import { api, getTransport } from "../api/backend.js";
 import { esc } from "../lib/html.js";
 
 const POLL_FALLBACK_MS = 62_000;
+const THIN_BOOK = 8;
 let timer = 0;
 let seq = 0;
 let listening = false;
@@ -65,9 +66,12 @@ export function sparkline(values, dir) {
   if (!values || values.length < 2) {
     return `<svg class="tape-spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><circle cx="${w - 4}" cy="${h / 2}" r="1.7" fill="${stroke}"/></svg>`;
   }
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = max - min || 1;
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
+  const floor = Math.max(Math.abs(values.at(-1)) * 0.06, 0.01);
+  const mid = (lo + hi) / 2;
+  const span = Math.max(hi - lo, floor);
+  const min = mid - span / 2;
   const pts = values.map((v, i) => {
     const x = 1 + (i / (values.length - 1)) * (w - 2);
     const y = h - 2 - ((v - min) / span) * (h - 4);
@@ -79,7 +83,7 @@ export function sparkline(values, dir) {
 function clock(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 function itemHtml(q, showModel) {
@@ -87,8 +91,9 @@ function itemHtml(q, showModel) {
   const model = showModel && q.in_model && typeof q.model_rental_rate === "number"
     ? `<em class="tape-model">model ${esc(formatAsk(q.model_rental_rate))}</em>`
     : "";
-  const spoken = `${q.label}, ${formatAsk(q.median)} per GPU-hour, ${ch.text}. Open market.`;
-  return `<a class="tape-item" data-quote="${esc(q.key)}" href="#market" aria-label="${esc(spoken)}"><span class="tape-name">${esc(q.label)}</span><span class="tape-px" data-n="${esc(String(q.median))}">${esc(formatAsk(q.median))}</span><span class="tape-unit">/hr</span><span class="tape-chg ${ch.dir}">${esc(ch.text)}</span>${sparkline(q.history, ch.dir)}${model}</a>`;
+  const thin = typeof q.offers === "number" && q.offers < THIN_BOOK;
+  const spoken = `${q.label}, ${formatAsk(q.median)} per GPU-hour, ${ch.text}${thin ? `, only ${q.offers} offers listed` : ""}. Open market.`;
+  return `<a class="tape-item" data-quote="${esc(q.key)}" href="#market" aria-label="${esc(spoken)}" title="${thin ? `Thin book: ${esc(q.offers)} offers listed` : ""}"><span class="tape-name">${esc(q.label)}</span><span class="tape-px" data-n="${esc(String(q.median))}">${esc(formatAsk(q.median))}</span><span class="tape-unit">/hr</span><span class="tape-chg ${ch.dir}">${ch.dir === "flat" ? "" : esc(ch.text)}</span>${sparkline(q.history, ch.dir)}<span class="tape-thin">${thin ? `${esc(q.offers)} asks` : ""}</span>${model}</a>`;
 }
 
 function summaryText(state) {
@@ -130,14 +135,18 @@ function applyState(root, state) {
         px.textContent = formatAsk(q.median);
         const chEl = node.querySelector(".tape-chg");
         chEl.className = `tape-chg ${ch.dir}`;
-        chEl.textContent = ch.text;
+        chEl.textContent = ch.dir === "flat" ? "" : ch.text;
         const hist = (q.history || []).join(",");
         if (node.dataset.hist !== hist) {
           node.dataset.hist = hist;
           const svg = node.querySelector(".tape-spark");
           if (svg) svg.outerHTML = sparkline(q.history, ch.dir);
         }
-        node.setAttribute("aria-label", `${q.label}, ${formatAsk(q.median)} per GPU-hour, ${ch.text}. Open market.`);
+        const thin = typeof q.offers === "number" && q.offers < THIN_BOOK;
+        const thinEl = node.querySelector(".tape-thin");
+        if (thinEl) thinEl.textContent = thin ? `${q.offers} asks` : "";
+        node.title = thin ? `Thin book: ${q.offers} offers listed` : "";
+        node.setAttribute("aria-label", `${q.label}, ${formatAsk(q.median)} per GPU-hour, ${ch.text}${thin ? `, only ${q.offers} offers listed` : ""}. Open market.`);
       }
     }
   }
