@@ -183,6 +183,10 @@ ul.plain li {
   background: #f5e1d7;
   border: 1px solid #e2b8a5;
 }
+.mode-banner.waking {
+  background: #efe7d4;
+  border: 1px solid #e0d2b0;
+}
 .mode-inline {
   font-size: 13px;
   padding: 10px 14px;

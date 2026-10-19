@@ -77,7 +77,7 @@ npm run test:e2e
 
 ## Production
 
-The live setup is one process. FastAPI serves this build and the API together, on Fly.io, for under $5 a month including a domain. Follow [DEPLOY.md](DEPLOY.md).
+The public deploy is Cloudflare Pages plus a free Render API. Follow [DEPLOY.md](DEPLOY.md). The same machine can also serve the built studio and the API together:
 
 To run that same process locally:
 

@@ -33,6 +33,6 @@ Open http://127.0.0.1:5274. Full instructions, tests and configuration: [RUN_LOC
 
 ## On the public web
 
-One machine serves the studio and the API. The always-on setup in [DEPLOY.md](DEPLOY.md) is about $3.84 a month on Fly.io in Ashburn, or about $4.71 a month once a `.com` at Cloudflare's at-cost price is included. Both stay under $5.
+[DEPLOY.md](DEPLOY.md) is the deploy path: Cloudflare Pages for this studio, a free Render web service for the API, and a Namecheap `.xyz` (about $2 to $5 in the first year). HTTPS is included. The free API sleeps after 15 quiet minutes.
 
 There is no sign-in and no tenant isolation. Anyone who can reach the app can read every asset and record lifecycle moves and outcomes. See [INTEGRATION_REPORT.md](INTEGRATION_REPORT.md) for security notes, test results and known limitations.

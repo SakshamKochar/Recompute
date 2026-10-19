@@ -42,20 +42,61 @@ export function parseHash(hash = location.hash) {
 
 /* ---------------------------------------------------------------- mode and transport */
 
+let healthTicket = 0;
+
+function isWaking(error) {
+  if (!error) return false;
+  if (error.kind === "timeout" || error.kind === "parse") return true;
+  return error.kind === "http" && (error.status === 502 || error.status === 503 || error.status === 504);
+}
+
+function wakeLater(ticket, left) {
+  setTimeout(async () => {
+    if (ticket !== healthTicket || getTransport()?.mode === "demo") return;
+    try {
+      const h = await api.health({ timeout: 20000 });
+      if (ticket !== healthTicket) return;
+      if (h?.ok) {
+        app.health = { state: "ok", version: h.model_version ?? null, error: null };
+        renderChrome();
+        clearResources();
+        scheduleRender(true);
+        return;
+      }
+    } catch (e) {
+      if (ticket !== healthTicket) return;
+      if (isWaking(e) && left > 1) {
+        wakeLater(ticket, left - 1);
+        return;
+      }
+      app.health = { state: "down", version: null, error: e };
+      renderChrome();
+      return;
+    }
+    app.health = { state: "down", version: null, error: app.health.error };
+    renderChrome();
+  }, 5000);
+}
+
 async function checkHealth() {
+  const ticket = ++healthTicket;
   app.health = { state: "checking", version: null, error: null };
   renderChrome();
   try {
     const h = await api.health();
+    if (ticket !== healthTicket) return false;
     app.health = { state: h?.ok ? "ok" : "down", version: h?.model_version ?? null, error: null };
   } catch (e) {
-    app.health = { state: "down", version: null, error: e };
+    if (ticket !== healthTicket) return false;
+    app.health = { state: isWaking(e) ? "waking" : "down", version: null, error: e };
+    if (app.health.state === "waking") wakeLater(ticket, 12);
   }
   renderChrome();
   return app.health.state === "ok";
 }
 
 export async function setMode(mode, { persist = true } = {}) {
+  healthTicket += 1;
   clearResources();
   if (persist) store.setMode(mode);
   if (mode === "demo") {
@@ -89,8 +130,9 @@ function renderChrome() {
   const h = app.health;
   const sw = document.querySelector("#mode-switch");
   if (sw) {
-    const status = demo ? "demo" : h.state === "ok" ? "live" : h.state === "checking" ? "checking" : "offline";
-    const label = demo ? "Demo" : h.state === "ok" ? "" : h.state === "checking" ? "Connecting" : "Offline";
+    const connecting = h.state === "checking" || h.state === "waking";
+    const status = demo ? "demo" : h.state === "ok" ? "live" : connecting ? "checking" : "offline";
+    const label = demo ? "Demo" : h.state === "ok" ? "" : connecting ? "Connecting" : "Offline";
     const pill = label
       ? `<span class="mode-pill ${status}"><span class="sandbox-dot ${status}" aria-hidden="true"></span><span class="mode-label">${label}</span></span>`
       : `<span class="sr-only">Live data connected</span>`;
@@ -102,6 +144,8 @@ function renderChrome() {
   if (banner) {
     if (demo) {
       banner.innerHTML = `<div class="mode-banner demo" role="note"><span class="micro">You’re exploring the demo</span><p>A sample fleet with simulated NVIDIA diagnostics, so you can watch a decision get made. Nothing here is bought, sold or moved.</p><button type="button" class="textlink" data-action="switch-mode" data-mode="live">Switch to Live ↗</button></div>`;
+    } else if (h.state === "waking") {
+      banner.innerHTML = `<div class="mode-banner waking" role="status"><span class="micro">Connecting</span><p>The workspace is waking up. After a quiet stretch the first answer takes about a minute. Your figures show up as soon as it does.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button></div>`;
     } else if (h.state === "down") {
       banner.innerHTML = `<div class="mode-banner offline" role="alert"><span class="micro">We can’t reach your workspace right now</span><p>Your fleet figures will appear as soon as the connection is back. We never fill the gap with sample numbers.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button><button type="button" class="textlink" data-action="switch-mode" data-mode="demo">Explore the demo instead ↗</button></div>`;
     } else banner.innerHTML = "";

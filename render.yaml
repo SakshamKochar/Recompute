@@ -1,0 +1,19 @@
+# Render Blueprint for this repo. Free web service. See DEPLOY.md.
+services:
+  - type: web
+    name: recompute-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.15"
+      - key: SEED_ON_START
+        value: "true"
+      - key: DEMO_RESET_TOKEN
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false

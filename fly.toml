@@ -1,5 +1,5 @@
+# Optional paid always-on host. The deploy in DEPLOY.md is Cloudflare Pages + Render, at no hosting cost.
 # Always-on app in Ashburn. About $3.69/month for the machine plus $0.15 for the disk.
-# Steps, the custom domain, and what not to turn on: DEPLOY.md.
 # Do not run `fly ips allocate-v4` without `--shared`. A dedicated IPv4 is $2/month.
 app = "recompute-studio"
 primary_region = "iad"

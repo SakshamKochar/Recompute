@@ -23,7 +23,7 @@ For demo data, call `POST /demo/reset`: it clears everything and loads the 100 t
 
 ## Hosting
 
-`render.yaml` sets up a free Render web service from the GitHub repo: Python 3.11, `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check on `/health`.
+The repo-root `render.yaml` is the Blueprint for a free Render web service (Python 3.11, `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, health check on `/health`). The studio is hosted separately. See [DEPLOY.md](../DEPLOY.md).
 
 | Setting | What it does |
 |---|---|
