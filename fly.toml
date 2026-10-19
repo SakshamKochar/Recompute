@@ -1,0 +1,36 @@
+# Always-on app in Ashburn. About $3.69/month for the machine plus $0.15 for the disk.
+# Steps, the custom domain, and what not to turn on: DEPLOY.md.
+# Do not run `fly ips allocate-v4` without `--shared`. A dedicated IPv4 is $2/month.
+app = "recompute-studio"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  SERVE_WEB = "1"
+  WEB_DIST = "/app/web"
+  SEED_ON_START = "true"
+  DATABASE_URL = "sqlite:////data/recompute.db"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[[mounts]]
+  source = "recompute_data"
+  destination = "/data"

@@ -23,6 +23,7 @@ from .outcomes import router as outcomes_router
 from .batches import SCENARIO_NOTE
 from .recompute_model import COMBINED_SCENARIOS, PROFILES, SCENARIO_DIALS, apply_scenario
 from .schema import MODEL_VERSION, NOT_FOUND, AssetInputs
+from .spa import StripApiPrefix
 from .upload import router as upload_router
 
 
@@ -46,6 +47,8 @@ app = FastAPI(title="ReCompute API", version=MODEL_VERSION, lifespan=lifespan)
 app.add_exception_handler(ModelOutputError, model_output_handler)
 app.add_middleware(CORSMiddleware, allow_origins=cors_origins(), allow_methods=["GET", "POST", "PATCH"],
                    allow_headers=["Content-Type"])
+# Added last so it runs first and the API sees paths with `/api` removed.
+app.add_middleware(StripApiPrefix)
 
 
 @app.get("/health")
@@ -116,3 +119,8 @@ app.include_router(dashboard_router)
 app.include_router(batches_router)
 app.include_router(outcomes_router)
 app.include_router(market_router)
+
+if os.getenv("SERVE_WEB", "").lower() in ("1", "true", "yes"):
+    from .spa import mount_web
+
+    mount_web(app, os.getenv("WEB_DIST", "/app/web"))

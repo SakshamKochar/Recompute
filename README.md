@@ -31,6 +31,8 @@ Open http://127.0.0.1:5274. Full instructions, tests and configuration: [RUN_LOC
 
 **Live mode** uses the API. **Demo mode** replays responses recorded from the same API on synthetic servers and is read-only. The header always shows which one you're in, and Live mode never falls back to demo data.
 
-## Before you put it on a network
+## On the public web
 
-There is no sign-in and no tenant isolation. Anyone who can reach the app and API can read every asset and record lifecycle moves and outcomes. Run it locally or on a trusted network. See [INTEGRATION_REPORT.md](INTEGRATION_REPORT.md) for security notes, test results and known limitations.
+One machine serves the studio and the API. The always-on setup in [DEPLOY.md](DEPLOY.md) is about $3.84 a month on Fly.io in Ashburn, or about $4.71 a month once a `.com` at Cloudflare's at-cost price is included. Both stay under $5.
+
+There is no sign-in and no tenant isolation. Anyone who can reach the app can read every asset and record lifecycle moves and outcomes. See [INTEGRATION_REPORT.md](INTEGRATION_REPORT.md) for security notes, test results and known limitations.

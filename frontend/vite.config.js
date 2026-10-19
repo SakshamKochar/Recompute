@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     preview: { host: "127.0.0.1", port: port + 1 },
-    build: { outDir: "dist-build" },
+    build: { outDir: "dist-build", assetsDir: "static" },
     test: {
       environment: "jsdom",
       include: ["tests/unit/**/*.test.js"],

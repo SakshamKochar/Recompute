@@ -1,0 +1,10 @@
+.git
+**/.venv
+**/node_modules
+**/__pycache__
+**/*.db
+frontend/dist-build
+frontend/test-results
+frontend/playwright-report
+**/.env
+**/.env.local

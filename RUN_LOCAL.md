@@ -75,14 +75,20 @@ npm run test:e2e
 | `DEMO_RESET_TOKEN` | API env | unset | Protects `POST /demo/reset`. Never put it in frontend config |
 | `MARKET_LIVE_FEED` | API env | `vast` | `off` disables `GET /market/live`. The tape then shows the dated rental index and says so. The browser never calls Vast.ai itself |
 
-## Production build of the web app
+## Production
+
+The live setup is one process. FastAPI serves this build and the API together, on Fly.io, for under $5 a month including a domain. Follow [DEPLOY.md](DEPLOY.md).
+
+To run that same process locally:
 
 ```bash
-cd frontend
-VITE_API_BASE=https://your-api.example.com npm run build    # output in frontend/dist-build
+cd frontend && VITE_API_BASE=/api npm run build    # output in frontend/dist-build
+cd ../backend
+SERVE_WEB=1 WEB_DIST=../frontend/dist-build SEED_ON_START=true \
+  .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8766
 ```
 
-Serve `dist-build/` from any static host and add its origin to the API's `CORS_ORIGINS`.
+A split host still works. Build with `VITE_API_BASE=https://your-api.example.com` and add the site origin to the API's `CORS_ORIGINS`.
 
 ## Rebuild the Demo-mode snapshot
 
