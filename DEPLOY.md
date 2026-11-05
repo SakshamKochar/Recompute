@@ -80,3 +80,38 @@ SERVE_WEB=1 WEB_DIST=../frontend/dist-build SEED_ON_START=true \
 ```
 
 Open http://127.0.0.1:8766. Day to day, use `./scripts/dev.sh` and http://127.0.0.1:5274.
+
+## API resilience (November 2026)
+
+The Pages gateway now returns structured, non-cacheable errors for upstream challenges,
+rate limits and HTML startup pages. It retains the upstream Ray ID for correlation and
+bounds upstream reads to 20 seconds and writes to 60 seconds. It never retries writes.
+The browser respects Retry-After, reconnects after transient failures, and refreshes failed
+resources without throwing away successfully loaded data. Recovery is bounded to twelve
+health probes per recovery cycle; manual Retry starts a fresh cycle.
+
+Only unauthenticated, cookie-free GETs for `/meta` (60 seconds), `/market/evidence`
+(60 seconds), and `/market/live` (15 seconds) can use the edge cache. No fleet, health,
+write, private, error or Set-Cookie responses are cached. These TTLs add bounded age to
+reference/market readings. Cache failures fall through to the origin. Browser responses
+remain no-store. Existing hashed static files use immutable caching.
+
+Validate a deployment with `node scripts/check_studio.mjs https://recompute.life`, then
+open Overview and Fleet in a fresh browser and verify Live data connected plus fleet data.
+The smoke check performs no mutations. Run frontend tests and build before publishing.
+
+These changes contain the impact of an upstream challenge; they cannot change Render's
+security policy. Correlate `upstream_ray` in gateway logs with the provider's logs/support.
+For the observed incident use 2026-11-05 05:09–05:11 UTC, upstream Ray
+`a55959810ed77e44`, outer Ray `a5595980ef5268d9-PHX`. Check whether requests reached
+application logs before attributing the issue to application rate limits. Do not globally
+disable protections or assume the recompute.life zone owns the onrender.com challenge.
+
+The free Render plan still spins down. Removing cold-start latency requires an approved
+always-on hosting plan; no paid upgrade is part of this patch. Turnstile in the browser
+alone cannot solve an upstream server-to-server challenge. Use a provider-supported
+API/service-to-service configuration and validate it with provider support.
+
+For rollback, restore the previous Pages deployment. If deploying by direct upload,
+build and run package_pages.mjs first, upload the contents of frontend/dist-build, and
+retain API_ORIGIN. A GitHub merge alone does not update a direct-upload Pages project.

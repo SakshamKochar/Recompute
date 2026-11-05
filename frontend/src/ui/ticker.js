@@ -227,7 +227,7 @@ async function refresh() {
     applyState(root, state);
     const wait = state.mode === "live" ? ((state.ttl || 60) + 2) * 1000 : state.mode === "stale" || state.mode === "offline" ? 20_000 : POLL_FALLBACK_MS;
     schedule(wait);
-  } catch {
+  } catch (error) {
     if (my !== seq) return;
     applyState(root, {
       mode: "offline",
@@ -239,7 +239,7 @@ async function refresh() {
       quotes: [],
       empty: "Rental tape unavailable",
     });
-    schedule(20_000);
+    schedule(Math.max(20_000, error?.retryAfterMs || 0));
   }
 }
 

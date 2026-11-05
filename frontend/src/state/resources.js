@@ -63,3 +63,11 @@ export function clearResources() {
   generation++;
   cache.clear();
 }
+
+/** Recover failed reads without discarding successful data or duplicating in-flight requests. */
+export function invalidateFailedResources() {
+  for (const [key, entry] of cache) {
+    if (entry.status === "error") cache.set(key, { ...entry, stale: true });
+  }
+  onChange("recovery");
+}
