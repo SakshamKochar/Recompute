@@ -3,12 +3,26 @@ from datetime import datetime, timezone
 
 from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, TypeDecorator, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy.engine import make_url
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./recompute.db")
+def database_url(value):
+    # Supabase supplies a standard PostgreSQL URL; use the installed psycopg 3 driver.
+    if value.startswith("postgres://"):
+        value = "postgresql://" + value[len("postgres://"):]
+    url = make_url(value)
+    if url.drivername == "postgresql":
+        url = url.set(drivername="postgresql+psycopg")
+    if url.host and url.host.endswith("supabase.com"):
+        url = url.update_query_dict({"sslmode": "require"})
+    return url
+
+
+DATABASE_URL = database_url(os.getenv("DATABASE_URL", "sqlite:///./recompute.db"))
 
 engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
+    connect_args={"check_same_thread": False} if DATABASE_URL.get_backend_name() == "sqlite" else {},
+    pool_pre_ping=True,
 )
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
@@ -29,7 +43,7 @@ class UTCDateTime(TypeDecorator):
     def process_result_value(self, value, dialect):
         if value is not None and value.tzinfo is None:
             value = value.replace(tzinfo=timezone.utc)
-        return value
+        return value.astimezone(timezone.utc) if value is not None else None
 
 
 class Base(DeclarativeBase):

@@ -12,7 +12,7 @@ import { api, setTransport, getTransport } from "./api/backend.js";
 import { createHttpTransport } from "./api/client.js";
 import { createDemoTransport } from "./api/demo.js";
 import { store } from "./state/store.js";
-import { clearResources, invalidate, setResourceListener } from "./state/resources.js";
+import { clearResources, invalidate, invalidateFailedResources, setResourceListener } from "./state/resources.js";
 import { esc } from "./lib/html.js";
 import { confirmDialog, toast } from "./ui/feedback.js";
 import { startTicker } from "./ui/ticker.js";
@@ -43,15 +43,18 @@ export function parseHash(hash = location.hash) {
 /* ---------------------------------------------------------------- mode and transport */
 
 let healthTicket = 0;
+let modeGeneration = 0;
+let recoveryTimer;
 
 function isWaking(error) {
   if (!error) return false;
-  if (error.kind === "timeout" || error.kind === "parse") return true;
+  if (["timeout", "parse", "network", "challenge", "rate-limit"].includes(error.kind)) return true;
   return error.kind === "http" && (error.status === 502 || error.status === 503 || error.status === 504);
 }
 
 function wakeLater(ticket, left) {
-  setTimeout(async () => {
+  clearTimeout(recoveryTimer);
+  recoveryTimer = setTimeout(async () => {
     if (ticket !== healthTicket || getTransport()?.mode === "demo") return;
     try {
       const h = await api.health({ timeout: 20000 });
@@ -59,12 +62,14 @@ function wakeLater(ticket, left) {
       if (h?.ok) {
         app.health = { state: "ok", version: h.model_version ?? null, error: null };
         renderChrome();
-        clearResources();
+        invalidateFailedResources();
         scheduleRender(true);
+        startTicker();
         return;
       }
     } catch (e) {
       if (ticket !== healthTicket) return;
+      app.health.error = e;
       if (isWaking(e) && left > 1) {
         wakeLater(ticket, left - 1);
         return;
@@ -75,10 +80,11 @@ function wakeLater(ticket, left) {
     }
     app.health = { state: "down", version: null, error: app.health.error };
     renderChrome();
-  }, 5000);
+  }, Math.max(5000, app.health.error?.retryAfterMs || 0) + Math.floor(Math.random() * 1000));
 }
 
 async function checkHealth() {
+  clearTimeout(recoveryTimer);
   const ticket = ++healthTicket;
   app.health = { state: "checking", version: null, error: null };
   renderChrome();
@@ -96,21 +102,35 @@ async function checkHealth() {
 }
 
 export async function setMode(mode, { persist = true } = {}) {
+  const generation = ++modeGeneration;
   healthTicket += 1;
+  clearTimeout(recoveryTimer);
   clearResources();
   if (persist) store.setMode(mode);
+  app.health = { state: "checking", version: null, error: null };
+  setTransport(mode === "demo" ? createDemoTransport() : createHttpTransport({ onUnavailable(error) {
+    if (generation !== modeGeneration || app.health.state === "waking") return;
+    const ticket = ++healthTicket;
+    app.health = { state: "waking", version: null, error };
+    renderChrome();
+    wakeLater(ticket, 12);
+  } }));
+  // Render immediately: the landing story is static and must not wait for a sleeping API.
+  renderChrome();
+  scheduleRender(true);
   if (mode === "demo") {
-    setTransport(createDemoTransport());
     try {
       const snap = await getTransport().snapshot();
+      if (generation !== modeGeneration) return;
       app.health = { state: "ok", version: snap.model_version, error: null };
     } catch (e) {
+      if (generation !== modeGeneration) return;
       app.health = { state: "down", version: null, error: e };
     }
   } else {
-    setTransport(createHttpTransport());
     await checkHealth();
   }
+  if (generation !== modeGeneration) return;
   renderChrome();
   scheduleRender(true);
   startTicker();
@@ -145,7 +165,7 @@ function renderChrome() {
     if (demo) {
       banner.innerHTML = `<div class="mode-banner demo" role="note"><span class="micro">You’re exploring the demo</span><p>A sample fleet with simulated NVIDIA diagnostics, so you can watch a decision get made. Nothing here is bought, sold or moved.</p><button type="button" class="textlink" data-action="switch-mode" data-mode="live">Switch to Live ↗</button></div>`;
     } else if (h.state === "waking") {
-      banner.innerHTML = `<div class="mode-banner waking" role="status"><span class="micro">Connecting</span><p>The workspace is waking up. After a quiet stretch the first answer takes about a minute. Your figures show up as soon as it does.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button></div>`;
+      banner.innerHTML = `<div class="mode-banner waking" role="status"><span class="micro">Connecting</span><p>The workspace is temporarily busy or starting up. We’re checking the connection automatically. Your figures will appear when it is ready.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button></div>`;
     } else if (h.state === "down") {
       banner.innerHTML = `<div class="mode-banner offline" role="alert"><span class="micro">We can’t reach your workspace right now</span><p>Your fleet figures will appear as soon as the connection is back. We never fill the gap with sample numbers.</p><button type="button" class="btn secondary" data-action="retry-health">Retry</button><button type="button" class="textlink" data-action="switch-mode" data-mode="demo">Explore the demo instead ↗</button></div>`;
     } else banner.innerHTML = "";
@@ -242,8 +262,9 @@ const globalActions = {
   },
   "retry-health": async () => {
     if (await checkHealth()) {
-      clearResources();
+      invalidateFailedResources();
       scheduleRender(true);
+      startTicker();
       toast("You’re back online.");
     }
   },

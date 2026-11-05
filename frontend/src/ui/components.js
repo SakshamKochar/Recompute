@@ -29,7 +29,9 @@ export function loadingBlock(label = "Getting the latest figures…") {
 export function errorBlock(error, { retryKeys = [], title = "This didn’t load." } = {}) {
   const kind = error?.kind;
   const hint =
-    kind === "network"
+    kind === "challenge" || kind === "rate-limit"
+      ? "The workspace connection is temporarily restricted. We’ll reconnect automatically; your saved records are unchanged."
+      : kind === "network"
       ? "We couldn’t connect just now. Check your connection, then try again."
       : kind === "timeout"
         ? "This is taking longer than usual. Give it a moment and try again."

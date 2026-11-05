@@ -1,4 +1,9 @@
 """Cross-field input warnings and decision confidence. Neither changes the model's nine-field output."""
+from copy import deepcopy
+from functools import lru_cache
+import json
+from threading import RLock
+
 from .recompute_model import flip_points, resolve_defaults
 
 CONFIDENCE_THRESHOLDS = {"low_below": 0.05, "high_from": 0.20}
@@ -31,7 +36,27 @@ def warnings(inputs):
     return out
 
 
+_confidence_lock = RLock()
+
+
 def decision_confidence(inputs):
+    """Reuse deterministic calculations for identical resolved inputs, never mutable asset records.
+
+    The bounded process-local cache resets on deployment. Copy results so callers cannot
+    corrupt later answers. Serializing misses also prevents duplicate CPU work when a
+    passport and the lab request the same calculation concurrently.
+    """
+    key = json.dumps(_resolved(inputs), sort_keys=True, separators=(",", ":"), allow_nan=False)
+    with _confidence_lock:
+        return deepcopy(_cached_confidence(key))
+
+
+@lru_cache(maxsize=128)
+def _cached_confidence(key):
+    return _compute_confidence(json.loads(key))
+
+
+def _compute_confidence(inputs):
     """How robust the route is, from flip_points(). Failed servers are skipped: the flip drivers are
     compute and sale inputs, which do not move a repair, harvest or recycle decision."""
     if not _resolved(inputs)["health_pass"]:
