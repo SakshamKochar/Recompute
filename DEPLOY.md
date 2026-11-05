@@ -115,3 +115,23 @@ API/service-to-service configuration and validate it with provider support.
 For rollback, restore the previous Pages deployment. If deploying by direct upload,
 build and run package_pages.mjs first, upload the contents of frontend/dist-build, and
 retain API_ORIGIN. A GitHub merge alone does not update a direct-upload Pages project.
+
+### November 5 recurrence and free-hosting latency limit
+
+At 16:07 UTC the production proxy returned `UPSTREAM_CHALLENGE` and the direct
+Render health request exceeded 25 seconds. Render application logs show a new
+server process at 16:08:06 UTC. The service dashboard confirms Free compute
+(0.1 CPU), with idle spin-down and 50+ second startup delays. These observations
+support cold startup as a contributor; they do not identify the provider's
+specific challenge rule. The user elected to keep hosting free.
+
+An always-on two-second live-data guarantee is therefore not available on this
+configuration. Do not disguise demo or stale data as a current server response.
+Report cold-start and warm-navigation measurements separately. Do not add a
+keep-alive loop and claim this provides an availability guarantee.
+
+Identical resolved model inputs now share a bounded, process-local confidence
+calculation cache (128 entries). The cache contains calculations, not mutable
+asset or lifecycle records; changed inputs use a distinct key and deployments
+reset it. Returned results are copied. The lab also skips its typing debounce
+on initial entry. Tests cover input changes and result isolation.

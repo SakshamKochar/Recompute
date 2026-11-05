@@ -206,7 +206,7 @@ function page(route) {
   const a = adaptAssetDetail(detail.data, { meta: meta.data, history: hist.data });
   const base = baseInputsFor(a, meta.data);
   const draft = draftFor(id, base);
-  schedule(id, draft, base);
+  schedule(id, draft, base, { immediate: calc.key === null });
   const shown = draft.preset === "bear" || draft.preset === "bull" ? (calc.out?.assetId === id && calc.out.preset === draft.preset ? calc.out.inputs : base) : draft.inputs;
   const resolved = { ...a.profileDefaults, ...shown };
   const grid = demo ? getTransport()._snap?.lab?.[id]?.grids : null;
