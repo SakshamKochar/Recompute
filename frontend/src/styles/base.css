@@ -1996,3 +1996,45 @@ main {
     display: block;
   }
 }
+
+/* Studio: What-if Demo and Teaser tabs (Demo mode) */
+.whatif-act {
+  margin-top: 34px;
+}
+.whatif-act + .whatif-act {
+  margin-top: 64px;
+}
+.whatif-act > .panelhead {
+  margin-bottom: 14px;
+}
+.whatif-inputs {
+  grid-template-columns: 1fr;
+  margin: 14px 0;
+}
+.whatif-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.whatif-asset {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 24px;
+  background: #fbfbf6;
+}
+.whatif-asset .decision-states {
+  margin: 14px 0 6px;
+}
+.whatif-asset .pp-section {
+  margin-top: 18px;
+}
+.teaser-tab .teaser-frame {
+  width: min(100%, calc((100vh - 150px) * 16 / 9));
+  margin-top: 26px;
+}
+@media (max-width: 900px) {
+  .whatif-pair {
+    grid-template-columns: 1fr;
+  }
+}

@@ -116,7 +116,7 @@ function numberField(key, value) {
   return `<label class="ctl" for="${id}"><span>${esc(s.label)} <small>${esc(s.scale ? "%" : s.unit)}</small></span><input type="number" id="${id}" data-input="${key}" data-number="1" value="${esc(toDisplay(key, value))}" step="${s.scale ? s.step * s.scale : s.step}" min="${s.scale ? s.min * s.scale : s.min}" max="${s.scale ? s.max * s.scale : s.max}" ${disabled ? "disabled" : ""}></label>`;
 }
 
-function verdict(a, out, stored) {
+export function verdict(a, out, stored) {
   const res = out.result;
   const resolved = { ...a.profileDefaults, ...out.inputs };
   const base = baselineOf(res, resolved);
@@ -127,7 +127,7 @@ function verdict(a, out, stored) {
   } ${flipped ? `<b>Different from the stored recommendation (${esc(routeInfo(stored.route).label)}).</b>` : stored ? "Same route as the stored recommendation." : ""}</p></div><div><strong>${money(value)}</strong><small>modeled net value</small></div></div>`;
 }
 
-function comparison(a, out) {
+export function comparison(a, out) {
   const rows = routeTable(out.result, { ...a.profileDefaults, ...out.inputs });
   const max = Math.max(1, ...rows.map((r) => Math.abs(r.value || 0)));
   return `<div class="route-comparison" role="list" aria-label="All seven routes under these inputs">${rows

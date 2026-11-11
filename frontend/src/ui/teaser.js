@@ -10,8 +10,13 @@ let ready = false;
 let pendingPlay = false;
 let onHide = null;
 
+/** The player frame on its own (the studio's Teaser tab); the landing page wraps it in a section. */
+export function teaserFrame() {
+  return `<div class="teaser-frame" data-state="idle"><div id="teaser-player"></div><button type="button" class="teaser-poster" data-action="teaser-play" aria-label="Play the ReCompute teaser"><span class="experience-button" aria-hidden="true">Play the teaser <span>▶</span></span></button><p class="teaser-error" role="alert" hidden></p></div>`;
+}
+
 export function teaserSection() {
-  return `<section class="teaser-section" id="teaser" aria-labelledby="teaser-h"><div class="teaser-head"><div><span class="section-index">The teaser / 45 seconds</span><h2 id="teaser-h">Watch a server find<br><em>its next life.</em></h2></div><p>Plays at ${RATE}×.</p></div><div class="teaser-frame" data-state="idle"><div id="teaser-player"></div><button type="button" class="teaser-poster" data-action="teaser-play" aria-label="Play the ReCompute teaser"><span class="experience-button" aria-hidden="true">Play the teaser <span>▶</span></span></button><p class="teaser-error" role="alert" hidden></p></div></section>`;
+  return `<section class="teaser-section" id="teaser" aria-labelledby="teaser-h"><div class="teaser-head"><div><span class="section-index">The teaser / 45 seconds</span><h2 id="teaser-h">Watch a server find<br><em>its next life.</em></h2></div><p>Plays at ${RATE}×.</p></div>${teaserFrame()}</section>`;
 }
 
 /** Hold the rate at 1.25×, whatever the YouTube menu asks for. */

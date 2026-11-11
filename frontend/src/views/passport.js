@@ -74,7 +74,7 @@ function identity(a) {
   ].join("")}</div><p class="pp-note">Hardware facts describe the whole server record. GPU count and power come from the asset’s inputs or, where marked, the model profile’s defaults; they are not measured.</p></section>`;
 }
 
-function condition(a) {
+export function condition(a) {
   const d = a.diagnostics;
   const r = a.resolved;
   let body;

@@ -28,9 +28,11 @@ import replay from "./views/replay.js";
 import market from "./views/market.js";
 import outcomes from "./views/outcomes.js";
 import about from "./views/about.js";
+import whatif from "./views/whatif.js";
+import teaser from "./views/teaser.js";
 
-const VIEWS = { home, overview, fleet, passport, command, lab, replay, market, outcomes, about };
-const NAV = ["overview", "fleet", "command", "lab", "replay", "market", "outcomes", "about"];
+const VIEWS = { home, overview, fleet, passport, command, lab, replay, market, outcomes, about, whatif, teaser };
+const NAV = ["overview", "fleet", "command", "lab", "replay", "market", "outcomes", "about", "whatif", "teaser"];
 
 export function parseHash(hash = location.hash) {
   const raw = hash.replace(/^#/, "") || "home";
@@ -231,7 +233,8 @@ function render() {
     view.refresh(document.querySelector("#experience"));
     return;
   }
-  if (routeChanged && lastPage && VIEWS[lastPage]?.leave) VIEWS[lastPage].leave();
+  const keepAlive = view.keepAlive && !realRouteChange && lastPage === route.page;
+  if (routeChanged && lastPage && VIEWS[lastPage]?.leave && !keepAlive) VIEWS[lastPage].leave();
   app.route = route;
   document.body.classList.toggle("experience-mode", isHome);
 
@@ -245,11 +248,14 @@ function render() {
   } else {
     document.querySelector("#experience").innerHTML = "";
     const navKey = route.page === "passport" ? "fleet" : route.page;
-    document.querySelector("#nav").innerHTML = NAV.map((k) => {
+    // What-if Demo and Teaser belong to Demo mode; they stay reachable by link in Live mode.
+    const demoMode = getTransport()?.mode === "demo";
+    document.querySelector("#nav").innerHTML = NAV.filter((k) => !VIEWS[k].demoOnly || demoMode || k === navKey).map((k) => {
       const v = VIEWS[k];
       return `<a href="#${k}" class="${navKey === k ? "active" : ""}" ${navKey === k ? 'aria-current="page"' : ""}>${esc(v.title)}</a>`;
     }).join("");
     const root = document.querySelector("#main");
+    if (view.keepAlive && !realRouteChange && lastPage === route.page && root.childElementCount) return;
     const f = captureFocus(root);
     root.innerHTML = view.render(route);
     view.after?.(root, route, { routeChanged });

@@ -39,3 +39,23 @@ describe("landing teaser", () => {
     expect(p.setPlaybackRate).toHaveBeenCalledWith(1.25);
   });
 });
+
+describe("What-if Demo tab", async () => {
+  const { caseFor, HEALTHY, FAILED } = await import("../../src/views/whatif.js");
+  it("reads SYN-003's two rental cases from the snapshot", () => {
+    expect(caseFor(snapshot, "index").result.route).toBe("HOST LONGER");
+    expect(caseFor(snapshot, "stage").result.route).toBe("LIST AND WAIT");
+    expect(caseFor(snapshot, "stage").inputs.rental_rate).toBe(0.8);
+  });
+  it("pairs the healthy Grade A server with a failed, lower-grade server of the same model", () => {
+    const h = snapshot.responses[`GET /assets/${HEALTHY}`];
+    const f = snapshot.responses[`GET /assets/${FAILED}`];
+    expect([h.grade, h.model, h.failed]).toEqual(["A", "8x A100 80GB", false]);
+    expect([f.grade, f.model, f.failed, f.failed_part]).toEqual(["C", "8x A100 80GB", true, "GPU"]);
+    const r = f.recommendation.result;
+    expect(r.route).toBe("HARVEST");
+    expect(r.after_repair_route).toBe("LIST AND WAIT");
+    expect(Math.round(r.base[r.after_repair_route])).toBe(56652);
+    expect(Math.round(r.base.REPAIR)).toBe(46278);
+  });
+});
