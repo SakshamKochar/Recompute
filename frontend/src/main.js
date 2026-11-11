@@ -5,6 +5,7 @@ import "./styles/base.css";
 import "./styles/studio.css";
 import "./styles/integration.css";
 import "./styles/motion.css";
+import "./styles/pitch.css";
 
 import { app } from "./app.js";
 import { config } from "./config.js";
@@ -28,8 +29,13 @@ import replay from "./views/replay.js";
 import market from "./views/market.js";
 import outcomes from "./views/outcomes.js";
 import about from "./views/about.js";
+import teaser from "./views/teaser.js";
+import pitch from "./views/pitch.js";
 
-const VIEWS = { home, overview, fleet, passport, command, lab, replay, market, outcomes, about };
+const VIEWS = { home, overview, fleet, passport, command, lab, replay, market, outcomes, about, teaser, pitch };
+/** Full-screen stage pages for the live pitch. Static: they never call the API, so they work while it sleeps. */
+const STAGE = new Set(["teaser", "pitch"]);
+const isStage = (page) => STAGE.has(page);
 const NAV = ["overview", "fleet", "command", "lab", "replay", "market", "outcomes", "about"];
 
 export function parseHash(hash = location.hash) {
@@ -136,7 +142,15 @@ export async function setMode(mode, { persist = true } = {}) {
   startTicker();
 }
 
+let booted = false;
+
 async function boot() {
+  // A stage page needs no API and no mode switch. Defer the normal boot until someone leaves it.
+  if (isStage(parseHash().page)) {
+    scheduleRender(true);
+    return;
+  }
+  booted = true;
   const stored = store.mode;
   const wanted = stored || (config.defaultMode === "demo" ? "demo" : "live");
   await setMode(wanted, { persist: !!stored || config.defaultMode !== "auto" });
@@ -221,8 +235,12 @@ function render() {
   if (routeChanged && lastPage && VIEWS[lastPage]?.leave) VIEWS[lastPage].leave();
   app.route = route;
   const view = VIEWS[route.page];
-  const isHome = route.page === "home";
+  const stage = isStage(route.page);
+  const isHome = route.page === "home" || stage;
   document.body.classList.toggle("experience-mode", isHome);
+  document.body.classList.toggle("stage-mode", stage);
+  // Static views manage their own DOM after the first paint (the teaser keeps its video player alive).
+  if (!routeChanged && view.static) return;
 
   if (isHome) {
     const root = document.querySelector("#experience");
@@ -231,6 +249,7 @@ function render() {
     view.after?.(root, route, { routeChanged });
     mountMotion(root);
     restoreFocus(root, f);
+    if (routeChanged && stage) document.title = `${view.title} · ReCompute`;
   } else {
     document.querySelector("#experience").innerHTML = "";
     const navKey = route.page === "passport" ? "fleet" : route.page;
@@ -288,7 +307,8 @@ const globalActions = {
 
 function viewFor(target) {
   const inHome = target.closest("#experience");
-  return inHome ? VIEWS.home : VIEWS[app.route.page];
+  if (inHome) return isStage(app.route.page) ? VIEWS[app.route.page] : VIEWS.home;
+  return VIEWS[app.route.page];
 }
 
 document.addEventListener("click", (e) => {
@@ -338,7 +358,10 @@ const endDrag = () => {
 document.addEventListener("pointerup", endDrag);
 document.addEventListener("pointercancel", endDrag);
 
-window.addEventListener("hashchange", () => scheduleRender(true));
+window.addEventListener("hashchange", () => {
+  if (!booted && !isStage(parseHash().page)) boot();
+  scheduleRender(true);
+});
 setResourceListener(() => scheduleRender());
 app.schedule = scheduleRender;
 app.setMode = setMode;

@@ -1,0 +1,153 @@
+{
+ "asset_id": "SYN-003",
+ "model_version": "0.9",
+ "synthetic": true,
+ "identity": {
+  "model": "8x A100 80GB",
+  "grade": "A",
+  "age_months": "48",
+  "site": "Phoenix AZ",
+  "ownership": "owned",
+  "gpus": "8"
+ },
+ "diagnostic_capture": null,
+ "inputs": {
+  "asset_profile": "a100_8x",
+  "gpus": 8,
+  "server_kw": 6.5,
+  "health_pass": true,
+  "ownership": "owned",
+  "repairable": false,
+  "offer_today": 80700.0,
+  "market_price": 95300.0,
+  "dwell_days": 56.0,
+  "rental_rate": 1.57,
+  "utilization": 0.7,
+  "first_month_utilization": 0.37,
+  "repair_parts_cost": 0.0,
+  "repair_days": 0.0,
+  "harvest_value": 76865.09,
+  "recycle_value": 128.75
+ },
+ "cases": {
+  "index": {
+   "rental_rate": 1.57,
+   "result": {
+    "route": "HOST LONGER",
+    "base": {
+     "SELL NOW": 69324.8,
+     "LIST AND WAIT": 78016.01872358215,
+     "YIELD WHILE LISTED": 79843.63049890971,
+     "HOST LONGER": 96116.55414762035,
+     "HARVEST": 76865.09,
+     "RECYCLE": 128.75,
+     "REPAIR": null
+    },
+    "stress": {
+     "LIST AND WAIT": 75441.37275660627,
+     "YIELD WHILE LISTED": 77113.21272660083,
+     "HOST LONGER": 77820.86750639563
+    },
+    "eligible": [
+     "SELL NOW",
+     "LIST AND WAIT",
+     "YIELD WHILE LISTED",
+     "HOST LONGER"
+    ],
+    "breakeven_dwell_days": 39,
+    "breakeven_utilization": 0.45,
+    "daily_compute_margin": 104.8697852631579,
+    "after_repair_route": null,
+    "audit": [
+     "LIST AND WAIT beats SELL NOW by $8,691 (needs $1,386) and still wins in its stress case by $6,117.",
+     "YIELD WHILE LISTED beats LIST AND WAIT by $1,828 in the base case but loses $626 in its stress case, so rejected.",
+     "HOST LONGER beats LIST AND WAIT by $18,101 (needs $1,560) and still wins in its stress case by $1,073."
+    ]
+   },
+   "assumptions": {
+    "offer_today": 80700.0,
+    "market_price": 95300.0,
+    "sell_fee_pct": 0.136,
+    "logistics": 400.0,
+    "dwell_days": 56.0,
+    "rental_rate": 1.57,
+    "platform_fee_pct": 0.2,
+    "utilization": 0.7,
+    "first_month_utilization": 0.37,
+    "horizon_months": 12,
+    "market_decay_pct_mo": 0.01,
+    "elec_per_kwh": 0.0858,
+    "pue": 1.4,
+    "colo_per_kw_mo": 196.0,
+    "maint_per_day": 3.29,
+    "activation_cost": 700.0,
+    "exit_cost": 300.0,
+    "discount_rate_yr": 0.0971,
+    "margin_abs": 1000.0,
+    "margin_pct": 0.02,
+    "gpus": 8,
+    "server_kw": 6.5
+   }
+  },
+  "stage": {
+   "rental_rate": 0.8,
+   "result": {
+    "route": "LIST AND WAIT",
+    "base": {
+     "SELL NOW": 69324.8,
+     "LIST AND WAIT": 78016.01872358215,
+     "YIELD WHILE LISTED": 76626.6320989097,
+     "HOST LONGER": 70064.07086656782,
+     "HARVEST": 76865.09,
+     "RECYCLE": 128.75,
+     "REPAIR": null
+    },
+    "stress": {
+     "LIST AND WAIT": 75441.37275660627,
+     "YIELD WHILE LISTED": 75432.50535817978,
+     "HOST LONGER": 58818.06202409041
+    },
+    "eligible": [
+     "SELL NOW",
+     "LIST AND WAIT",
+     "YIELD WHILE LISTED",
+     "HOST LONGER"
+    ],
+    "breakeven_dwell_days": 119,
+    "breakeven_utilization": 0.92,
+    "daily_compute_margin": 22.079385263157896,
+    "after_repair_route": null,
+    "audit": [
+     "LIST AND WAIT beats SELL NOW by $8,691 (needs $1,386) and still wins in its stress case by $6,117.",
+     "YIELD WHILE LISTED vs LIST AND WAIT: -$1,389, below the $1,560 margin, so rejected.",
+     "HOST LONGER vs LIST AND WAIT: -$7,952, below the $1,560 margin, so rejected."
+    ]
+   },
+   "assumptions": {
+    "offer_today": 80700.0,
+    "market_price": 95300.0,
+    "sell_fee_pct": 0.136,
+    "logistics": 400.0,
+    "dwell_days": 56.0,
+    "rental_rate": 0.8,
+    "platform_fee_pct": 0.2,
+    "utilization": 0.7,
+    "first_month_utilization": 0.37,
+    "horizon_months": 12,
+    "market_decay_pct_mo": 0.01,
+    "elec_per_kwh": 0.0858,
+    "pue": 1.4,
+    "colo_per_kw_mo": 196.0,
+    "maint_per_day": 3.29,
+    "activation_cost": 700.0,
+    "exit_cost": 300.0,
+    "discount_rate_yr": 0.0971,
+    "margin_abs": 1000.0,
+    "margin_pct": 0.02,
+    "gpus": 8,
+    "server_kw": 6.5
+   }
+  }
+ },
+ "source": "Recorded in-process from backend/app/recompute_model.py v0.9 by scripts/build_pitch_fixture.py"
+}
