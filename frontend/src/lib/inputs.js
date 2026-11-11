@@ -59,6 +59,7 @@ export function formatInput(key, v) {
   if (!s) return String(v);
   if (s.scale) return `${(v * s.scale).toFixed(key === "market_decay_pct_mo" || key === "price_drift_pct_mo" ? 1 : 0)}${s.unit === "%/mo" ? "%/mo" : "%"}`;
   if (s.unit === "USD") return `$${Math.round(v).toLocaleString("en-US")}`;
+  if (key === "rental_rate") return `$${v.toFixed(2)} ${s.unit}`; // a price per hour reads in cents: $0.80, not $0.8
   if (s.prefix === "$") return `$${v.toFixed(key === "elec_per_kwh" ? 4 : 2).replace(/0+$/, "").replace(/\.$/, "")} ${s.unit}`;
   return `${v.toLocaleString("en-US")} ${s.unit}`;
 }

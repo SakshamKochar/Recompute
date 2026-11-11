@@ -8,6 +8,7 @@ import { esc } from "../lib/html.js";
 import { ROUTE_ORDER, routeInfo } from "../lib/routes.js";
 import { boardArt, gpuArt } from "../ui/art.js";
 import { orbitArt, constellationArt } from "../ui/motion.js";
+import { mountTeaser, playTeaser, teaserSection, unmountTeaser } from "../ui/teaser.js";
 
 export const STORY_ASSET = "DEMO-SHAURYAA";
 const STORY_ROUTES = [
@@ -134,7 +135,7 @@ export default {
   title: "Home",
   render() {
     const s = story();
-    return `<nav class="exp-nav" aria-label="Landing"><a href="#home" class="exp-logo">ReCompute<span>®</span></a><div><a href="#story" data-action="start-story" data-idea>The idea</a><a href="#story" data-action="start-story">Try the experience</a><a class="exp-nav-cta" href="#overview">Enter the studio ↗</a></div></nav><main class="exp-main"><section class="exp-hero"><div class="hero-kicker"><span></span> A new way to see what’s next</div><h1>Not done.<br><span>Just <i>next.</i></span></h1><div class="hero-note"><span class="tiny-number">01 / A different perspective</span><p>Yesterday’s breakthrough.<br>Tomorrow’s possibility.</p><p class="muted-copy">Your GPU servers have more than one future.<br>ReCompute helps you find the one worth more.</p><button class="experience-button" data-action="start-story">Find its next life <span>↗</span></button><small>A 60-second exploration. No setup.</small></div><div class="hardware-scene" data-motion="hero">${gpuArt()}<div class="hardware-caption"><span class="hc-kicker">Meet the demo asset</span><b>NVIDIA A100 <i>80 GB × 8</i></b><span class="hc-note">Graded from simulated NVIDIA diagnostics</span></div><div class="spec-sticker">Not<br>obsolete.<span>ReCompute / 001</span></div></div><div class="hero-bottom"><span>The next life of compute</span><a href="#story" data-action="start-story">Scroll into possibility ↓</a><span>Value, redirected.</span></div></section><section class="manifesto"><div class="manifesto-side"><span class="section-index">The shift / 01</span>${orbitArt()}</div><div><h2>A GPU isn’t finished<br>when <em>one job is.</em></h2><p>Maybe it earns for another year. Maybe it finds a new owner. Maybe one repair changes everything. The hard part isn’t having options. It’s knowing which one makes sense.</p><p class="manifesto-end">That’s where ReCompute comes in. <span>↘</span></p></div></section><section class="story-section" id="story"><div class="story-heading"><div><span class="section-index">A small demo. A different way to decide.</span><h2>One asset.<br><em>What happens next?</em></h2></div><p>Take this A100 server through its next chapter.<br>You’re in control. ReCompute shows the numbers.</p></div><div class="chapter-nav" role="group" aria-label="Demo chapters">${["Meet it", "Understand it", "Explore its futures", "Make a move"]
+    return `<nav class="exp-nav" aria-label="Landing"><a href="#home" class="exp-logo">ReCompute<span>®</span></a><div><a href="#story" data-action="start-story" data-idea>The idea</a><a href="#story" data-action="start-story">Try the experience</a><a href="#teaser" data-action="to-teaser">The teaser</a><a class="exp-nav-cta" href="#overview">Enter the studio ↗</a></div></nav><main class="exp-main"><section class="exp-hero"><div class="hero-kicker"><span></span> A new way to see what’s next</div><h1>Not done.<br><span>Just <i>next.</i></span></h1><div class="hero-note"><span class="tiny-number">01 / A different perspective</span><p>Yesterday’s breakthrough.<br>Tomorrow’s possibility.</p><p class="muted-copy">Your GPU servers have more than one future.<br>ReCompute helps you find the one worth more.</p><button class="experience-button" data-action="start-story">Find its next life <span>↗</span></button><small>A 60-second exploration. No setup.</small></div><div class="hardware-scene" data-motion="hero">${gpuArt()}<div class="hardware-caption"><span class="hc-kicker">Meet the demo asset</span><b>NVIDIA A100 <i>80 GB × 8</i></b><span class="hc-note">Graded from simulated NVIDIA diagnostics</span></div><div class="spec-sticker">Not<br>obsolete.<span>ReCompute / 001</span></div></div><div class="hero-bottom"><span>The next life of compute</span><a href="#story" data-action="start-story">Scroll into possibility ↓</a><span>Value, redirected.</span></div></section>${teaserSection()}<section class="manifesto"><div class="manifesto-side"><span class="section-index">The shift / 01</span>${orbitArt()}</div><div><h2>A GPU isn’t finished<br>when <em>one job is.</em></h2><p>Maybe it earns for another year. Maybe it finds a new owner. Maybe one repair changes everything. The hard part isn’t having options. It’s knowing which one makes sense.</p><p class="manifesto-end">That’s where ReCompute comes in. <span>↘</span></p></div></section><section class="story-section" id="story"><div class="story-heading"><div><span class="section-index">A small demo. A different way to decide.</span><h2>One asset.<br><em>What happens next?</em></h2></div><p>Take this A100 server through its next chapter.<br>You’re in control. ReCompute shows the numbers.</p></div><div class="chapter-nav" role="group" aria-label="Demo chapters">${["Meet it", "Understand it", "Explore its futures", "Make a move"]
       .map(
         (t, i) =>
           `<button data-action="story-chapter" data-chapter="${i}" class="${chapter === i ? "current" : ""}" ${chapter === i ? 'aria-current="step"' : ""}><span>0${i + 1}</span>${t}</button>`,
@@ -145,7 +146,23 @@ export default {
       "",
     )}</div></section><section class="exp-finale">${constellationArt()}<span class="section-index">From one asset to the whole picture</span><h2>Now imagine<br><em>your entire fleet.</em></h2><p>Every passport. Every possibility. One place to see the next move.</p><a class="experience-button" href="#overview">Explore the Decision Studio <span>↗</span></a><div class="finale-features"><span>Asset passports</span><span>Fleet Command</span><span>What-if Lab</span><span>Decision Replay</span></div></section></main><footer class="exp-footer"><a href="#home" class="exp-logo">ReCompute®</a><span>Value, redirected.</span><small>The story uses a simulated asset. No real transactions.</small></footer>`;
   },
+  /** In-place update for data that arrives after the first paint; keeps the teaser player alive. */
+  refresh(root) {
+    refreshStory(root);
+    const bp = root.querySelector("#bridge-preview");
+    if (bp) bp.innerHTML = bridgePreview(story());
+  },
+  after(root, route) {
+    mountTeaser();
+    // After the router's own scroll-to-top for a new page.
+    if (route.query.teaser) setTimeout(() => root.querySelector(".teaser-frame")?.scrollIntoView({ behavior: "instant", block: "center" }), 60);
+  },
+  leave() {
+    unmountTeaser();
+  },
   actions: {
+    "teaser-play": () => playTeaser(),
+    "to-teaser": () => document.querySelector(".teaser-frame")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "center" }),
     "start-story": (el) => {
       document.querySelector(el.hasAttribute("data-idea") ? ".manifesto" : "#story")?.scrollIntoView({
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",

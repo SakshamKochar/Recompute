@@ -252,6 +252,14 @@ function saveDraft(id, draft) {
 const view = {
   title: "What-if Lab",
   render(route) {
+    // fresh=1 on a link (the finals demo link) starts from the asset's own inputs, whatever was rehearsed.
+    if (route.query.fresh && route.query.asset) {
+      store.update((ws) => delete ws.labDrafts[route.query.asset]);
+      calc.key = null;
+      calc.out = null;
+      history.replaceState(null, "", location.hash.replace(/&fresh=1|fresh=1&?/, ""));
+      delete route.query.fresh;
+    }
     return page(route);
   },
   after(root, route) {

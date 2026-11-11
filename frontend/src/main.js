@@ -136,10 +136,14 @@ export async function setMode(mode, { persist = true } = {}) {
   startTicker();
 }
 
+/** A link can choose the mode, e.g. #lab?asset=SYN-003&mode=demo for the finals demo. */
+const linkedMode = () => (["demo", "live"].includes(parseHash().query.mode) ? parseHash().query.mode : null);
+
 async function boot() {
   const stored = store.mode;
-  const wanted = stored || (config.defaultMode === "demo" ? "demo" : "live");
-  await setMode(wanted, { persist: !!stored || config.defaultMode !== "auto" });
+  const linked = linkedMode();
+  const wanted = linked || stored || (config.defaultMode === "demo" ? "demo" : "live");
+  await setMode(wanted, { persist: !!linked || !!stored || config.defaultMode !== "auto" });
 }
 
 /* ---------------------------------------------------------------- chrome */
@@ -216,12 +220,19 @@ function restoreFocus(root, f) {
 
 function render() {
   const route = parseHash();
-  const routeChanged = app._routeChanged || route.page !== app.route.page || route.param !== app.route.param;
+  const realRouteChange = route.page !== app.route.page || route.param !== app.route.param;
+  const routeChanged = app._routeChanged || realRouteChange;
   app._routeChanged = false;
-  if (routeChanged && lastPage && VIEWS[lastPage]?.leave) VIEWS[lastPage].leave();
-  app.route = route;
   const view = VIEWS[route.page];
   const isHome = route.page === "home";
+  // Data or mode arrived after the landing page painted: update it in place, so the teaser keeps playing.
+  if (isHome && !realRouteChange && lastPage === "home" && view.refresh && document.querySelector("#experience").childElementCount) {
+    app.route = route;
+    view.refresh(document.querySelector("#experience"));
+    return;
+  }
+  if (routeChanged && lastPage && VIEWS[lastPage]?.leave) VIEWS[lastPage].leave();
+  app.route = route;
   document.body.classList.toggle("experience-mode", isHome);
 
   if (isHome) {
@@ -338,7 +349,11 @@ const endDrag = () => {
 document.addEventListener("pointerup", endDrag);
 document.addEventListener("pointercancel", endDrag);
 
-window.addEventListener("hashchange", () => scheduleRender(true));
+window.addEventListener("hashchange", () => {
+  const linked = linkedMode();
+  if (linked && linked !== getTransport()?.mode) setMode(linked);
+  else scheduleRender(true);
+});
 setResourceListener(() => scheduleRender());
 app.schedule = scheduleRender;
 app.setMode = setMode;
