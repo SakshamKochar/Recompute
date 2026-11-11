@@ -58,7 +58,7 @@ function isWaking(error) {
   return error.kind === "http" && (error.status === 502 || error.status === 503 || error.status === 504);
 }
 
-function wakeLater(ticket, left) {
+function wakeLater(ticket, attempt = 0) {
   clearTimeout(recoveryTimer);
   recoveryTimer = setTimeout(async () => {
     if (ticket !== healthTicket || getTransport()?.mode === "demo") return;
@@ -76,17 +76,16 @@ function wakeLater(ticket, left) {
     } catch (e) {
       if (ticket !== healthTicket) return;
       app.health.error = e;
-      if (isWaking(e) && left > 1) {
-        wakeLater(ticket, left - 1);
+      if (isWaking(e)) {
+        wakeLater(ticket, attempt + 1);
         return;
       }
       app.health = { state: "down", version: null, error: e };
       renderChrome();
       return;
     }
-    app.health = { state: "down", version: null, error: app.health.error };
-    renderChrome();
-  }, Math.max(5000, app.health.error?.retryAfterMs || 0) + Math.floor(Math.random() * 1000));
+    wakeLater(ticket, attempt + 1);
+  }, Math.max(Math.min(60000, 5000 * 2 ** Math.min(attempt, 4)), app.health.error?.retryAfterMs || 0) + Math.floor(Math.random() * 1000));
 }
 
 async function checkHealth() {
@@ -97,11 +96,12 @@ async function checkHealth() {
   try {
     const h = await api.health();
     if (ticket !== healthTicket) return false;
-    app.health = { state: h?.ok ? "ok" : "down", version: h?.model_version ?? null, error: null };
+    app.health = { state: h?.ok ? "ok" : "waking", version: h?.model_version ?? null, error: null };
+    if (!h?.ok) wakeLater(ticket);
   } catch (e) {
     if (ticket !== healthTicket) return false;
     app.health = { state: isWaking(e) ? "waking" : "down", version: null, error: e };
-    if (app.health.state === "waking") wakeLater(ticket, 12);
+    if (app.health.state === "waking") wakeLater(ticket);
   }
   renderChrome();
   return app.health.state === "ok";
@@ -119,7 +119,7 @@ export async function setMode(mode, { persist = true } = {}) {
     const ticket = ++healthTicket;
     app.health = { state: "waking", version: null, error };
     renderChrome();
-    wakeLater(ticket, 12);
+    wakeLater(ticket);
   } }));
   // Render immediately: the landing story is static and must not wait for a sleeping API.
   renderChrome();
