@@ -50,7 +50,8 @@ function render() {
   <div class="teaser-main">
     <div class="teaser-frame" data-state="idle">
       <div id="teaser-player" class="teaser-player"></div>
-      <button type="button" class="teaser-poster" data-action="teaser-play" aria-label="Play the ReCompute teaser at ${RATE} times speed" style="background-image:url(https://i.ytimg.com/vi/${VIDEO_ID}/maxresdefault.jpg), url(https://i.ytimg.com/vi/${VIDEO_ID}/hqdefault.jpg)">
+      <button type="button" class="teaser-poster" data-action="teaser-play" aria-label="Play the ReCompute teaser at ${RATE} times speed">
+        <span class="teaser-poster-title">Not done. <i>Just next.</i></span>
         <span class="teaser-play"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></span>
         <span class="teaser-play-label">Play the teaser <small>${RATE}×</small></span>
       </button>

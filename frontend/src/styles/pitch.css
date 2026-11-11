@@ -90,11 +90,20 @@
   color: #f3f0e7;
   transition: opacity 0.35s;
 }
-.teaser-poster::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(#0c171133, #0c1711aa);
+.teaser-poster {
+  background:
+    radial-gradient(ellipse at 50% 35%, #3c5a3a 0%, transparent 65%),
+    #10201a;
+}
+.teaser-poster-title {
+  position: relative;
+  font-family: var(--font-serif);
+  font-size: clamp(40px, 6vw, 92px);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.teaser-poster-title i {
+  color: #dcf587;
 }
 .teaser-poster:active {
   transform: none;
